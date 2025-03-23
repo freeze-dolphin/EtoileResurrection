@@ -38,11 +38,30 @@ Arguments:
 
 #### `--export-bg-mode`
 
-| Strategies  | Description                                                                                                                                                         |
-|-------------|---------------------------------------------------------------------------------------------------------------------------------------------------------------------|
-| simplified  | On duplicated bg files, warn the user in console and do nothing.                                                                                                    |
-| precise     | On duplicated bg files, warn the user in console and use the bundled bg (_base_conflict_, etc.).                                                                    |
-| overwrite   | On duplicated bg files, warn the user in console and overwrite previous bg with the new one.                                                                        |
-| auto_rename | In this mode bg files are qualified with pack prefix name, for example, **pragmatism.jpg** will be **prefix\_of\_the\_pack.pragmatism.jpg** in the **imgs** folder. |
+| Strategies           | Description                                                                                                                                                                       |
+|----------------------|-----------------------------------------------------------------------------------------------------------------------------------------------------------------------------------|
+| simplified           | Ignore the duplicated files, and warn the user.                                                                                                                                   |
+| precise              | Extract backgrounds files with tree structure, **which cannot be read directly in Arcaea**.                                                                                       |
+| overwrite            | Overwrite the duplicated files with the new one, and warn the user.                                                                                                               |
+| auto_rename __(\*)__ | Background files are qualified with pack prefix name to avoid conflicts, for example, **pragmatism.jpg** will be **prefix\_of\_the\_pack.pragmatism.jpg** in the **imgs** folder. |
+
+> __(\*)__: Most commonly used.
+
+### `pack`
+
+todo
+
+<!--
+
+Use `etoile pack -h` to get help message:
 
 
+<details><summary>Help</summary>
+
+```
+
+```
+
+</details>
+
+-->
