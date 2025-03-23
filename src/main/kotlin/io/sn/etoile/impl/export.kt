@@ -218,7 +218,7 @@ class ArcpkgConvertRequest(
             "style", "sub", "sup", "u", "uppercase", "voffset", "width"
         )
 
-        private fun removeUnityRichTextTags(input: String): String {
+        fun removeUnityRichTextTags(input: String): String {
             var rst = input
             unityRichTextTags.forEach { tag ->
                 rst = rst.replace("</?$tag=[^>]+>|</$tag>|<$tag>".toRegex(), "")
