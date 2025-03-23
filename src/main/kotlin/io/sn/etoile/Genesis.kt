@@ -61,7 +61,6 @@ class EtoileRessurectionCommand : CliktCommand(name = "etoile") {
 }
 
 fun main(args: Array<String>) {
-    EtoileRessurectionCommand().subcommands(ToAceCommand(), FromAceCommand()).main(args)
 
     /*
     val usage: Array<String> = arrayOf(
@@ -74,14 +73,8 @@ fun main(args: Array<String>) {
         " - AUTO_RENAME: add prefix to filenames to avoid conflicts",
         "The convert result will be in `\$PWD/result/`"
     )
-
-    if (args.size < 3) {
-        usage.forEach(System.out::println)
-        exitProcess(0)
-    }
-
-    val arcpkgs = args.sliceArray(2 until args.size)
-    val prefix = args[0]
-    val mode = ExportBgMode.valueOf(args[1])
     */
+
+    EtoileRessurectionCommand().subcommands(ToAceCommand(), FromAceCommand()).main(args)
+
 }
