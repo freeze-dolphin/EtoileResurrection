@@ -25,3 +25,8 @@ build
 
 .idea/
 .kotlin/
+
+/src/test/resources/ArcCreate_project/.project_backup/
+
+playground/
+result/
