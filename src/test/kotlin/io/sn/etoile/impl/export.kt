@@ -20,7 +20,8 @@ object ExportTest {
     @Test
     fun `test ace pack exporter`() {
         val arcpkgFiles =
-            setOf(Thread.currentThread().contextClassLoader.getResource("ArcCreate_project/sn.test.arcpkg").let { File(it!!.path) })
+            setOf(
+                Thread.currentThread().contextClassLoader.getResource("ArcCreate_project/sn.test.arcpkg").let { File(it!!.path).toPath() })
 
         ArcpkgConvertRequest(
             arcpkgFiles,

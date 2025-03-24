@@ -13,25 +13,28 @@ import java.io.BufferedReader
 import java.io.File
 import java.io.FileOutputStream
 import java.io.InputStreamReader
+import java.nio.file.Path
 import java.util.zip.ZipEntry
 import java.util.zip.ZipFile
 import javax.imageio.ImageIO
 import kotlin.properties.Delegates
 
 enum class ExportBgMode {
-    SIMPLIFIED, PRECISE, OVERWRITE, AUTO_RENAME
+    SIMPLIFIED, PRECISE, OVERWRITE, AUTO_RENAME;
 }
 
 data class ExportConfiguration(
     val exportSet: String,
     val exportVersion: String,
-    val exportTime: Long = System.currentTimeMillis() / 1000L,
-    val exportDirectory: File = file(".", "result"),
     val exportBgMode: ExportBgMode,
+    val exportDirectory: File,
+    val exportTime: Long = getCurrentSystemTime(),
 )
 
+fun getCurrentSystemTime(): Long = System.currentTimeMillis() / 1000L
+
 class ArcpkgConvertRequest(
-    private val arcpkgs: Set<File>,
+    private val arcpkgs: Set<Path>,
     private val identifierPrefix: String,
     private val exportConfiguration: ExportConfiguration
 ) {
@@ -53,7 +56,7 @@ class ArcpkgConvertRequest(
             val content = StringBuilder()
 
             zipFile.getInputStream(entry).use { inputStream ->
-                BufferedReader(InputStreamReader(inputStream)).use { reader ->
+                BufferedReader(InputStreamReader(inputStream, charset("utf-8"))).use { reader ->
                     var line: String?
                     while (reader.readLine().also { line = it } != null) {
                         content.append(line + System.lineSeparator())
@@ -244,10 +247,24 @@ class ArcpkgConvertRequest(
     private val exportSonglist = file(exportDirSongs.path, "songlist")
     private val exportPacklist = file(exportDirSongs.path, "packlist")
 
-    private fun createDirs() {
-        if (!exportDirBg.exists()) exportDirBg.mkdirs()
-        if (!exportDirSongs.exists()) exportDirSongs.mkdirs()
-        if (!exportDirPack.exists()) exportDirPack.mkdirs()
+    private fun createDirs(): Boolean {
+        if (!exportDirBg.exists()) {
+            exportDirBg.mkdirs().let {
+                if (!it) return false
+            }
+        }
+        if (!exportDirSongs.exists()) {
+            exportDirSongs.mkdirs().let {
+                if (!it) return false
+            }
+        }
+        if (!exportDirPack.exists()) {
+            exportDirPack.mkdirs().let {
+                if (!it) return false
+            }
+        }
+
+        return true
     }
 
     private fun processSongs(
@@ -382,7 +399,15 @@ class ArcpkgConvertRequest(
                         ExportBgMode.SIMPLIFIED -> {
                             val rt = extractFileFromZipSimplified(arcpkgZipFile, bgPath, exportDirBg, null, true)
                             when (rt) {
-                                2 -> println("$procIndent | Already exists: ${file(exportDirBg.path, File(bgPath).name).path}, ignoring...")
+                                2 -> println(
+                                    "$procIndent | Already exists: ${
+                                        file(
+                                            exportDirBg.path,
+                                            File(bgPath).name
+                                        ).path
+                                    }, ignoring..."
+                                )
+
                                 1 -> {
                                     println("$procIndent | Unable to extract: $bgPath, alter to use bundled bg: $bgBundled")
                                     bg = bgBundled
@@ -510,7 +535,12 @@ class ArcpkgConvertRequest(
 
             difficulties.forEach { diffEntry ->
                 val aff = readFileFromZip(arcpkgZipFile, "${entry.directory}/${diffEntry.chartPath!!}")
-                File(songDir, "${diffEntry.ratingClass}.aff").writeText(Chart.fromAcf(aff).first.serializeForArcaea())
+                val convertion = Chart.fromAcf(aff)
+
+                if (convertion.second.ignoredTimingGroupEffects.isNotEmpty() || convertion.second.ignoredScenecontrols.isNotEmpty()) {
+                    println("$procIndent Ignoring ${convertion.second.ignoredTimingGroupEffects.size}x timingGroup effects, and ${convertion.second.ignoredScenecontrols.size}x scenecontrols")
+                }
+                File(songDir, "${diffEntry.ratingClass}.aff").writeText(convertion.first.serializeForArcaea())
             }
 
             (0..2).forEach { ratingClass ->
@@ -554,13 +584,15 @@ class ArcpkgConvertRequest(
     }
 
     fun exec() {
-        createDirs()
+        if (!createDirs()) {
+            throw RuntimeException("Failed to create necessary directories.")
+        }
 
         val songlist = mutableListOf<SonglistEntry>()
         val packlist = mutableListOf<PacklistEntry>()
 
         arcpkgs.forEach { arcpkgFile ->
-            val zipFile = ZipFile(arcpkgFile)
+            val zipFile = ZipFile(arcpkgFile.toFile())
             val index = readFileFromZip(zipFile, "index.yml").let { yaml.decodeFromString(ListSerializer(IndexEntry.serializer()), it) }
 
             index.filter { entry ->
