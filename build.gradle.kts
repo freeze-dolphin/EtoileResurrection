@@ -41,6 +41,31 @@ application {
     mainClass.set("io.sn.etoile.GenesisKt")
 }
 
+fun getCheckedOutGitCommitHash(): String { // https://gist.github.com/JonasGroeger/7620911
+    val gitFolder = "${project.projectDir}/.git/"
+    val takeFromHash = 12
+
+    /*
+     * '.git/HEAD' contains either
+     *      in case of detached head: the currently checked out commit hash
+     *      otherwise: a reference to a file containing the current commit hash
+     */
+    val head = File(gitFolder + "HEAD").readText().split(":") // .git/HEAD
+    val isCommit = head.size == 1 // e5a7c79edabbf7dd39888442df081b1c9d8e88fd
+    // val isRef = head.size > 1     // ref: refs/heads/master
+
+    if (isCommit) return head[0].trim().take(takeFromHash) // e5a7c79edabb
+
+    val refHead = File(gitFolder + head[1].trim()) // .git/refs/heads/master
+    return refHead.readText().trim().take(takeFromHash)
+}
+
+distributions {
+    main {
+        version = getCheckedOutGitCommitHash().substring(0 until 7)
+    }
+}
+
 tasks.named<Test>("test") {
     useJUnitPlatform()
 }
