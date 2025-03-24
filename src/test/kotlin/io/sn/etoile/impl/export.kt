@@ -1,10 +1,12 @@
 package io.sn.etoile.impl
 
+import io.sn.etoile.file
 import io.sn.etoile.impl.ArcpkgConvertRequest.Companion.removeUnityRichTextTags
+import java.io.File
 import kotlin.test.Test
 import kotlin.test.assertEquals
 
-class UnityRichTextTagsRemoveTest {
+object ExportTest {
 
     @Test
     fun `test unity rich text tags remover`() {
@@ -13,6 +15,18 @@ class UnityRichTextTagsRemoveTest {
         val expected = "SUPERNOVA"
 
         assertEquals(removeUnityRichTextTags(before), expected)
+    }
+
+    @Test
+    fun `test ace pack exporter`() {
+        val arcpkgFiles =
+            setOf(Thread.currentThread().contextClassLoader.getResource("ArcCreate_project/sn.test.arcpkg").let { File(it!!.path) })
+
+        ArcpkgConvertRequest(
+            arcpkgFiles,
+            "test",
+            ExportConfiguration("single", "1.0", ExportBgMode.AUTO_RENAME, file(".", "build", "etoile_result"))
+        ).exec()
     }
 
 }

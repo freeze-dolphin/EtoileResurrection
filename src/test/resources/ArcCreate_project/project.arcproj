@@ -1,0 +1,22 @@
+lastOpenedChartPath: 2.aff
+charts:
+- chartPath: 2.aff
+  audioPath: base.ogg
+  jacketPath: base.jpg
+  baseBpm: 100
+  bpmText: 100
+  syncBaseBpm: true
+  title: Untitled
+  composer: N/A
+  difficulty: Future ?
+  chartConstant: 1
+  difficultyColor: '#482B54FF'
+  skin:
+    side: conflict
+    note: ''
+    particle: miraiconflict
+    track: ''
+    accent: dynamix
+editorSettings:
+  lastUsedPublisher: sn
+  lastUsedPackageName: test
