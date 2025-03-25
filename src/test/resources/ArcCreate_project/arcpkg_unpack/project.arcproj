@@ -1,4 +1,4 @@
-lastOpenedChartPath: 4.aff
+lastOpenedChartPath: 3.aff
 charts:
 - chartPath: 0.aff
   audioPath: base.ogg
@@ -15,9 +15,8 @@ charts:
     side: conflict
     note: ''
     particle: miraiconflict
-    track: finale
-    accent: light
-    singleLine: none
+    track: ''
+    accent: dynamix
   previewEnd: 5000
 - chartPath: 1.aff
   audioPath: base.ogg
@@ -34,9 +33,8 @@ charts:
     side: conflict
     note: ''
     particle: miraiconflict
-    track: pentiment
-    accent: conflict
-    singleLine: light
+    track: ''
+    accent: dynamix
   previewEnd: 5000
 - chartPath: 2.aff
   audioPath: base.ogg
@@ -53,9 +51,8 @@ charts:
     side: conflict
     note: ''
     particle: miraiconflict
-    track: arcana
+    track: ''
     accent: dynamix
-    singleLine: conflict
   previewEnd: 5000
 - chartPath: 3.aff
   audioPath: base.ogg
@@ -74,10 +71,9 @@ charts:
   skin:
     side: conflict
     note: ''
-    particle: mirailight
-    track: colorless
-    accent: colorless
-    singleLine: neo
+    particle: miraiconflict
+    track: ''
+    accent: dynamix
   previewEnd: 5000
   searchTags: search_keywords
 - chartPath: 4.aff
@@ -92,13 +88,9 @@ charts:
   chartConstant: 1
   difficultyColor: '#433455FF'
   skin:
-    side: colorless
+    side: conflict
     note: ''
-    particle: ''
-    track: finale
-    accent: ''
-    singleLine: none
+    particle: miraiconflict
+    track: ''
+    accent: dynamix
   previewEnd: 5000
-editorSettings:
-  lastUsedPublisher: sn
-  lastUsedPackageName: test

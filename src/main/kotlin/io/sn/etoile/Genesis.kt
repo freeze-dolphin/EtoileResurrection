@@ -3,26 +3,61 @@ package io.sn.etoile
 import com.github.ajalt.clikt.core.CliktCommand
 import com.github.ajalt.clikt.core.main
 import com.github.ajalt.clikt.core.subcommands
-import com.github.ajalt.clikt.parameters.arguments.*
-import com.github.ajalt.clikt.parameters.options.default
-import com.github.ajalt.clikt.parameters.options.option
-import com.github.ajalt.clikt.parameters.options.required
+import com.github.ajalt.clikt.parameters.arguments.argument
+import com.github.ajalt.clikt.parameters.arguments.multiple
+import com.github.ajalt.clikt.parameters.arguments.unique
+import com.github.ajalt.clikt.parameters.arguments.validate
+import com.github.ajalt.clikt.parameters.options.*
 import com.github.ajalt.clikt.parameters.types.choice
 import com.github.ajalt.clikt.parameters.types.file
+import com.github.ajalt.clikt.parameters.types.float
 import com.github.ajalt.clikt.parameters.types.path
 import io.sn.etoile.impl.ArcpkgConvertRequest
+import io.sn.etoile.impl.ArcpkgPackRequest
 import io.sn.etoile.impl.ExportBgMode
 import io.sn.etoile.impl.ExportConfiguration
+import java.io.File
 import java.nio.file.Path
 
-class ToAceCommand : CliktCommand(name = "pack") {
-    override fun run() {
+class PackCommand : CliktCommand(name = "pack") {
+    private val songsDir: Path by argument(name = "songsDir", help = "songs dir to be processed on").path(
+        mustExist = true, mustBeReadable = true, canBeFile = false
+    ).validate {
+        require(file(it.toString(), "songlist").exists()) { "songlist not found in songs dir" }
+    }
 
+    private val packOutputPath by option(
+        names = arrayOf("--outputDir", "-o"), help = "The path to the .arcpkg file to be packed"
+    ).path(mustExist = true, canBeFile = false, canBeDir = true, mustBeWritable = true).default(File(".").toPath())
+
+    private val prefix by option(names = arrayOf("--prefix", "-p"), help = "The prefix of the song id").required()
+
+    private val songId: String by option(
+        names = arrayOf("--songId", "--id", "-s"), help = "The identity of the song to be packed"
+    ).required()
+
+    private val songConstants by option(
+        names = arrayOf("--constants", "-c"), help = "The list of song constants"
+    ).float().split(",").required().validate {
+        require(it.size == 5) { "The list of song constants must be 5" }
+    }
+
+    override fun run() {
+        ArcpkgPackRequest(
+            songsDir = songsDir,
+            songId = songId,
+            songConstants = songConstants.toFloatArray(),
+            prefix = prefix,
+            packOutputPath = packOutputPath
+        ).exec()
     }
 }
 
-class FromAceCommand : CliktCommand(name = "export") {
-    private val arcpkgs: Set<Path> by argument().path(mustExist = true, mustBeReadable = true, canBeDir = false).multiple().unique()
+class ExportCommand : CliktCommand(name = "export") {
+    private val arcpkgs: Set<Path> by argument(name = "arcpkgs", help = ".arcpkg files to be processed on").path(
+        mustExist = true, mustBeReadable = true, canBeDir = false
+    ).multiple().unique()
+
     private val prefix by option(names = arrayOf("--prefix", "-p"), help = "The prefix of the song id").required()
 
     private val exportBgMode by option(names = arrayOf("--export-bg-mode", "--mode"), help = "Please refer to the README file").choice(
@@ -75,6 +110,6 @@ fun main(args: Array<String>) {
     )
     */
 
-    EtoileRessurectionCommand().subcommands(ToAceCommand(), FromAceCommand()).main(args)
+    EtoileRessurectionCommand().subcommands(PackCommand(), ExportCommand()).main(args)
 
 }

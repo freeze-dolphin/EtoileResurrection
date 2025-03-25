@@ -1,11 +1,12 @@
 package io.sn.etoile.impl
 
-import com.charleskorn.kaml.*
+import com.charleskorn.kaml.YamlList
+import com.charleskorn.kaml.yamlMap
+import com.charleskorn.kaml.yamlScalar
 import com.tairitsu.compose.arcaea.Chart
 import com.tairitsu.compose.arcaea.LocalizedString
 import io.sn.etoile.*
 import kotlinx.serialization.builtins.ListSerializer
-import kotlinx.serialization.json.Json
 import java.awt.Color
 import java.awt.Image
 import java.awt.image.BufferedImage
@@ -31,23 +32,11 @@ data class ExportConfiguration(
     val exportTime: Long = getCurrentSystemTime(),
 )
 
-fun getCurrentSystemTime(): Long = System.currentTimeMillis() / 1000L
-
 class ArcpkgConvertRequest(
     private val arcpkgs: Set<Path>,
     private val identifierPrefix: String,
     private val exportConfiguration: ExportConfiguration
 ) {
-
-    private val json = Json {
-        prettyPrint = true
-    }
-
-    private val yaml = Yaml(
-        configuration = YamlConfiguration(
-            allowAnchorsAndAliases = true // fix #3
-        )
-    )
 
     companion object {
 
@@ -152,7 +141,7 @@ class ArcpkgConvertRequest(
             }
 
             if (!ImageIO.write(bufImg, "jpg", output)) {
-                throw IllegalStateException("Unable to find a writer for file: ${outputFile.path}")
+                throw RuntimeException("Unable to find a writer for file: ${outputFile.path}")
             }
         }
 
@@ -188,15 +177,6 @@ class ArcpkgConvertRequest(
                     }
                 }
             }
-        }
-
-
-        infix fun YamlNode.content(path: String): String {
-            return this.yamlMap.get<YamlNode>(path)!!.yamlScalar.content
-        }
-
-        infix fun YamlNode.nullableContent(path: String): String? {
-            return this.yamlMap.get<YamlNode>(path)?.yamlScalar?.content
         }
 
         private val ratingClassRegex = Regex("""\b\d\b""")
@@ -269,7 +249,7 @@ class ArcpkgConvertRequest(
 
     private fun processSongs(
         logPrefix: String,
-        index: List<IndexEntry>,
+        index: List<ImportInformationEntry>,
         arcpkgZipFile: ZipFile,
         songlist: MutableList<SonglistEntry>,
         set: String
@@ -278,9 +258,12 @@ class ArcpkgConvertRequest(
             val procTextRaw = "[${procIdx + 1}/${index.size}]"
             val procText = logPrefix + procTextRaw
             val procIndent = logPrefix + " ".repeat(procTextRaw.length)
-            val settings = readFileFromZip(arcpkgZipFile, "${entry.directory}/${entry.settingsFile}").let { yaml.parseToYamlNode(it) }
+            val settings = readFileFromZip(
+                arcpkgZipFile,
+                "${entry.directory}/${entry.settingsFile}"
+            ).let { yaml.decodeFromString(ProjectInformation.serializer(), it) }
 
-            val charts = settings.yamlMap.get<YamlList>("charts")!!
+            val charts = settings.charts
 
             val difficulties = mutableListOf<DifficultyEntry>()
             lateinit var baseDifficulty: DifficultyEntry
@@ -290,10 +273,10 @@ class ArcpkgConvertRequest(
 
             println("$procText Processing: ${entry.directory} $idName")
 
-            charts.items.forEach { chart ->
-                val difficultyText = chart content "difficulty"
+            charts.forEach { chart ->
+                val difficultyText = chart.difficulty
 
-                val ratingClassRaw = chart content "chartPath"
+                val ratingClassRaw = chart.chartPath
                 var ratingClassDigit: Int? = null
                 var ratingClass by Delegates.notNull<Int>()
                 if (ratingClassRaw.endsWith(".aff") && ratingClassRaw.removeSuffix(".aff").toIntOrNull()
@@ -308,54 +291,66 @@ class ArcpkgConvertRequest(
                         difficultyText.startsWith("Present") -> 1
                         difficultyText.startsWith("Past") -> 0
 
-                        else -> throw IllegalStateException("Unable to detect ratingClass $idName")
+                        else -> throw RuntimeException("Unable to detect ratingClass $idName")
                     }
                 }
-                val audioPath = chart content "audioPath"
-                val jacketPath = chart content "jacketPath"
-                val baseBpm = (chart content "baseBpm").toFloat()
-                val bpmText = chart content "bpmText"
-                val title = LocalizedString(removeUnityRichTextTags(chart content "title"))
-                val artist = removeUnityRichTextTags((chart nullableContent "composer") ?: "")
-                val charter = removeUnityRichTextTags((chart nullableContent "alias") ?: "")
-                val jacketDesigner = removeUnityRichTextTags((chart nullableContent "illustrator") ?: "")
+                val audioPath = chart.audioPath
+                val jacketPath = chart.jacketPath
+                val baseBpm = chart.baseBpm
+                val bpmText = chart.bpmText
+                val title = LocalizedString(removeUnityRichTextTags(chart.title))
+                val artist = removeUnityRichTextTags(chart.composer)
+                val charter = removeUnityRichTextTags(chart.alias ?: "")
+                val jacketDesigner = removeUnityRichTextTags(chart.illustrator ?: "")
 
                 var rating by Delegates.notNull<Int>()
                 var ratingPlus by Delegates.notNull<Boolean>()
-                if (chart.yamlMap.getKey("chartConstant") != null) {
-                    val constant = (chart content "chartConstant").toDouble()
+                if (chart.chartConstant != null) {
+                    val constant = chart.chartConstant.toDouble()
                     rating = constant.toInt()
                     ratingPlus = constant - rating >= 0.7
                 } else {
                     val matchRst = matchRatingClass(difficultyText)
-                        ?: throw IllegalStateException("Invalid difficulty information for ${entry.directory}/${entry.settingsFile} $idName")
+                        ?: throw RuntimeException("Invalid difficulty information for ${entry.directory}/${entry.settingsFile} $idName")
                     rating = matchRst.value.toInt()
                     ratingPlus = difficultyText.endsWith("+")
                 }
 
-                var sideString: String
-                val side = chart.yamlMap.get<YamlMap>("skin").let { skin ->
-                    if (skin == null) {
-                        sideString = "light"
-                        0
-                    } else {
-                        val side = skin.get<YamlNode>("side")
-                        sideString = side?.yamlScalar?.content ?: "light"
-                        when (sideString) {
-                            "light" -> 0
-                            "conflict" -> 1
-                            "colorless" -> 2
-                            else -> {
-                                println("$procIndent Unable to parse side: $sideString, defaulting to 0")
-                                0
-                            }
+                lateinit var sideString: String
+
+                val skin = chart.skin
+                val side = if (skin == null) {
+                    sideString = "light"
+                    0
+                } else {
+                    when (skin.side) {
+                        DifficultySkin.SideStyle.LIGHT -> {
+                            sideString = "light"
+                            0
                         }
+
+                        DifficultySkin.SideStyle.CONFLICT -> {
+                            sideString = "conflict"
+                            1
+                        }
+
+                        DifficultySkin.SideStyle.COLORLESS -> {
+                            sideString = "colorless"
+                            2
+                        }
+
+                        else -> {
+                            println("$procIndent Unable to parse side: ${skin.side}, defaulting to 'light'")
+                            sideString = "light"
+                            0
+                        }
+
                     }
                 }
 
                 var extractBg = true
 
-                val bgRaw: String? = chart nullableContent "backgroundPath"
+                val bgRaw: String? = chart.backgroundPath
                 var bg: String
                 val bgBundled = when {
                     sideString == "colorless" -> "epilogue"
@@ -372,13 +367,13 @@ class ArcpkgConvertRequest(
                         } else if (it.endsWith(".png")) {
                             it.removeSuffix(".png")
                         } else {
-                            throw IllegalStateException("Invalid background image: $it $idName")
+                            throw RuntimeException("Invalid background image: $it $idName")
                         }
                     })
                 }
 
-                val audioPreview: Long = chart.yamlMap.get<YamlNode>("previewStart")?.yamlScalar?.content?.toLong() ?: 0
-                val audioPreviewEnd: Long = chart.yamlMap.get<YamlNode>("previewEnd")?.yamlScalar?.content?.toLong() ?: 0
+                val audioPreview: Long = chart.previewStart ?: 0
+                val audioPreviewEnd: Long = chart.previewEnd ?: 5000
 
                 val difficultyEntry = DifficultyEntry(
                     audioPath = audioPath,
@@ -577,7 +572,8 @@ class ArcpkgConvertRequest(
                     bg = baseDifficulty.bg!!,
                     date = exportConfiguration.exportTime,
                     version = exportConfiguration.exportVersion,
-                    difficulties = difficulties
+                    difficulties = difficulties,
+                    deleted = null
                 )
             )
         }
@@ -593,7 +589,8 @@ class ArcpkgConvertRequest(
 
         arcpkgs.forEach { arcpkgFile ->
             val zipFile = ZipFile(arcpkgFile.toFile())
-            val index = readFileFromZip(zipFile, "index.yml").let { yaml.decodeFromString(ListSerializer(IndexEntry.serializer()), it) }
+            val index =
+                readFileFromZip(zipFile, "index.yml").let { yaml.decodeFromString(ListSerializer(ImportInformationEntry.serializer()), it) }
 
             index.filter { entry ->
                 entry.type == ArcpkgEntryType.PACK
