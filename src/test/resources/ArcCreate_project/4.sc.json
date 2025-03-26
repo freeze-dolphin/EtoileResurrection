@@ -1,0 +1,3155 @@
+[
+  {
+    "Type": "versioning",
+    "Properties": [
+      1
+    ]
+  },
+  {
+    "Type": "camera",
+    "Properties": [
+      null,
+      2,
+      true,
+      3,
+      4,
+      9,
+      17,
+      18,
+      19,
+      20,
+      21,
+      22,
+      false,
+      23,
+      24
+    ]
+  },
+  {
+    "Type": "channel.const",
+    "Properties": [
+      1.0
+    ]
+  },
+  {
+    "Type": "channel.const",
+    "Properties": [
+      0.0
+    ]
+  },
+  {
+    "Type": "channel.sum",
+    "Properties": [
+      5,
+      6
+    ]
+  },
+  {
+    "Type": "channel.const",
+    "Properties": [
+      0.0
+    ]
+  },
+  {
+    "Type": "channel.product",
+    "Properties": [
+      7,
+      8
+    ]
+  },
+  {
+    "Type": "channel.key",
+    "Properties": [
+      "-999999,0,l",
+      "0,0,l",
+      "1000,1,l"
+    ]
+  },
+  {
+    "Type": "channel.const",
+    "Properties": [
+      4.5
+    ]
+  },
+  {
+    "Type": "channel.sum",
+    "Properties": [
+      10,
+      11
+    ]
+  },
+  {
+    "Type": "channel.const",
+    "Properties": [
+      0.0
+    ]
+  },
+  {
+    "Type": "channel.product",
+    "Properties": [
+      7,
+      12
+    ]
+  },
+  {
+    "Type": "channel.sum",
+    "Properties": [
+      13,
+      16
+    ]
+  },
+  {
+    "Type": "channel.product",
+    "Properties": [
+      14,
+      15
+    ]
+  },
+  {
+    "Type": "channel.context.is16by9",
+    "Properties": null
+  },
+  {
+    "Type": "channel.const",
+    "Properties": [
+      1.5
+    ]
+  },
+  {
+    "Type": "channel.const",
+    "Properties": [
+      3.0
+    ]
+  },
+  {
+    "Type": "channel.const",
+    "Properties": [
+      0.0
+    ]
+  },
+  {
+    "Type": "channel.const",
+    "Properties": [
+      0.0
+    ]
+  },
+  {
+    "Type": "channel.const",
+    "Properties": [
+      0.0
+    ]
+  },
+  {
+    "Type": "channel.const",
+    "Properties": [
+      1.0
+    ]
+  },
+  {
+    "Type": "channel.const",
+    "Properties": [
+      1.0
+    ]
+  },
+  {
+    "Type": "channel.const",
+    "Properties": [
+      1.0
+    ]
+  },
+  {
+    "Type": "channel.const",
+    "Properties": [
+      0.0
+    ]
+  },
+  {
+    "Type": "channel.const",
+    "Properties": [
+      1.0
+    ]
+  },
+  {
+    "Type": "skyinputline",
+    "Properties": [
+      null,
+      26,
+      true,
+      27,
+      28,
+      32,
+      33,
+      34,
+      35,
+      36,
+      37,
+      38,
+      false,
+      39,
+      40,
+      41,
+      42,
+      43,
+      44,
+      45,
+      false,
+      46,
+      47,
+      48,
+      false,
+      49,
+      50,
+      51,
+      52
+    ]
+  },
+  {
+    "Type": "channel.const",
+    "Properties": [
+      1.0
+    ]
+  },
+  {
+    "Type": "channel.const",
+    "Properties": [
+      0.0
+    ]
+  },
+  {
+    "Type": "channel.sum",
+    "Properties": [
+      29,
+      30
+    ]
+  },
+  {
+    "Type": "channel.const",
+    "Properties": [
+      5.5
+    ]
+  },
+  {
+    "Type": "channel.product",
+    "Properties": [
+      7,
+      31
+    ]
+  },
+  {
+    "Type": "channel.const",
+    "Properties": [
+      2.745
+    ]
+  },
+  {
+    "Type": "channel.const",
+    "Properties": [
+      0.0
+    ]
+  },
+  {
+    "Type": "channel.const",
+    "Properties": [
+      0.0
+    ]
+  },
+  {
+    "Type": "channel.const",
+    "Properties": [
+      0.0
+    ]
+  },
+  {
+    "Type": "channel.const",
+    "Properties": [
+      0.0
+    ]
+  },
+  {
+    "Type": "channel.const",
+    "Properties": [
+      5000.0
+    ]
+  },
+  {
+    "Type": "channel.const",
+    "Properties": [
+      1.0
+    ]
+  },
+  {
+    "Type": "channel.const",
+    "Properties": [
+      1.0
+    ]
+  },
+  {
+    "Type": "channel.const",
+    "Properties": [
+      255.0
+    ]
+  },
+  {
+    "Type": "channel.const",
+    "Properties": [
+      255.0
+    ]
+  },
+  {
+    "Type": "channel.const",
+    "Properties": [
+      255.0
+    ]
+  },
+  {
+    "Type": "channel.const",
+    "Properties": [
+      255.0
+    ]
+  },
+  {
+    "Type": "channel.const",
+    "Properties": [
+      0.0
+    ]
+  },
+  {
+    "Type": "channel.const",
+    "Properties": [
+      0.0
+    ]
+  },
+  {
+    "Type": "channel.const",
+    "Properties": [
+      0.0
+    ]
+  },
+  {
+    "Type": "channel.string.key",
+    "Properties": [
+      "-2147483648,UI"
+    ]
+  },
+  {
+    "Type": "channel.const",
+    "Properties": [
+      0.0
+    ]
+  },
+  {
+    "Type": "channel.const",
+    "Properties": [
+      255.0
+    ]
+  },
+  {
+    "Type": "channel.const",
+    "Properties": [
+      0.0
+    ]
+  },
+  {
+    "Type": "channel.const",
+    "Properties": [
+      0.0
+    ]
+  },
+  {
+    "Type": "channel.const",
+    "Properties": [
+      1.0
+    ]
+  },
+  {
+    "Type": "channel.const",
+    "Properties": [
+      1.0
+    ]
+  },
+  {
+    "Type": "skyinputlabel",
+    "Properties": [
+      null,
+      54,
+      true,
+      55,
+      56,
+      60,
+      61,
+      62,
+      63,
+      64,
+      65,
+      66,
+      false,
+      67,
+      68,
+      69,
+      70,
+      71,
+      72,
+      73,
+      false,
+      74,
+      75,
+      76,
+      false,
+      77,
+      78,
+      79,
+      80
+    ]
+  },
+  {
+    "Type": "channel.const",
+    "Properties": [
+      1.0
+    ]
+  },
+  {
+    "Type": "channel.const",
+    "Properties": [
+      -7.1
+    ]
+  },
+  {
+    "Type": "channel.sum",
+    "Properties": [
+      57,
+      58
+    ]
+  },
+  {
+    "Type": "channel.const",
+    "Properties": [
+      5.65
+    ]
+  },
+  {
+    "Type": "channel.product",
+    "Properties": [
+      7,
+      59
+    ]
+  },
+  {
+    "Type": "channel.const",
+    "Properties": [
+      2.745
+    ]
+  },
+  {
+    "Type": "channel.const",
+    "Properties": [
+      0.0
+    ]
+  },
+  {
+    "Type": "channel.const",
+    "Properties": [
+      0.0
+    ]
+  },
+  {
+    "Type": "channel.const",
+    "Properties": [
+      0.0
+    ]
+  },
+  {
+    "Type": "channel.const",
+    "Properties": [
+      0.0
+    ]
+  },
+  {
+    "Type": "channel.const",
+    "Properties": [
+      1.0
+    ]
+  },
+  {
+    "Type": "channel.const",
+    "Properties": [
+      1.0
+    ]
+  },
+  {
+    "Type": "channel.const",
+    "Properties": [
+      1.0
+    ]
+  },
+  {
+    "Type": "channel.const",
+    "Properties": [
+      255.0
+    ]
+  },
+  {
+    "Type": "channel.const",
+    "Properties": [
+      255.0
+    ]
+  },
+  {
+    "Type": "channel.const",
+    "Properties": [
+      255.0
+    ]
+  },
+  {
+    "Type": "channel.const",
+    "Properties": [
+      255.0
+    ]
+  },
+  {
+    "Type": "channel.const",
+    "Properties": [
+      0.0
+    ]
+  },
+  {
+    "Type": "channel.const",
+    "Properties": [
+      0.0
+    ]
+  },
+  {
+    "Type": "channel.const",
+    "Properties": [
+      0.0
+    ]
+  },
+  {
+    "Type": "channel.string.key",
+    "Properties": [
+      "-2147483648,UI"
+    ]
+  },
+  {
+    "Type": "channel.const",
+    "Properties": [
+      -1.0
+    ]
+  },
+  {
+    "Type": "channel.const",
+    "Properties": [
+      255.0
+    ]
+  },
+  {
+    "Type": "channel.const",
+    "Properties": [
+      0.0
+    ]
+  },
+  {
+    "Type": "channel.const",
+    "Properties": [
+      0.0
+    ]
+  },
+  {
+    "Type": "channel.const",
+    "Properties": [
+      1.0
+    ]
+  },
+  {
+    "Type": "channel.const",
+    "Properties": [
+      1.0
+    ]
+  },
+  {
+    "Type": "singlelinel",
+    "Properties": [
+      null,
+      82,
+      true,
+      83,
+      87,
+      88,
+      89,
+      90,
+      91,
+      92,
+      93,
+      94,
+      false,
+      95,
+      96,
+      97,
+      98,
+      99,
+      100,
+      101,
+      false,
+      102,
+      103,
+      104,
+      false,
+      105,
+      106,
+      107,
+      108
+    ]
+  },
+  {
+    "Type": "channel.const",
+    "Properties": [
+      1.0
+    ]
+  },
+  {
+    "Type": "channel.sum",
+    "Properties": [
+      84,
+      85
+    ]
+  },
+  {
+    "Type": "channel.const",
+    "Properties": [
+      4.0
+    ]
+  },
+  {
+    "Type": "channel.product",
+    "Properties": [
+      7,
+      86
+    ]
+  },
+  {
+    "Type": "channel.const",
+    "Properties": [
+      5.0
+    ]
+  },
+  {
+    "Type": "channel.const",
+    "Properties": [
+      7.15
+    ]
+  },
+  {
+    "Type": "channel.const",
+    "Properties": [
+      50.0
+    ]
+  },
+  {
+    "Type": "channel.const",
+    "Properties": [
+      325.0
+    ]
+  },
+  {
+    "Type": "channel.const",
+    "Properties": [
+      270.0
+    ]
+  },
+  {
+    "Type": "channel.const",
+    "Properties": [
+      90.0
+    ]
+  },
+  {
+    "Type": "channel.const",
+    "Properties": [
+      1.0
+    ]
+  },
+  {
+    "Type": "channel.const",
+    "Properties": [
+      1.0
+    ]
+  },
+  {
+    "Type": "channel.const",
+    "Properties": [
+      1.0
+    ]
+  },
+  {
+    "Type": "channel.const",
+    "Properties": [
+      255.0
+    ]
+  },
+  {
+    "Type": "channel.const",
+    "Properties": [
+      255.0
+    ]
+  },
+  {
+    "Type": "channel.const",
+    "Properties": [
+      255.0
+    ]
+  },
+  {
+    "Type": "channel.const",
+    "Properties": [
+      255.0
+    ]
+  },
+  {
+    "Type": "channel.const",
+    "Properties": [
+      0.0
+    ]
+  },
+  {
+    "Type": "channel.const",
+    "Properties": [
+      0.0
+    ]
+  },
+  {
+    "Type": "channel.const",
+    "Properties": [
+      0.0
+    ]
+  },
+  {
+    "Type": "channel.string.key",
+    "Properties": [
+      "-2147483648,Foreground"
+    ]
+  },
+  {
+    "Type": "channel.const",
+    "Properties": [
+      0.0
+    ]
+  },
+  {
+    "Type": "channel.const",
+    "Properties": [
+      255.0
+    ]
+  },
+  {
+    "Type": "channel.const",
+    "Properties": [
+      0.0
+    ]
+  },
+  {
+    "Type": "channel.const",
+    "Properties": [
+      0.0
+    ]
+  },
+  {
+    "Type": "channel.const",
+    "Properties": [
+      1.0
+    ]
+  },
+  {
+    "Type": "channel.const",
+    "Properties": [
+      1.0
+    ]
+  },
+  {
+    "Type": "singleliner",
+    "Properties": [
+      null,
+      110,
+      true,
+      111,
+      116,
+      117,
+      118,
+      119,
+      120,
+      121,
+      122,
+      123,
+      false,
+      124,
+      125,
+      126,
+      127,
+      128,
+      129,
+      130,
+      false,
+      131,
+      132,
+      133,
+      false,
+      134,
+      135,
+      136,
+      137
+    ]
+  },
+  {
+    "Type": "channel.const",
+    "Properties": [
+      1.0
+    ]
+  },
+  {
+    "Type": "channel.sum",
+    "Properties": [
+      112,
+      113
+    ]
+  },
+  {
+    "Type": "channel.const",
+    "Properties": [
+      -4.0
+    ]
+  },
+  {
+    "Type": "channel.negate",
+    "Properties": [
+      114
+    ]
+  },
+  {
+    "Type": "channel.product",
+    "Properties": [
+      7,
+      115
+    ]
+  },
+  {
+    "Type": "channel.const",
+    "Properties": [
+      5.0
+    ]
+  },
+  {
+    "Type": "channel.const",
+    "Properties": [
+      7.15
+    ]
+  },
+  {
+    "Type": "channel.const",
+    "Properties": [
+      50.0
+    ]
+  },
+  {
+    "Type": "channel.const",
+    "Properties": [
+      35.0
+    ]
+  },
+  {
+    "Type": "channel.const",
+    "Properties": [
+      270.0
+    ]
+  },
+  {
+    "Type": "channel.const",
+    "Properties": [
+      90.0
+    ]
+  },
+  {
+    "Type": "channel.const",
+    "Properties": [
+      1.0
+    ]
+  },
+  {
+    "Type": "channel.const",
+    "Properties": [
+      1.0
+    ]
+  },
+  {
+    "Type": "channel.const",
+    "Properties": [
+      1.0
+    ]
+  },
+  {
+    "Type": "channel.const",
+    "Properties": [
+      255.0
+    ]
+  },
+  {
+    "Type": "channel.const",
+    "Properties": [
+      255.0
+    ]
+  },
+  {
+    "Type": "channel.const",
+    "Properties": [
+      255.0
+    ]
+  },
+  {
+    "Type": "channel.const",
+    "Properties": [
+      255.0
+    ]
+  },
+  {
+    "Type": "channel.const",
+    "Properties": [
+      0.0
+    ]
+  },
+  {
+    "Type": "channel.const",
+    "Properties": [
+      0.0
+    ]
+  },
+  {
+    "Type": "channel.const",
+    "Properties": [
+      0.0
+    ]
+  },
+  {
+    "Type": "channel.string.key",
+    "Properties": [
+      "-2147483648,Foreground"
+    ]
+  },
+  {
+    "Type": "channel.const",
+    "Properties": [
+      0.0
+    ]
+  },
+  {
+    "Type": "channel.const",
+    "Properties": [
+      255.0
+    ]
+  },
+  {
+    "Type": "channel.const",
+    "Properties": [
+      0.0
+    ]
+  },
+  {
+    "Type": "channel.const",
+    "Properties": [
+      0.0
+    ]
+  },
+  {
+    "Type": "channel.const",
+    "Properties": [
+      1.0
+    ]
+  },
+  {
+    "Type": "channel.const",
+    "Properties": [
+      1.0
+    ]
+  },
+  {
+    "Type": "beatlines",
+    "Properties": [
+      null,
+      139,
+      true,
+      140,
+      141,
+      142,
+      143,
+      144,
+      145,
+      146,
+      153,
+      154
+    ]
+  },
+  {
+    "Type": "channel.const",
+    "Properties": [
+      1.0
+    ]
+  },
+  {
+    "Type": "channel.const",
+    "Properties": [
+      0.0
+    ]
+  },
+  {
+    "Type": "channel.const",
+    "Properties": [
+      0.0
+    ]
+  },
+  {
+    "Type": "channel.const",
+    "Properties": [
+      0.0
+    ]
+  },
+  {
+    "Type": "channel.const",
+    "Properties": [
+      0.0
+    ]
+  },
+  {
+    "Type": "channel.const",
+    "Properties": [
+      0.0
+    ]
+  },
+  {
+    "Type": "channel.const",
+    "Properties": [
+      0.0
+    ]
+  },
+  {
+    "Type": "channel.product",
+    "Properties": [
+      147,
+      148
+    ]
+  },
+  {
+    "Type": "channel.const",
+    "Properties": [
+      1.0
+    ]
+  },
+  {
+    "Type": "channel.sum",
+    "Properties": [
+      149,
+      152
+    ]
+  },
+  {
+    "Type": "channel.product",
+    "Properties": [
+      150,
+      151
+    ]
+  },
+  {
+    "Type": "channel.key",
+    "Properties": [
+      "-999999,0,l",
+      "500,0,l",
+      "1500,1,l"
+    ]
+  },
+  {
+    "Type": "channel.const",
+    "Properties": [
+      0.5
+    ]
+  },
+  {
+    "Type": "channel.const",
+    "Properties": [
+      1.0
+    ]
+  },
+  {
+    "Type": "channel.const",
+    "Properties": [
+      1.0
+    ]
+  },
+  {
+    "Type": "channel.const",
+    "Properties": [
+      1.0
+    ]
+  },
+  {
+    "Type": "track",
+    "Properties": [
+      null,
+      156,
+      false,
+      157,
+      158,
+      159,
+      160,
+      161,
+      162,
+      163,
+      164,
+      165,
+      true,
+      166,
+      167,
+      168,
+      169,
+      173,
+      174,
+      175,
+      false,
+      176,
+      177,
+      178,
+      false,
+      179,
+      180,
+      181,
+      182,
+      true,
+      183,
+      188,
+      190,
+      191,
+      192,
+      193,
+      null
+    ]
+  },
+  {
+    "Type": "channel.const",
+    "Properties": [
+      1.0
+    ]
+  },
+  {
+    "Type": "channel.const",
+    "Properties": [
+      0.0
+    ]
+  },
+  {
+    "Type": "channel.const",
+    "Properties": [
+      0.0
+    ]
+  },
+  {
+    "Type": "channel.const",
+    "Properties": [
+      53.5
+    ]
+  },
+  {
+    "Type": "channel.const",
+    "Properties": [
+      270.0
+    ]
+  },
+  {
+    "Type": "channel.const",
+    "Properties": [
+      0.0
+    ]
+  },
+  {
+    "Type": "channel.const",
+    "Properties": [
+      0.0
+    ]
+  },
+  {
+    "Type": "channel.const",
+    "Properties": [
+      1.7896
+    ]
+  },
+  {
+    "Type": "channel.const",
+    "Properties": [
+      1.0
+    ]
+  },
+  {
+    "Type": "channel.const",
+    "Properties": [
+      1.0
+    ]
+  },
+  {
+    "Type": "channel.const",
+    "Properties": [
+      255.0
+    ]
+  },
+  {
+    "Type": "channel.const",
+    "Properties": [
+      255.0
+    ]
+  },
+  {
+    "Type": "channel.const",
+    "Properties": [
+      255.0
+    ]
+  },
+  {
+    "Type": "channel.product",
+    "Properties": [
+      170,
+      172
+    ]
+  },
+  {
+    "Type": "channel.product",
+    "Properties": [
+      171,
+      172
+    ]
+  },
+  {
+    "Type": "channel.const",
+    "Properties": [
+      255.0
+    ]
+  },
+  {
+    "Type": "channel.key",
+    "Properties": [
+      "-999999,1,l",
+      "5000,1,l",
+      "6000,0,l",
+      "10000,0,l",
+      "11000,1,l"
+    ]
+  },
+  {
+    "Type": "channel.const",
+    "Properties": [
+      0.0
+    ]
+  },
+  {
+    "Type": "channel.const",
+    "Properties": [
+      0.0
+    ]
+  },
+  {
+    "Type": "channel.const",
+    "Properties": [
+      0.0
+    ]
+  },
+  {
+    "Type": "channel.string.key",
+    "Properties": [
+      "-2147483648,Track"
+    ]
+  },
+  {
+    "Type": "channel.const",
+    "Properties": [
+      0.0
+    ]
+  },
+  {
+    "Type": "channel.const",
+    "Properties": [
+      255.0
+    ]
+  },
+  {
+    "Type": "channel.const",
+    "Properties": [
+      0.0
+    ]
+  },
+  {
+    "Type": "channel.const",
+    "Properties": [
+      0.0
+    ]
+  },
+  {
+    "Type": "channel.const",
+    "Properties": [
+      1.0
+    ]
+  },
+  {
+    "Type": "channel.const",
+    "Properties": [
+      1.0
+    ]
+  },
+  {
+    "Type": "channel.product",
+    "Properties": [
+      184,
+      185
+    ]
+  },
+  {
+    "Type": "channel.const",
+    "Properties": [
+      255.0
+    ]
+  },
+  {
+    "Type": "channel.sum",
+    "Properties": [
+      186,
+      187
+    ]
+  },
+  {
+    "Type": "channel.negate",
+    "Properties": [
+      150
+    ]
+  },
+  {
+    "Type": "channel.const",
+    "Properties": [
+      1.0
+    ]
+  },
+  {
+    "Type": "channel.product",
+    "Properties": [
+      189,
+      185
+    ]
+  },
+  {
+    "Type": "channel.const",
+    "Properties": [
+      255.0
+    ]
+  },
+  {
+    "Type": "channel.const",
+    "Properties": [
+      255.0
+    ]
+  },
+  {
+    "Type": "channel.const",
+    "Properties": [
+      255.0
+    ]
+  },
+  {
+    "Type": "channel.const",
+    "Properties": [
+      255.0
+    ]
+  },
+  {
+    "Type": "channel.const",
+    "Properties": [
+      255.0
+    ]
+  },
+  {
+    "Type": "extraL",
+    "Properties": [
+      null,
+      195,
+      true,
+      196,
+      197,
+      204,
+      205,
+      206,
+      207,
+      208,
+      209,
+      210,
+      true,
+      211,
+      212,
+      213,
+      214,
+      217,
+      218,
+      219,
+      false,
+      220,
+      221,
+      222,
+      false,
+      223,
+      224,
+      225,
+      226
+    ]
+  },
+  {
+    "Type": "channel.const",
+    "Properties": [
+      1.0
+    ]
+  },
+  {
+    "Type": "channel.const",
+    "Properties": [
+      5.96
+    ]
+  },
+  {
+    "Type": "channel.sum",
+    "Properties": [
+      198,
+      199
+    ]
+  },
+  {
+    "Type": "channel.const",
+    "Properties": [
+      0.0
+    ]
+  },
+  {
+    "Type": "channel.product",
+    "Properties": [
+      200,
+      203
+    ]
+  },
+  {
+    "Type": "channel.sum",
+    "Properties": [
+      201,
+      202
+    ]
+  },
+  {
+    "Type": "channel.negate",
+    "Properties": [
+      150
+    ]
+  },
+  {
+    "Type": "channel.const",
+    "Properties": [
+      1.0
+    ]
+  },
+  {
+    "Type": "channel.const",
+    "Properties": [
+      -100.0
+    ]
+  },
+  {
+    "Type": "channel.const",
+    "Properties": [
+      0.0
+    ]
+  },
+  {
+    "Type": "channel.const",
+    "Properties": [
+      0.0
+    ]
+  },
+  {
+    "Type": "channel.const",
+    "Properties": [
+      0.0
+    ]
+  },
+  {
+    "Type": "channel.const",
+    "Properties": [
+      0.0
+    ]
+  },
+  {
+    "Type": "channel.const",
+    "Properties": [
+      239.0
+    ]
+  },
+  {
+    "Type": "channel.const",
+    "Properties": [
+      15.35
+    ]
+  },
+  {
+    "Type": "channel.const",
+    "Properties": [
+      1.0
+    ]
+  },
+  {
+    "Type": "channel.const",
+    "Properties": [
+      255.0
+    ]
+  },
+  {
+    "Type": "channel.const",
+    "Properties": [
+      255.0
+    ]
+  },
+  {
+    "Type": "channel.const",
+    "Properties": [
+      255.0
+    ]
+  },
+  {
+    "Type": "channel.product",
+    "Properties": [
+      215,
+      172
+    ]
+  },
+  {
+    "Type": "channel.product",
+    "Properties": [
+      216,
+      150
+    ]
+  },
+  {
+    "Type": "channel.const",
+    "Properties": [
+      255.0
+    ]
+  },
+  {
+    "Type": "channel.const",
+    "Properties": [
+      0.0
+    ]
+  },
+  {
+    "Type": "channel.const",
+    "Properties": [
+      0.0
+    ]
+  },
+  {
+    "Type": "channel.const",
+    "Properties": [
+      0.0
+    ]
+  },
+  {
+    "Type": "channel.string.key",
+    "Properties": [
+      "-2147483648,Track"
+    ]
+  },
+  {
+    "Type": "channel.const",
+    "Properties": [
+      0.0
+    ]
+  },
+  {
+    "Type": "channel.const",
+    "Properties": [
+      255.0
+    ]
+  },
+  {
+    "Type": "channel.const",
+    "Properties": [
+      0.0
+    ]
+  },
+  {
+    "Type": "channel.const",
+    "Properties": [
+      0.0
+    ]
+  },
+  {
+    "Type": "channel.const",
+    "Properties": [
+      1.0
+    ]
+  },
+  {
+    "Type": "channel.const",
+    "Properties": [
+      1.0
+    ]
+  },
+  {
+    "Type": "extraR",
+    "Properties": [
+      null,
+      228,
+      true,
+      229,
+      230,
+      232,
+      233,
+      234,
+      235,
+      236,
+      237,
+      238,
+      true,
+      239,
+      240,
+      241,
+      242,
+      245,
+      246,
+      247,
+      false,
+      248,
+      249,
+      250,
+      false,
+      251,
+      252,
+      253,
+      254
+    ]
+  },
+  {
+    "Type": "channel.const",
+    "Properties": [
+      1.0
+    ]
+  },
+  {
+    "Type": "channel.const",
+    "Properties": [
+      -5.96
+    ]
+  },
+  {
+    "Type": "channel.sum",
+    "Properties": [
+      231,
+      199
+    ]
+  },
+  {
+    "Type": "channel.const",
+    "Properties": [
+      0.0
+    ]
+  },
+  {
+    "Type": "channel.const",
+    "Properties": [
+      0.0
+    ]
+  },
+  {
+    "Type": "channel.const",
+    "Properties": [
+      0.0
+    ]
+  },
+  {
+    "Type": "channel.const",
+    "Properties": [
+      0.0
+    ]
+  },
+  {
+    "Type": "channel.const",
+    "Properties": [
+      0.0
+    ]
+  },
+  {
+    "Type": "channel.const",
+    "Properties": [
+      239.0
+    ]
+  },
+  {
+    "Type": "channel.const",
+    "Properties": [
+      15.35
+    ]
+  },
+  {
+    "Type": "channel.const",
+    "Properties": [
+      1.0
+    ]
+  },
+  {
+    "Type": "channel.const",
+    "Properties": [
+      255.0
+    ]
+  },
+  {
+    "Type": "channel.const",
+    "Properties": [
+      255.0
+    ]
+  },
+  {
+    "Type": "channel.const",
+    "Properties": [
+      255.0
+    ]
+  },
+  {
+    "Type": "channel.product",
+    "Properties": [
+      243,
+      172
+    ]
+  },
+  {
+    "Type": "channel.product",
+    "Properties": [
+      244,
+      150
+    ]
+  },
+  {
+    "Type": "channel.const",
+    "Properties": [
+      255.0
+    ]
+  },
+  {
+    "Type": "channel.const",
+    "Properties": [
+      0.0
+    ]
+  },
+  {
+    "Type": "channel.const",
+    "Properties": [
+      0.0
+    ]
+  },
+  {
+    "Type": "channel.const",
+    "Properties": [
+      0.0
+    ]
+  },
+  {
+    "Type": "channel.string.key",
+    "Properties": [
+      "-2147483648,Track"
+    ]
+  },
+  {
+    "Type": "channel.const",
+    "Properties": [
+      0.0
+    ]
+  },
+  {
+    "Type": "channel.const",
+    "Properties": [
+      255.0
+    ]
+  },
+  {
+    "Type": "channel.const",
+    "Properties": [
+      0.0
+    ]
+  },
+  {
+    "Type": "channel.const",
+    "Properties": [
+      0.0
+    ]
+  },
+  {
+    "Type": "channel.const",
+    "Properties": [
+      1.0
+    ]
+  },
+  {
+    "Type": "channel.const",
+    "Properties": [
+      1.0
+    ]
+  },
+  {
+    "Type": "critline0",
+    "Properties": [
+      null,
+      256,
+      false,
+      257,
+      258,
+      259,
+      260,
+      261,
+      262,
+      263,
+      264,
+      265,
+      true,
+      266,
+      267,
+      268,
+      269,
+      271,
+      272,
+      273,
+      false,
+      274,
+      275,
+      276,
+      false,
+      277,
+      278,
+      279,
+      280
+    ]
+  },
+  {
+    "Type": "channel.const",
+    "Properties": [
+      1.0
+    ]
+  },
+  {
+    "Type": "channel.const",
+    "Properties": [
+      5.96
+    ]
+  },
+  {
+    "Type": "channel.const",
+    "Properties": [
+      54.0
+    ]
+  },
+  {
+    "Type": "channel.const",
+    "Properties": [
+      0.0
+    ]
+  },
+  {
+    "Type": "channel.const",
+    "Properties": [
+      0.0
+    ]
+  },
+  {
+    "Type": "channel.const",
+    "Properties": [
+      180.0
+    ]
+  },
+  {
+    "Type": "channel.const",
+    "Properties": [
+      180.0
+    ]
+  },
+  {
+    "Type": "channel.const",
+    "Properties": [
+      239.0
+    ]
+  },
+  {
+    "Type": "channel.const",
+    "Properties": [
+      3.7
+    ]
+  },
+  {
+    "Type": "channel.const",
+    "Properties": [
+      1.0
+    ]
+  },
+  {
+    "Type": "channel.const",
+    "Properties": [
+      255.0
+    ]
+  },
+  {
+    "Type": "channel.const",
+    "Properties": [
+      255.0
+    ]
+  },
+  {
+    "Type": "channel.const",
+    "Properties": [
+      255.0
+    ]
+  },
+  {
+    "Type": "channel.product",
+    "Properties": [
+      270,
+      150
+    ]
+  },
+  {
+    "Type": "channel.const",
+    "Properties": [
+      255.0
+    ]
+  },
+  {
+    "Type": "channel.const",
+    "Properties": [
+      0.0
+    ]
+  },
+  {
+    "Type": "channel.const",
+    "Properties": [
+      0.0
+    ]
+  },
+  {
+    "Type": "channel.const",
+    "Properties": [
+      0.0
+    ]
+  },
+  {
+    "Type": "channel.string.key",
+    "Properties": [
+      "-2147483648,Track"
+    ]
+  },
+  {
+    "Type": "channel.const",
+    "Properties": [
+      2.0
+    ]
+  },
+  {
+    "Type": "channel.const",
+    "Properties": [
+      255.0
+    ]
+  },
+  {
+    "Type": "channel.const",
+    "Properties": [
+      0.0
+    ]
+  },
+  {
+    "Type": "channel.const",
+    "Properties": [
+      0.0
+    ]
+  },
+  {
+    "Type": "channel.const",
+    "Properties": [
+      1.0
+    ]
+  },
+  {
+    "Type": "channel.const",
+    "Properties": [
+      1.0
+    ]
+  },
+  {
+    "Type": "critline5",
+    "Properties": [
+      null,
+      282,
+      false,
+      283,
+      284,
+      285,
+      286,
+      287,
+      288,
+      289,
+      290,
+      291,
+      true,
+      292,
+      293,
+      294,
+      295,
+      297,
+      298,
+      299,
+      false,
+      300,
+      301,
+      302,
+      false,
+      303,
+      304,
+      305,
+      306
+    ]
+  },
+  {
+    "Type": "channel.const",
+    "Properties": [
+      1.0
+    ]
+  },
+  {
+    "Type": "channel.const",
+    "Properties": [
+      -5.96
+    ]
+  },
+  {
+    "Type": "channel.const",
+    "Properties": [
+      54.0
+    ]
+  },
+  {
+    "Type": "channel.const",
+    "Properties": [
+      0.0
+    ]
+  },
+  {
+    "Type": "channel.const",
+    "Properties": [
+      0.0
+    ]
+  },
+  {
+    "Type": "channel.const",
+    "Properties": [
+      180.0
+    ]
+  },
+  {
+    "Type": "channel.const",
+    "Properties": [
+      180.0
+    ]
+  },
+  {
+    "Type": "channel.const",
+    "Properties": [
+      239.0
+    ]
+  },
+  {
+    "Type": "channel.const",
+    "Properties": [
+      3.7
+    ]
+  },
+  {
+    "Type": "channel.const",
+    "Properties": [
+      1.0
+    ]
+  },
+  {
+    "Type": "channel.const",
+    "Properties": [
+      255.0
+    ]
+  },
+  {
+    "Type": "channel.const",
+    "Properties": [
+      255.0
+    ]
+  },
+  {
+    "Type": "channel.const",
+    "Properties": [
+      255.0
+    ]
+  },
+  {
+    "Type": "channel.product",
+    "Properties": [
+      296,
+      150
+    ]
+  },
+  {
+    "Type": "channel.const",
+    "Properties": [
+      255.0
+    ]
+  },
+  {
+    "Type": "channel.const",
+    "Properties": [
+      0.0
+    ]
+  },
+  {
+    "Type": "channel.const",
+    "Properties": [
+      0.0
+    ]
+  },
+  {
+    "Type": "channel.const",
+    "Properties": [
+      0.0
+    ]
+  },
+  {
+    "Type": "channel.string.key",
+    "Properties": [
+      "-2147483648,Track"
+    ]
+  },
+  {
+    "Type": "channel.const",
+    "Properties": [
+      2.0
+    ]
+  },
+  {
+    "Type": "channel.const",
+    "Properties": [
+      255.0
+    ]
+  },
+  {
+    "Type": "channel.const",
+    "Properties": [
+      0.0
+    ]
+  },
+  {
+    "Type": "channel.const",
+    "Properties": [
+      0.0
+    ]
+  },
+  {
+    "Type": "channel.const",
+    "Properties": [
+      1.0
+    ]
+  },
+  {
+    "Type": "channel.const",
+    "Properties": [
+      1.0
+    ]
+  },
+  {
+    "Type": "divline01",
+    "Properties": [
+      null,
+      308,
+      false,
+      309,
+      310,
+      311,
+      312,
+      313,
+      314,
+      315,
+      316,
+      317,
+      true,
+      318,
+      319,
+      320,
+      321,
+      323,
+      324,
+      325,
+      false,
+      326,
+      327,
+      328,
+      false,
+      329,
+      330,
+      331,
+      332
+    ]
+  },
+  {
+    "Type": "channel.const",
+    "Properties": [
+      1.0
+    ]
+  },
+  {
+    "Type": "channel.const",
+    "Properties": [
+      -4.76
+    ]
+  },
+  {
+    "Type": "channel.const",
+    "Properties": [
+      0.0
+    ]
+  },
+  {
+    "Type": "channel.const",
+    "Properties": [
+      0.0
+    ]
+  },
+  {
+    "Type": "channel.const",
+    "Properties": [
+      0.0
+    ]
+  },
+  {
+    "Type": "channel.const",
+    "Properties": [
+      0.0
+    ]
+  },
+  {
+    "Type": "channel.const",
+    "Properties": [
+      0.0
+    ]
+  },
+  {
+    "Type": "channel.const",
+    "Properties": [
+      0.5587685
+    ]
+  },
+  {
+    "Type": "channel.const",
+    "Properties": [
+      12.43724
+    ]
+  },
+  {
+    "Type": "channel.const",
+    "Properties": [
+      1.0
+    ]
+  },
+  {
+    "Type": "channel.const",
+    "Properties": [
+      255.0
+    ]
+  },
+  {
+    "Type": "channel.const",
+    "Properties": [
+      255.0
+    ]
+  },
+  {
+    "Type": "channel.const",
+    "Properties": [
+      255.0
+    ]
+  },
+  {
+    "Type": "channel.product",
+    "Properties": [
+      322,
+      150
+    ]
+  },
+  {
+    "Type": "channel.const",
+    "Properties": [
+      255.0
+    ]
+  },
+  {
+    "Type": "channel.const",
+    "Properties": [
+      0.0
+    ]
+  },
+  {
+    "Type": "channel.const",
+    "Properties": [
+      0.0
+    ]
+  },
+  {
+    "Type": "channel.const",
+    "Properties": [
+      0.0
+    ]
+  },
+  {
+    "Type": "channel.string.key",
+    "Properties": [
+      "-2147483648,Track"
+    ]
+  },
+  {
+    "Type": "channel.const",
+    "Properties": [
+      2.0
+    ]
+  },
+  {
+    "Type": "channel.const",
+    "Properties": [
+      255.0
+    ]
+  },
+  {
+    "Type": "channel.const",
+    "Properties": [
+      0.0
+    ]
+  },
+  {
+    "Type": "channel.const",
+    "Properties": [
+      0.0
+    ]
+  },
+  {
+    "Type": "channel.const",
+    "Properties": [
+      1.0
+    ]
+  },
+  {
+    "Type": "channel.const",
+    "Properties": [
+      1.0
+    ]
+  },
+  {
+    "Type": "divline45",
+    "Properties": [
+      null,
+      334,
+      false,
+      335,
+      336,
+      337,
+      338,
+      339,
+      340,
+      341,
+      342,
+      343,
+      true,
+      344,
+      345,
+      346,
+      347,
+      349,
+      350,
+      351,
+      false,
+      352,
+      353,
+      354,
+      false,
+      355,
+      356,
+      357,
+      358
+    ]
+  },
+  {
+    "Type": "channel.const",
+    "Properties": [
+      1.0
+    ]
+  },
+  {
+    "Type": "channel.const",
+    "Properties": [
+      4.76
+    ]
+  },
+  {
+    "Type": "channel.const",
+    "Properties": [
+      0.0
+    ]
+  },
+  {
+    "Type": "channel.const",
+    "Properties": [
+      0.0
+    ]
+  },
+  {
+    "Type": "channel.const",
+    "Properties": [
+      0.0
+    ]
+  },
+  {
+    "Type": "channel.const",
+    "Properties": [
+      0.0
+    ]
+  },
+  {
+    "Type": "channel.const",
+    "Properties": [
+      0.0
+    ]
+  },
+  {
+    "Type": "channel.const",
+    "Properties": [
+      0.5587685
+    ]
+  },
+  {
+    "Type": "channel.const",
+    "Properties": [
+      12.43724
+    ]
+  },
+  {
+    "Type": "channel.const",
+    "Properties": [
+      1.0
+    ]
+  },
+  {
+    "Type": "channel.const",
+    "Properties": [
+      255.0
+    ]
+  },
+  {
+    "Type": "channel.const",
+    "Properties": [
+      255.0
+    ]
+  },
+  {
+    "Type": "channel.const",
+    "Properties": [
+      255.0
+    ]
+  },
+  {
+    "Type": "channel.product",
+    "Properties": [
+      348,
+      150
+    ]
+  },
+  {
+    "Type": "channel.const",
+    "Properties": [
+      255.0
+    ]
+  },
+  {
+    "Type": "channel.const",
+    "Properties": [
+      0.0
+    ]
+  },
+  {
+    "Type": "channel.const",
+    "Properties": [
+      0.0
+    ]
+  },
+  {
+    "Type": "channel.const",
+    "Properties": [
+      0.0
+    ]
+  },
+  {
+    "Type": "channel.string.key",
+    "Properties": [
+      "-2147483648,Track"
+    ]
+  },
+  {
+    "Type": "channel.const",
+    "Properties": [
+      2.0
+    ]
+  },
+  {
+    "Type": "channel.const",
+    "Properties": [
+      255.0
+    ]
+  },
+  {
+    "Type": "channel.const",
+    "Properties": [
+      0.0
+    ]
+  },
+  {
+    "Type": "channel.const",
+    "Properties": [
+      0.0
+    ]
+  },
+  {
+    "Type": "channel.const",
+    "Properties": [
+      1.0
+    ]
+  },
+  {
+    "Type": "channel.const",
+    "Properties": [
+      1.0
+    ]
+  },
+  {
+    "Type": "edgeextraL",
+    "Properties": [
+      null,
+      360,
+      false,
+      361,
+      362,
+      363,
+      364,
+      365,
+      366,
+      367,
+      368,
+      369,
+      true,
+      370,
+      371,
+      372,
+      373,
+      376,
+      377,
+      378,
+      false,
+      379,
+      380,
+      381,
+      false,
+      382,
+      383,
+      384,
+      385
+    ]
+  },
+  {
+    "Type": "channel.const",
+    "Properties": [
+      1.0
+    ]
+  },
+  {
+    "Type": "channel.const",
+    "Properties": [
+      7.33
+    ]
+  },
+  {
+    "Type": "channel.const",
+    "Properties": [
+      0.0
+    ]
+  },
+  {
+    "Type": "channel.const",
+    "Properties": [
+      0.0
+    ]
+  },
+  {
+    "Type": "channel.const",
+    "Properties": [
+      0.0
+    ]
+  },
+  {
+    "Type": "channel.const",
+    "Properties": [
+      0.0
+    ]
+  },
+  {
+    "Type": "channel.const",
+    "Properties": [
+      0.0
+    ]
+  },
+  {
+    "Type": "channel.const",
+    "Properties": [
+      1.0
+    ]
+  },
+  {
+    "Type": "channel.const",
+    "Properties": [
+      1.0
+    ]
+  },
+  {
+    "Type": "channel.const",
+    "Properties": [
+      1.0
+    ]
+  },
+  {
+    "Type": "channel.const",
+    "Properties": [
+      255.0
+    ]
+  },
+  {
+    "Type": "channel.const",
+    "Properties": [
+      255.0
+    ]
+  },
+  {
+    "Type": "channel.const",
+    "Properties": [
+      255.0
+    ]
+  },
+  {
+    "Type": "channel.product",
+    "Properties": [
+      374,
+      172
+    ]
+  },
+  {
+    "Type": "channel.product",
+    "Properties": [
+      375,
+      150
+    ]
+  },
+  {
+    "Type": "channel.const",
+    "Properties": [
+      255.0
+    ]
+  },
+  {
+    "Type": "channel.const",
+    "Properties": [
+      0.0
+    ]
+  },
+  {
+    "Type": "channel.const",
+    "Properties": [
+      0.0
+    ]
+  },
+  {
+    "Type": "channel.const",
+    "Properties": [
+      0.0
+    ]
+  },
+  {
+    "Type": "channel.string.key",
+    "Properties": [
+      "-2147483648,Track"
+    ]
+  },
+  {
+    "Type": "channel.const",
+    "Properties": [
+      0.0
+    ]
+  },
+  {
+    "Type": "channel.const",
+    "Properties": [
+      255.0
+    ]
+  },
+  {
+    "Type": "channel.const",
+    "Properties": [
+      0.0
+    ]
+  },
+  {
+    "Type": "channel.const",
+    "Properties": [
+      0.0
+    ]
+  },
+  {
+    "Type": "channel.const",
+    "Properties": [
+      1.0
+    ]
+  },
+  {
+    "Type": "channel.const",
+    "Properties": [
+      1.0
+    ]
+  },
+  {
+    "Type": "edgeextraR",
+    "Properties": [
+      null,
+      387,
+      false,
+      388,
+      389,
+      390,
+      391,
+      392,
+      393,
+      394,
+      395,
+      396,
+      true,
+      397,
+      398,
+      399,
+      400,
+      403,
+      404,
+      405,
+      false,
+      406,
+      407,
+      408,
+      false,
+      409,
+      410,
+      411,
+      412
+    ]
+  },
+  {
+    "Type": "channel.const",
+    "Properties": [
+      1.0
+    ]
+  },
+  {
+    "Type": "channel.const",
+    "Properties": [
+      -7.33
+    ]
+  },
+  {
+    "Type": "channel.const",
+    "Properties": [
+      0.0
+    ]
+  },
+  {
+    "Type": "channel.const",
+    "Properties": [
+      0.0
+    ]
+  },
+  {
+    "Type": "channel.const",
+    "Properties": [
+      0.0
+    ]
+  },
+  {
+    "Type": "channel.const",
+    "Properties": [
+      0.0
+    ]
+  },
+  {
+    "Type": "channel.const",
+    "Properties": [
+      0.0
+    ]
+  },
+  {
+    "Type": "channel.const",
+    "Properties": [
+      1.0
+    ]
+  },
+  {
+    "Type": "channel.const",
+    "Properties": [
+      1.0
+    ]
+  },
+  {
+    "Type": "channel.const",
+    "Properties": [
+      1.0
+    ]
+  },
+  {
+    "Type": "channel.const",
+    "Properties": [
+      255.0
+    ]
+  },
+  {
+    "Type": "channel.const",
+    "Properties": [
+      255.0
+    ]
+  },
+  {
+    "Type": "channel.const",
+    "Properties": [
+      255.0
+    ]
+  },
+  {
+    "Type": "channel.product",
+    "Properties": [
+      401,
+      172
+    ]
+  },
+  {
+    "Type": "channel.product",
+    "Properties": [
+      402,
+      150
+    ]
+  },
+  {
+    "Type": "channel.const",
+    "Properties": [
+      255.0
+    ]
+  },
+  {
+    "Type": "channel.const",
+    "Properties": [
+      0.0
+    ]
+  },
+  {
+    "Type": "channel.const",
+    "Properties": [
+      0.0
+    ]
+  },
+  {
+    "Type": "channel.const",
+    "Properties": [
+      0.0
+    ]
+  },
+  {
+    "Type": "channel.string.key",
+    "Properties": [
+      "-2147483648,Track"
+    ]
+  },
+  {
+    "Type": "channel.const",
+    "Properties": [
+      0.0
+    ]
+  },
+  {
+    "Type": "channel.const",
+    "Properties": [
+      255.0
+    ]
+  },
+  {
+    "Type": "channel.const",
+    "Properties": [
+      0.0
+    ]
+  },
+  {
+    "Type": "channel.const",
+    "Properties": [
+      0.0
+    ]
+  },
+  {
+    "Type": "channel.const",
+    "Properties": [
+      1.0
+    ]
+  },
+  {
+    "Type": "channel.const",
+    "Properties": [
+      1.0
+    ]
+  },
+  {
+    "Type": "context",
+    "Properties": [
+      414,
+      417
+    ]
+  },
+  {
+    "Type": "channel.sum",
+    "Properties": [
+      415,
+      416
+    ]
+  },
+  {
+    "Type": "channel.const",
+    "Properties": [
+      1.0
+    ]
+  },
+  {
+    "Type": "channel.negate",
+    "Properties": [
+      150
+    ]
+  },
+  {
+    "Type": "channel.sum",
+    "Properties": [
+      418,
+      150
+    ]
+  },
+  {
+    "Type": "channel.const",
+    "Properties": [
+      4.0
+    ]
+  },
+  {
+    "Type": "darken",
+    "Properties": [
+      null,
+      420,
+      false,
+      421,
+      422,
+      423,
+      424,
+      425,
+      426,
+      427,
+      428,
+      429,
+      true,
+      430,
+      431,
+      432,
+      433,
+      436,
+      437,
+      438,
+      false,
+      439,
+      440,
+      441,
+      false,
+      442,
+      443,
+      444,
+      445
+    ]
+  },
+  {
+    "Type": "channel.const",
+    "Properties": [
+      1.0
+    ]
+  },
+  {
+    "Type": "channel.const",
+    "Properties": [
+      0.0
+    ]
+  },
+  {
+    "Type": "channel.const",
+    "Properties": [
+      0.0
+    ]
+  },
+  {
+    "Type": "channel.const",
+    "Properties": [
+      0.0
+    ]
+  },
+  {
+    "Type": "channel.const",
+    "Properties": [
+      0.0
+    ]
+  },
+  {
+    "Type": "channel.const",
+    "Properties": [
+      0.0
+    ]
+  },
+  {
+    "Type": "channel.const",
+    "Properties": [
+      0.0
+    ]
+  },
+  {
+    "Type": "channel.const",
+    "Properties": [
+      180.0
+    ]
+  },
+  {
+    "Type": "channel.const",
+    "Properties": [
+      180.0
+    ]
+  },
+  {
+    "Type": "channel.const",
+    "Properties": [
+      0.0
+    ]
+  },
+  {
+    "Type": "channel.const",
+    "Properties": [
+      0.0
+    ]
+  },
+  {
+    "Type": "channel.const",
+    "Properties": [
+      0.0
+    ]
+  },
+  {
+    "Type": "channel.const",
+    "Properties": [
+      0.0
+    ]
+  },
+  {
+    "Type": "channel.product",
+    "Properties": [
+      434,
+      435
+    ]
+  },
+  {
+    "Type": "channel.const",
+    "Properties": [
+      255.0
+    ]
+  },
+  {
+    "Type": "channel.key",
+    "Properties": [
+      "-999999,0,l",
+      "5000,0,l",
+      "5250,1,l",
+      "10000,1,l",
+      "10250,0,l"
+    ]
+  },
+  {
+    "Type": "channel.const",
+    "Properties": [
+      0.0
+    ]
+  },
+  {
+    "Type": "channel.const",
+    "Properties": [
+      0.0
+    ]
+  },
+  {
+    "Type": "channel.const",
+    "Properties": [
+      0.0
+    ]
+  },
+  {
+    "Type": "channel.string.key",
+    "Properties": [
+      "-2147483648,Background"
+    ]
+  },
+  {
+    "Type": "channel.const",
+    "Properties": [
+      2.0
+    ]
+  },
+  {
+    "Type": "channel.const",
+    "Properties": [
+      255.0
+    ]
+  },
+  {
+    "Type": "channel.const",
+    "Properties": [
+      0.0
+    ]
+  },
+  {
+    "Type": "channel.const",
+    "Properties": [
+      0.0
+    ]
+  },
+  {
+    "Type": "channel.const",
+    "Properties": [
+      1.0
+    ]
+  },
+  {
+    "Type": "channel.const",
+    "Properties": [
+      1.0
+    ]
+  }
+]

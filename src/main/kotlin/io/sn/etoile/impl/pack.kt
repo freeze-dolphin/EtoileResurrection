@@ -41,8 +41,10 @@ class ArcpkgPackRequest(
         }
     }
 
-    private fun generateIndexEntry(): ImportInformationEntry = ImportInformationEntry(
-        directory = songId, identifier = identifier, settingsFile = "project.arcproj", version = 0, type = ArcpkgEntryType.LEVEL
+    private fun generateIndexEntry(): List<ImportInformationEntry> = listOf(
+        ImportInformationEntry(
+            directory = songId, identifier = identifier, settingsFile = "project.arcproj", version = 0, type = ArcpkgEntryType.LEVEL
+        )
     )
 
     companion object {
@@ -54,6 +56,9 @@ class ArcpkgPackRequest(
                 3 -> "Beyond"
                 4 -> "Eternal"
                 else -> "Future"
+            }
+            if (constants <= 0) {
+                return "$prefix ?"
             }
             return "$prefix ${constants.toInt()}${if (constants % 1 >= 0.69) "+" else ""}"
         }
@@ -139,10 +144,10 @@ class ArcpkgPackRequest(
         private fun getLastOpenedChartPath(difficulties: List<DifficultyEntry>): String {
             if (difficulties.isEmpty()) throw RuntimeException("No charts exist for this song")
 
-            return if (difficulties.any { it.rating == 2 }) {
+            return if (difficulties.any { it.ratingClass == 2 }) {
                 "2.aff"
             } else {
-                "${difficulties.last().rating}.aff"
+                "${difficulties.last().ratingClass}.aff"
             }
         }
 
@@ -194,8 +199,8 @@ class ArcpkgPackRequest(
                 chartConstant = songConstants[it.ratingClass],
                 difficultyColor = getDifficultyColor(it.ratingClass),
                 skin = getSkin(side, songId, setId, bg),
-                previewStart = it.audioPreview,
-                previewEnd = it.audioPreviewEnd,
+                previewStart = it.audioPreview ?: 0,
+                previewEnd = it.audioPreviewEnd ?: 5000,
                 searchTags = listOf(
                     songEntry.titleLocalized.en,
                     songEntry.titleLocalized.ja,
@@ -214,7 +219,9 @@ class ArcpkgPackRequest(
         })
 
         // generate .sc.json
-        // TODO()
+        val scenecontrolSerialized = difficulties.map { it.ratingClass }.zip(difficulties.map {
+
+        })
 
         // pack all up
         val arcpkgFile = file(packOutputPath.toString(), "$prefix.$songId.arcpkg")
@@ -227,7 +234,6 @@ class ArcpkgPackRequest(
                     lastOpenedChartPath = lastOpenedChartPath,
                     charts = charts
                 )
-
 
                 zos.putNextEntry(ZipEntry("index.yml"))
                 yaml.encodeToStream(indexEntry, zos)

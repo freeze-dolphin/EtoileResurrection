@@ -1,3 +1,7 @@
 AudioOffset:0
 -
 timing(0,100.00,4.00);
+scenecontrol(0,enwidencamera,1000,1);
+scenecontrol(500,enwidenlanes,1000,1);
+scenecontrol(5000,trackdisplay,1000,0);
+scenecontrol(10000,trackdisplay,1000,255);
