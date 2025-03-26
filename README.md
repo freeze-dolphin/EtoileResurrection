@@ -53,7 +53,7 @@ Arguments:
 Example:
 
 ```
-EtoileRessurrection export N0N_ame.badapple.arcpkg --prefix default 
+EtoileResurrection export N0N_ame.badapple.arcpkg --prefix default 
 ```
 
 ### `pack`
@@ -79,6 +79,8 @@ Arguments:
 
 </details>
 
-#### a
+Example:
 
-a
+```
+EtoileResurrection pack -c -1,-1,-1,-1,-1 songs --songId=mismal --prefix lowiro -o result\
+```
