@@ -36,17 +36,10 @@ class PackCommand : CliktCommand(name = "pack") {
         names = arrayOf("--songId", "--id", "-s"), help = "The identity of the song to be packed"
     ).required()
 
-    private val songConstants by option(
-        names = arrayOf("--constants", "-c"), help = "The list of song constants"
-    ).float().split(",").required().validate {
-        require(it.size == 5) { "The list of song constants must be 5" }
-    }
-
     override fun run() {
         ArcpkgPackRequest(
             songsDir = songsDir,
             songId = songId,
-            songConstants = songConstants.toFloatArray(),
             prefix = prefix,
             packOutputPath = packOutputPath
         ).exec()

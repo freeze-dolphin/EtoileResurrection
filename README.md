@@ -69,7 +69,6 @@ Options:
   -o, --outputDir=<path>     The path to the .arcpkg file to be packed
   -p, --prefix=<text>        The prefix of the song id
   -s, --songId, --id=<text>  The identity of the song to be packed
-  -c, --constants=<float>    The list of song constants
   -h, --help                 Show this message and exit
 
 Arguments:
@@ -82,5 +81,5 @@ Arguments:
 Example:
 
 ```
-EtoileResurrection pack -c -1,-1,-1,-1,-1 songs --songId=mismal --prefix lowiro -o result\
+EtoileResurrection pack songs --songId=mismal --prefix lowiro -o result\
 ```

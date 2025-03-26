@@ -3,8 +3,6 @@ package io.sn.etoile.impl
 import com.charleskorn.kaml.encodeToStream
 import com.tairitsu.compose.arcaea.Chart
 import io.sn.etoile.*
-import kotlinx.serialization.Serializable
-import java.io.File
 import java.io.FileOutputStream
 import java.io.InputStream
 import java.nio.file.Files
@@ -20,7 +18,6 @@ class ArcpkgPackRequest(
     private val songsDir: Path,
     private val songId: String,
     private val prefix: String,
-    private val songConstants: FloatArray,
     private val packOutputPath: Path,
 ) {
 
@@ -48,7 +45,7 @@ class ArcpkgPackRequest(
     )
 
     companion object {
-        fun getDifficultyString(ratingClass: Int, constants: Float): String {
+        fun getDifficultyString(ratingClass: Int, rating: Int, ratingPlus: Boolean): String {
             val prefix = when (ratingClass) {
                 0 -> "Past"
                 1 -> "Present"
@@ -57,10 +54,10 @@ class ArcpkgPackRequest(
                 4 -> "Eternal"
                 else -> "Future"
             }
-            if (constants <= 0) {
+            if (rating <= 0) {
                 return "$prefix ?"
             }
-            return "$prefix ${constants.toInt()}${if (constants % 1 >= 0.69) "+" else ""}"
+            return "$prefix $rating${if (ratingPlus) "+" else ""}"
         }
 
         private fun getDifficultyColor(ratingClass: Int): String = when (ratingClass) {
@@ -198,8 +195,8 @@ class ArcpkgPackRequest(
                     chartDsg
                 },
                 illustrator = it.jacketDesigner,
-                difficulty = getDifficultyString(it.ratingClass, songConstants[it.ratingClass]),
-                chartConstant = songConstants[it.ratingClass],
+                difficulty = getDifficultyString(it.ratingClass, it.rating, it.ratingPlus == true),
+                chartConstant = it.rating + if (it.ratingPlus == true) 0.7F else 0F,
                 difficultyColor = getDifficultyColor(it.ratingClass),
                 skin = getSkin(side, songId, setId, bg),
                 previewStart = it.audioPreview ?: 0,
