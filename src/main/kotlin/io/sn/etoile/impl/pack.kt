@@ -193,7 +193,10 @@ class ArcpkgPackRequest(
                 syncBaseBpm = false,
                 title = songEntry.titleLocalized!!.en,
                 composer = songEntry.artist!!,
-                alias = null,
+                alias = it.chartDesigner.let { chartDsg ->
+                    chartDsg.ifEmpty { null }
+                    chartDsg
+                },
                 illustrator = it.jacketDesigner,
                 difficulty = getDifficultyString(it.ratingClass, songConstants[it.ratingClass]),
                 chartConstant = songConstants[it.ratingClass],
@@ -220,7 +223,7 @@ class ArcpkgPackRequest(
 
         // generate .sc.json
         val scenecontrolSerialized = difficulties.map { it.ratingClass }.zip(difficulties.map {
-
+            // TODO()
         })
 
         // pack all up

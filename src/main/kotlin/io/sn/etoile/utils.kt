@@ -297,6 +297,7 @@ data class ChartEntry(
     val title: String,
     val composer: String,
     val alias: String? = null,
+    val charter: String? = null,
     val illustrator: String? = null,
     val difficulty: String,
     val chartConstant: Float? = null,
@@ -304,7 +305,7 @@ data class ChartEntry(
     val skin: DifficultySkin?,
     val previewStart: Long? = 0,
     val previewEnd: Long? = 5000,
-    val searchTags: String?
+    val searchTags: String? = null
 )
 
 @Serializable
@@ -327,7 +328,8 @@ val json = Json {
 
 val yaml = Yaml(
     configuration = YamlConfiguration(
-        allowAnchorsAndAliases = true // fix #3
+        allowAnchorsAndAliases = true, // fix #3
+        strictMode = false
     )
 )
 

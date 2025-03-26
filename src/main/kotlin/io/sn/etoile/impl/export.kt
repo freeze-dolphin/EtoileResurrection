@@ -7,6 +7,7 @@ import com.tairitsu.compose.arcaea.Chart
 import com.tairitsu.compose.arcaea.LocalizedString
 import io.sn.etoile.*
 import kotlinx.serialization.builtins.ListSerializer
+import kotlinx.serialization.decodeFromString
 import java.awt.Color
 import java.awt.Image
 import java.awt.image.BufferedImage
@@ -261,7 +262,7 @@ class ArcpkgConvertRequest(
             val settings = readFileFromZip(
                 arcpkgZipFile,
                 "${entry.directory}/${entry.settingsFile}"
-            ).let { yaml.decodeFromString(ProjectInformation.serializer(), it) }
+            ).let { yaml.decodeFromString<ProjectInformation>(it) }
 
             val charts = settings.charts
 
