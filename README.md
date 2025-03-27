@@ -50,10 +50,10 @@ Arguments:
 
 > __(\*)__: Default, and most commonly used.
 
-Example:
+#### Example:
 
 ```
-EtoileResurrection export N0N_ame.badapple.arcpkg --prefix default 
+$ EtoileResurrection export N0N_ame.badapple.arcpkg --prefix default 
 ```
 
 ### `pack`
@@ -63,23 +63,36 @@ Use `etoile pack -h` to get help message:
 <details><summary>Help</summary>
 
 ```
-Usage: etoile pack [<options>] <songsdir>
+Usage: etoile pack [<options>] <songlist>
 
 Options:
   -o, --outputDir=<path>     The path to the .arcpkg file to be packed
   -p, --prefix=<text>        The prefix of the song id
   -s, --songId, --id=<text>  The identity of the song to be packed
+  -re, --regex / --noregex   Enable regex matching mode for songId
   -h, --help                 Show this message and exit
 
 Arguments:
-  <songsdir>  songs dir to be processed on
+  <songlist>  songlist file to be processed on
 
 ```
 
 </details>
 
-Example:
+#### `--regex`
+
+Use `--regex` to make `songId` option regex matching, for example this packs all the songs separately in **songlist**:
 
 ```
-EtoileResurrection pack songs --songId=mismal --prefix lowiro -o result\
+$ EtoileResurrection pack songs\songlist_aprilfools --songId=.* -re --prefix lowiro -o result\
+Packed successfully to: .\result\lowiro.ignotusafterburn.arcpkg
+Packed successfully to: .\result\lowiro.redandblueandgreen.arcpkg
+Packed successfully to: .\result\lowiro.singularityvvvip.arcpkg
+...
+```
+
+#### Example:
+
+```
+$ EtoileResurrection pack songs\songlist --songId=mismal --prefix lowiro -o result\
 ```

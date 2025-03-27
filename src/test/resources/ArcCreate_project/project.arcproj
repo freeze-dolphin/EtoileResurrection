@@ -1,4 +1,4 @@
-lastOpenedChartPath: 4.aff
+lastOpenedChartPath: 2.aff
 charts:
 - chartPath: 0.aff
   audioPath: base.ogg
@@ -56,6 +56,7 @@ charts:
     track: arcana
     accent: dynamix
     singleLine: conflict
+  lastWorkingTiming: 1050
   previewEnd: 5000
 - chartPath: 3.aff
   audioPath: base.ogg

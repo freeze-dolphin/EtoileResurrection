@@ -40,7 +40,6 @@ class ArcpkgConvertRequest(
 ) {
 
     companion object {
-
         fun readFileFromZip(zipFile: ZipFile, fileName: String): String {
             val entry: ZipEntry = zipFile.getEntry(fileName)
             val content = StringBuilder()
@@ -377,9 +376,9 @@ class ArcpkgConvertRequest(
                 val audioPreviewEnd: Long = chart.previewEnd ?: 5000
 
                 val difficultyEntry = DifficultyEntry(
-                    audioPath = audioPath,
-                    jacketPath = jacketPath,
-                    chartPath = ratingClassRaw,
+                    __audioPath = audioPath,
+                    __jacketPath = jacketPath,
+                    __chartPath = ratingClassRaw,
 
                     ratingClass = ratingClass,
                     chartDesigner = charter,
@@ -495,8 +494,8 @@ class ArcpkgConvertRequest(
                     if (bpmText != baseDifficulty.bpmText) difficultyEntry.bpmText = bpmText
                     if (baseBpm != baseDifficulty.bpmBase) difficultyEntry.bpmBase = baseBpm
                     if (side != baseDifficulty.side) difficultyEntry.side = side
-                    if (audioPath != baseDifficulty.audioPath) difficultyEntry.audioOverride = true
-                    if (jacketPath != baseDifficulty.jacketPath) difficultyEntry.jacketOverride = true
+                    if (audioPath != baseDifficulty.__audioPath) difficultyEntry.audioOverride = true
+                    if (jacketPath != baseDifficulty.__jacketPath) difficultyEntry.jacketOverride = true
                     if (audioPreview != baseDifficulty.audioPreview) difficultyEntry.audioPreview = audioPreview
                     if (audioPreviewEnd != baseDifficulty.audioPreviewEnd) difficultyEntry.audioPreviewEnd = audioPreviewEnd
                     if (bg != baseDifficulty.bg) difficultyEntry.bg = bg
@@ -508,8 +507,8 @@ class ArcpkgConvertRequest(
             val songDir = File(exportDirSongs, id)
             if (!songDir.exists()) songDir.mkdirs()
 
-            extractFileFromZipOverwrite(arcpkgZipFile, "${entry.directory}/${baseDifficulty.audioPath}", songDir, "base.ogg")
-            extractFileFromZipOverwrite(arcpkgZipFile, "${entry.directory}/${baseDifficulty.jacketPath}", songDir, "base.jpg")
+            extractFileFromZipOverwrite(arcpkgZipFile, "${entry.directory}/${baseDifficulty.__audioPath}", songDir, "base.ogg")
+            extractFileFromZipOverwrite(arcpkgZipFile, "${entry.directory}/${baseDifficulty.__jacketPath}", songDir, "base.jpg")
 
             val fileBase = File(songDir, "base.jpg")
             val origImg = ImageIO.read(fileBase)
@@ -530,7 +529,7 @@ class ArcpkgConvertRequest(
             }
 
             difficulties.forEach { diffEntry ->
-                val aff = readFileFromZip(arcpkgZipFile, "${entry.directory}/${diffEntry.chartPath!!}")
+                val aff = readFileFromZip(arcpkgZipFile, "${entry.directory}/${diffEntry.__chartPath!!}")
                 val convertion = Chart.fromAcf(aff)
 
                 if (convertion.second.ignoredTimingGroupEffects.isNotEmpty() || convertion.second.ignoredScenecontrols.isNotEmpty()) {

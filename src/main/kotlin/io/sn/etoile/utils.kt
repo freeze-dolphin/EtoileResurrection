@@ -45,9 +45,9 @@ data class PacklistEntry(
 
 @Serializable
 data class DifficultyEntry(
-    @Transient var audioPath: String? = null,
-    @Transient var jacketPath: String? = null,
-    @Transient var chartPath: String? = null,
+    @Transient var __audioPath: String? = null,
+    @Transient var __jacketPath: String? = null,
+    @Transient var __chartPath: String? = null,
 
     val ratingClass: Int,
     val chartDesigner: String,

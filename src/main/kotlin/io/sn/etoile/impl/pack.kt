@@ -4,22 +4,20 @@ import com.charleskorn.kaml.encodeToStream
 import com.tairitsu.compose.arcaea.Chart
 import io.sn.etoile.*
 import java.io.FileOutputStream
-import java.io.InputStream
 import java.nio.file.Files
 import java.nio.file.Path
 import java.util.zip.ZipEntry
 import java.util.zip.ZipOutputStream
-import kotlin.io.path.exists
-import kotlin.io.path.listDirectoryEntries
-import kotlin.io.path.name
-import kotlin.io.path.readBytes
+import kotlin.io.path.*
 
 class ArcpkgPackRequest(
-    private val songsDir: Path,
+    private val songlistPath: Path,
+    private val songlist: List<SonglistEntry>,
     private val songId: String,
     private val prefix: String,
     private val packOutputPath: Path,
 ) {
+    private val songsDir: Path = songlistPath.parent
 
     private val identifier = "$prefix.$songId"
 
@@ -69,6 +67,9 @@ class ArcpkgPackRequest(
             else -> "#482B54FF"
         }
 
+        /**
+         * Logic of skinning for special songs
+         */
         private fun getSkin(side: Int, songId: String, setId: String, bg: String): DifficultySkin {
             val sideStyle = when (side) {
                 0 -> DifficultySkin.SideStyle.LIGHT
@@ -148,21 +149,10 @@ class ArcpkgPackRequest(
             }
         }
 
-        private fun putFileToZip(zos: ZipOutputStream, ze: ZipEntry, ins: InputStream) {
-            zos.putNextEntry(ze)
-            ins.copyTo(zos)
-            zos.closeEntry()
-            ins.close()
-        }
-
     }
 
     fun exec() {
-        val slstFile = file(songsDir.toString(), "songlist")
-
-        val songs = json.decodeFromString<Songlist>(slstFile.readText()).songs.filter { it.deleted != true }
-
-        val songEntry = songs.find { it.id == songId }.apply {
+        val songEntry = songlist.filter { it.deleted != true }.find { it.id == songId }.apply {
             if (this == null) {
                 throw RuntimeException("Song not found: $songId")
             }
@@ -211,20 +201,39 @@ class ArcpkgPackRequest(
             )
         }
 
-
-        // convert the chart
+        // convertion of the chart
         val chartConverted = difficulties.map { it.ratingClass }.zip(difficulties.map {
             val chartFile = file(songsDir.toString(), songId, "${it.ratingClass}.aff")
             Chart.fromAff(chartFile.readText(charset = Charsets.UTF_8)).serializeForArcCreate()
         })
 
         // generate .sc.json
-        val scenecontrolSerialized = difficulties.map { it.ratingClass }.zip(difficulties.map {
-            // TODO()
-        })
+        val scenecontrolSerialized =
+            difficulties.filter { // filter charts with scenecontrols that need to be serialized
+                Chart.fromAff(
+                    songsDir.resolve(songId).resolve("${it.ratingClass}.aff").readText(charset = Charsets.UTF_8)
+                ).let { chart ->
+                    val sc = mutableListOf(*chart.mainTiming.getScenecontrols().toTypedArray())
+                    if (sc.isNotEmpty()) return@let true // return in advance to be faster
+
+                    sc.addAll(chart.subTiming.map { subTiming -> subTiming.value.getScenecontrols() }
+                        .fold(listOf()) { a, b ->
+                            val reduceResult = a + b
+                            if (reduceResult.isNotEmpty()) return@let true // return in advance to be faster
+                            reduceResult
+                        })
+
+                    // println("${it.ratingClass}.aff of $songId has ${sc.size} scenecontrols")
+                    sc.isNotEmpty()
+                }
+            }.let { scCharts ->
+                scCharts.map { it.ratingClass }.zip(scCharts.map {
+                    // TODO()
+                })
+            }
 
         // pack all up
-        val arcpkgFile = file(packOutputPath.toString(), "$prefix.$songId.arcpkg")
+        val arcpkgFile = packOutputPath.resolve("$prefix.$songId.arcpkg").toFile()
         arcpkgFile.createNewFile()
 
         FileOutputStream(arcpkgFile).use { fos ->
@@ -238,7 +247,6 @@ class ArcpkgPackRequest(
                 zos.putNextEntry(ZipEntry("index.yml"))
                 yaml.encodeToStream(indexEntry, zos)
                 zos.closeEntry()
-
 
                 zos.putNextEntry(ZipEntry("$songId/project.arcproj"))
                 yaml.encodeToStream(projectInformation, zos)
@@ -269,9 +277,10 @@ class ArcpkgPackRequest(
                 zos.close()
             }
 
-            println("Packed successfully to: ${arcpkgFile.canonicalPath}")
+            fos.close()
         }
 
+        println("Packed successfully to: ${arcpkgFile.canonicalPath}")
     }
 
 }

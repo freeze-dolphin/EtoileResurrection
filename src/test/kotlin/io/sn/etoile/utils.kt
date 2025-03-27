@@ -1,13 +1,11 @@
 package io.sn.etoile
 
 import com.charleskorn.kaml.Yaml
-import io.sn.etoile.impl.ArcpkgPackRequest.Companion.getDifficultyString
 import kotlinx.serialization.decodeFromString
 import kotlin.test.Test
 import kotlin.test.assertEquals
 
 object Utils {
-
 
     @Test
     fun `test import info serialization`() {
@@ -38,12 +36,6 @@ object Utils {
             """.trimIndent()
             )
         )
-    }
-
-    @Test
-    fun `test get difficulty string`() {
-        assertEquals("Future 10+", getDifficultyString(2, 10.7F))
-        assertEquals("Present 9", getDifficultyString(1, 9.2F))
     }
 
 }

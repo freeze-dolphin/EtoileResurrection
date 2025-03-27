@@ -18,12 +18,21 @@ import io.sn.etoile.impl.ExportBgMode
 import io.sn.etoile.impl.ExportConfiguration
 import java.io.File
 import java.nio.file.Path
+import kotlin.io.path.readText
 
 class PackCommand : CliktCommand(name = "pack") {
-    private val songsDir: Path by argument(name = "songsDir", help = "songs dir to be processed on").path(
-        mustExist = true, mustBeReadable = true, canBeFile = false
+
+    private val songlistPath: Path by argument(name = "songlist", help = "songlist file to be processed on").path(
+        mustExist = true, mustBeReadable = true, canBeFile = true, canBeDir = false
     ).validate {
-        require(file(it.toString(), "songlist").exists()) { "songlist not found in songs dir" }
+        require(
+            try {
+                json.parseToJsonElement(it.toFile().readText(Charsets.UTF_8))
+                true
+            } catch (e: Exception) {
+                false
+            }
+        ) { "invalid songlist format" }
     }
 
     private val packOutputPath by option(
@@ -36,13 +45,34 @@ class PackCommand : CliktCommand(name = "pack") {
         names = arrayOf("--songId", "--id", "-s"), help = "The identity of the song to be packed"
     ).required()
 
+    private val regexMode: Boolean by option(
+        names = arrayOf("--regex", "-re"),
+        help = "Enable regex matching mode for songId"
+    ).flag("--noregex", default = false)
+
     override fun run() {
-        ArcpkgPackRequest(
-            songsDir = songsDir,
-            songId = songId,
-            prefix = prefix,
-            packOutputPath = packOutputPath
-        ).exec()
+        val songlist = json.decodeFromString<Songlist>(songlistPath.readText()).songs
+
+        if (regexMode) {
+            val regex = songId.toRegex()
+            songlist.filter { it.id.matches(regex) }.forEach {
+                ArcpkgPackRequest(
+                    songlistPath = songlistPath,
+                    songId = it.id,
+                    songlist = songlist,
+                    prefix = prefix,
+                    packOutputPath = packOutputPath
+                ).exec()
+            }
+        } else {
+            ArcpkgPackRequest(
+                songlistPath = songlistPath,
+                songId = songId,
+                songlist = songlist,
+                prefix = prefix,
+                packOutputPath = packOutputPath
+            ).exec()
+        }
     }
 }
 
