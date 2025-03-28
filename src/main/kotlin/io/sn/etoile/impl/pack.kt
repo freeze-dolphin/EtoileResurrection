@@ -175,10 +175,8 @@ class ArcpkgPackRequest(
                 syncBaseBpm = false,
                 title = songEntry.titleLocalized!!.en,
                 composer = songEntry.artist!!,
-                alias = it.chartDesigner.let { chartDsg ->
-                    chartDsg.ifEmpty { null }
-                    chartDsg
-                },
+                charter = it.chartDesigner.let { ctr -> if (ctr.contains("\n")) "" else ctr },
+                alias = it.chartDesigner,
                 illustrator = it.jacketDesigner,
                 difficulty = getDifficultyString(it.ratingClass, it.rating, it.ratingPlus == true),
                 chartConstant = it.rating + if (it.ratingPlus == true) 0.7F else 0F,

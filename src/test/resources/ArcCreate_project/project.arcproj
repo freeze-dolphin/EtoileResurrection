@@ -79,6 +79,7 @@ charts:
     track: colorless
     accent: colorless
     singleLine: neo
+  lastWorkingTiming: 450
   previewEnd: 5000
   searchTags: search_keywords
 - chartPath: 4.aff
