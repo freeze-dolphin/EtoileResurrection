@@ -1,3 +1,10 @@
+<p align="right">
+
+[![en](https://img.shields.io/badge/lang-en-blue.svg)](README.md)
+[![zh-Hans](https://img.shields.io/badge/lang-zh--Hans-red.svg)](README.zh-Hans.md)
+
+</p>
+
 # EtoileResurrection
 
 Command-line tool for convertion of **.aff** charts between [`ArcCreate`](https://github.com/Arcthesia/ArcCreate) and the official Arcaea
@@ -13,12 +20,12 @@ There are two command currenly:
 
 ### `export`
 
-Use `etoile export -h` to get help message:
+Use `EtoileResurrection export -h` to get help message:
 
 <details><summary>Help</summary>
 
 ```
-Usage: etoile export [<options>] [<arcpkgs>]...
+Usage: EtoileResurrection export [<options>] [<arcpkgs>]...
 
 Options:
   -p, --prefix=<text>       The prefix of the song id
@@ -58,15 +65,15 @@ $ EtoileResurrection export N0N_ame.badapple.arcpkg --prefix default
 
 ### `pack`
 
-Use `etoile pack -h` to get help message:
+Use `EtoileResurrection pack -h` to get help message:
 
 <details><summary>Help</summary>
 
 ```
-Usage: etoile pack [<options>] <songlist>
+Usage: EtoileResurrection pack [<options>] <songlist>
 
 Options:
-  -o, --outputDir=<path>     The path to the .arcpkg file to be packed
+  -o, --outputDir=<path>     The output path of the result
   -p, --prefix=<text>        The prefix of the song id
   -s, --songId, --id=<text>  The identity of the song to be packed
   -re, --regex / --noregex   Enable regex matching mode for songId

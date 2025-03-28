@@ -36,7 +36,7 @@ class PackCommand : CliktCommand(name = "pack") {
     }
 
     private val packOutputPath by option(
-        names = arrayOf("--outputDir", "-o"), help = "The path to the .arcpkg file to be packed"
+        names = arrayOf("--outputDir", "-o"), help = "The output path of the result"
     ).path(mustExist = true, canBeFile = false, canBeDir = true, mustBeWritable = true).default(File(".").toPath())
 
     private val prefix by option(names = arrayOf("--prefix", "-p"), help = "The prefix of the song id").required()
@@ -120,7 +120,7 @@ class ExportCommand : CliktCommand(name = "export") {
     }
 }
 
-class EtoileRessurectionCommand : CliktCommand(name = "etoile") {
+class EtoileRessurectionCommand : CliktCommand(name = "EtoileResurrection") {
     override fun run() = Unit
 }
 
