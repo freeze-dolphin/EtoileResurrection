@@ -49,7 +49,7 @@ Arguments:
 | overwrite            | 当有同名背景文件时，用新的背景覆盖写入，并发出警告                                                               |
 | auto_rename __(\*)__ | 背景文件名将被添加前缀以避免重名问题，例如: 在 img/bg 文件夹中，**pragmatism.jpg** 将被更名为 **prefix.pragmatism.jpg** |
 
-> __(\*)__: Default, and most commonly used.
+> __(\*)__: 默认行为
 
 #### 用例:
 
