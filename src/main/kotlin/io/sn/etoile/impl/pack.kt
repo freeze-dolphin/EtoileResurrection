@@ -11,13 +11,13 @@ import java.util.zip.ZipOutputStream
 import kotlin.io.path.*
 
 class ArcpkgPackRequest(
-    private val songlistPath: Path,
-    private val songlist: List<SonglistEntry>,
-    private val songId: String,
+    songlistPath: Path,
+    private val song: SonglistEntry,
     private val prefix: String,
     private val packOutputPath: Path,
 ) {
     private val songsDir: Path = songlistPath.parent
+    private val songId: String = song.id
 
     private val identifier = "$prefix.$songId"
 
@@ -152,12 +152,7 @@ class ArcpkgPackRequest(
     }
 
     fun exec() {
-        val songEntry = songlist.filter { it.deleted != true }.find { it.id == songId }.apply {
-            if (this == null) {
-                throw RuntimeException("Song not found: $songId")
-            }
-        }
-        songEntry!!
+        val songEntry = song
 
         val bg = songEntry.bg!!
         val setId = songEntry.set!!

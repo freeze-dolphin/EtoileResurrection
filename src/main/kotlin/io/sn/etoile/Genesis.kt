@@ -51,24 +51,30 @@ class PackCommand : CliktCommand(name = "pack") {
     ).flag("--noregex", default = false)
 
     override fun run() {
-        val songlist = json.decodeFromString<Songlist>(songlistPath.readText()).songs
+        val songlist = json.decodeFromString<Songlist>(songlistPath.readText(charset = Charsets.UTF_8)).songs
 
         if (regexMode) {
             val regex = songId.toRegex()
-            songlist.filter { it.id.matches(regex) }.forEach {
+            val songs = songlist.filter { it.id.matches(regex) && it.deleted != true }
+
+            if (songs.isEmpty()) throw RuntimeException("No song is matched with: $songId")
+
+            songs.forEach { song ->
                 ArcpkgPackRequest(
                     songlistPath = songlistPath,
-                    songId = it.id,
-                    songlist = songlist,
+                    song = song,
                     prefix = prefix,
                     packOutputPath = packOutputPath
                 ).exec()
             }
         } else {
+            val songs = songlist.filter { it.id == songId && it.deleted != true }
+
+            if (songs.isEmpty()) throw RuntimeException("Song not found: $songId")
+            if (songs.size > 1) throw RuntimeException("Duplicated songs found: $songs")
             ArcpkgPackRequest(
                 songlistPath = songlistPath,
-                songId = songId,
-                songlist = songlist,
+                song = songs[0],
                 prefix = prefix,
                 packOutputPath = packOutputPath
             ).exec()
