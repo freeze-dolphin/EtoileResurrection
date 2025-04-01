@@ -32,13 +32,17 @@ class ScenecontrolService(
         }
     }
 
-    fun serialize(): List<SerializedUnit> {
+    fun serialize(): List<SerializedUnit>? {
         scenecontrols.forEach {
             processScenecontrol(it)
         }
 
         val serialization = ScenecontrolSerialization()
-        if (referencedControllers.isEmpty()) throw SerializationException("No controller found in: $ratingClass.aff")
+        if (referencedControllers.isEmpty()) {
+            ScenecontrolHandler.clearCache()
+            scene.clearNoteGroupControllerCache()
+            return null
+        }
 
         referencedControllers.forEach {
             serialization.addUnitAndGetId(it)
@@ -54,12 +58,16 @@ class ScenecontrolService(
     /**
      * Assets/Scripts/Gameplay/Scenecontrol/ScenecontrolService.cs#Export()
      */
-    fun export(): String {
-        return jsonMinified.encodeToString(serialize())
+    fun export(): String? {
+        val rst = serialize() ?: return null
+
+        return jsonMinified.encodeToString(rst)
     }
 
     @TestOnly
-    fun exportPrettified(): String {
-        return json.encodeToString(serialize())
+    fun exportPrettified(): String? {
+        val rst = serialize() ?: return null
+
+        return json.encodeToString(rst)
     }
 }

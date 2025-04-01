@@ -75,7 +75,7 @@ object ScenecontrolSerializationTest {
         }.joinToString(separator = ", ", prefix = "[", postfix = "]")
 
 
-        val actualScFlattened = actualSc.find { it.type == "tg.8" }!!.let { (_, properties) ->
+        val actualScFlattened = actualSc!!.find { it.type == "tg.8" }!!.let { (_, properties) ->
             properties!!.map {
                 flattenChannelPropertyToString(actualSc, it)
             }

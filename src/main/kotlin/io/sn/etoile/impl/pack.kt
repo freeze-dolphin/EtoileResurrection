@@ -280,7 +280,7 @@ class ArcpkgPackRequest(
 
                 bgToExtract.forEach { (bgName, bgPath) ->
                     if (bgPath != null) {
-                        zos.putNextEntry(ZipEntry("$songId/$bg.jpg"))
+                        zos.putNextEntry(ZipEntry("$songId/$bgName.jpg"))
                         zos.write(bgPath.readBytes())
                         zos.closeEntry()
                     } else if (!bgName.startsWith("base_")) {
@@ -289,6 +289,7 @@ class ArcpkgPackRequest(
                 }
 
                 scenecontrolSerialized.forEach { (ratingClass, scContent) ->
+                    if (scContent == null) return@forEach
                     zos.putNextEntry(ZipEntry("$songId/$ratingClass.sc.json"))
                     zos.write(scContent.toByteArray(charset = Charsets.UTF_8))
                     zos.closeEntry()
