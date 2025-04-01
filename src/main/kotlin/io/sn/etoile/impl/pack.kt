@@ -2,13 +2,19 @@ package io.sn.etoile.impl
 
 import com.charleskorn.kaml.encodeToStream
 import com.tairitsu.compose.arcaea.Chart
-import io.sn.etoile.*
+import io.sn.etoile.utils.*
+import io.sn.etoile.utils.scenecontrol.ScenecontrolService
+import io.sn.etoile.utils.scenecontrol.extractScenecontrols
+import io.sn.etoile.utils.scenecontrol.loadChart
 import java.io.FileOutputStream
 import java.nio.file.Files
 import java.nio.file.Path
 import java.util.zip.ZipEntry
 import java.util.zip.ZipOutputStream
-import kotlin.io.path.*
+import kotlin.io.path.exists
+import kotlin.io.path.listDirectoryEntries
+import kotlin.io.path.name
+import kotlin.io.path.readBytes
 
 class ArcpkgPackRequest(
     songlistPath: Path,
@@ -28,7 +34,11 @@ class ArcpkgPackRequest(
     )
 
     private fun searchBgFile(bgName: String): Path? {
-        bgSearchDir.find { it.listDirectoryEntries().any { subdirFile -> subdirFile.name == "$bgName.jpg" } }.let {
+        if (bgName.startsWith("base_")) return null
+        bgSearchDir.find {
+            if (!it.exists()) return@find false
+            it.listDirectoryEntries().any { subdirFile -> subdirFile.name == "$bgName.jpg" }
+        }.let {
             if (it != null) {
                 return Path.of(it.toString(), "$bgName.jpg")
             }
@@ -157,7 +167,9 @@ class ArcpkgPackRequest(
         val bg = songEntry.bg!!
         val setId = songEntry.set!!
         val side = songEntry.side!!
-        val difficulties: List<DifficultyEntry> = songEntry.difficulties!!
+        val difficulties: List<DifficultyEntry> = songEntry.difficulties!!.filter { it.rating >= 0 }
+
+        val bgToExtract = mutableMapOf<String, Path?>()
 
         val lastOpenedChartPath = getLastOpenedChartPath(difficulties)
         val charts = difficulties.map {
@@ -169,14 +181,25 @@ class ArcpkgPackRequest(
                         "1080_base.jpg"
                     } else "base.jpg"
                 },
-                backgroundPath = if (it.bg != null) "${it.bg}.jpg" else "$bg.jpg",
+                backgroundPath = when {
+                    it.bg?.startsWith("base_") == true -> null
+                    it.bg != null -> {
+                        bgToExtract[it.bg!!] = searchBgFile(it.bg!!)
+                        "${it.bg}.jpg"
+                    }
+
+                    else -> {
+                        bgToExtract[bg] = searchBgFile(bg)
+                        "$bg.jpg"
+                    }
+                },
                 baseBpm = songEntry.bpmBase!!,
                 bpmText = songEntry.bpmText!!,
                 syncBaseBpm = false,
                 title = songEntry.titleLocalized!!.en,
                 composer = songEntry.artist!!,
-                charter = it.chartDesigner.let { ctr -> if (ctr.contains("\n")) "" else ctr },
-                alias = it.chartDesigner,
+                charter = if (prefix == "lowiro") "© Lowiro" else it.chartDesigner.let { ctr -> if (ctr.contains("\n")) "" else ctr },
+                alias = if (prefix == "lowiro") it.chartDesigner else null,
                 illustrator = it.jacketDesigner,
                 difficulty = getDifficultyString(it.ratingClass, it.rating, it.ratingPlus == true),
                 chartConstant = it.rating + if (it.ratingPlus == true) 0.7F else 0F,
@@ -201,27 +224,23 @@ class ArcpkgPackRequest(
         })
 
         // generate .sc.json
+        val tgDifficulties = difficulties.map {
+            loadChart(songsDir.resolve(songId).resolve("${it.ratingClass}.aff"))
+        }
+
+        val scDifficulties = tgDifficulties.map {
+            extractScenecontrols(it)
+        }
+
         val scenecontrolSerialized =
-            difficulties.filter { // filter charts with scenecontrols that need to be serialized
-                Chart.fromAff(
-                    songsDir.resolve(songId).resolve("${it.ratingClass}.aff").readText(charset = Charsets.UTF_8)
-                ).let { chart ->
-                    val sc = mutableListOf(*chart.mainTiming.getScenecontrols().toTypedArray())
-                    if (sc.isNotEmpty()) return@let true // return in advance to be faster
-
-                    sc.addAll(chart.subTiming.map { subTiming -> subTiming.value.getScenecontrols() }
-                        .fold(listOf()) { a, b ->
-                            val reduceResult = a + b
-                            if (reduceResult.isNotEmpty()) return@let true // return in advance to be faster
-                            reduceResult
-                        })
-
-                    // println("${it.ratingClass}.aff of $songId has ${sc.size} scenecontrols")
-                    sc.isNotEmpty()
-                }
+            difficulties.filterIndexed { idx, _ -> // filter charts with scenecontrols that need to be serialized
+                scDifficulties[idx].isNotEmpty()
             }.let { scCharts ->
-                scCharts.map { it.ratingClass }.zip(scCharts.map {
-                    // TODO()
+                scCharts.map { it.ratingClass }.zip(List(scCharts.size) { idx ->
+                    val chartScenecontrols = scDifficulties[idx]
+                    val chartTimingGroups = tgDifficulties[idx]
+                    val service = ScenecontrolService(chartScenecontrols, chartTimingGroups, idx)
+                    service.export()
                 })
             }
 
@@ -245,9 +264,9 @@ class ArcpkgPackRequest(
                 yaml.encodeToStream(projectInformation, zos)
                 zos.closeEntry()
 
-                chartConverted.forEach {
-                    zos.putNextEntry(ZipEntry("$songId/${it.first}.aff"))
-                    zos.write(it.second.toByteArray(charset = Charsets.UTF_8))
+                chartConverted.forEach { (ratingClass, chartContent) ->
+                    zos.putNextEntry(ZipEntry("$songId/$ratingClass.aff"))
+                    zos.write(chartContent.toByteArray(charset = Charsets.UTF_8))
                     zos.closeEntry()
                 }
 
@@ -259,12 +278,20 @@ class ArcpkgPackRequest(
                     zos.closeEntry()
                 }
 
-                searchBgFile(bg).let {
-                    if (it != null) {
+                bgToExtract.forEach { (bgName, bgPath) ->
+                    if (bgPath != null) {
                         zos.putNextEntry(ZipEntry("$songId/$bg.jpg"))
-                        zos.write(it.readBytes())
+                        zos.write(bgPath.readBytes())
                         zos.closeEntry()
+                    } else if (!bgName.startsWith("base_")) {
+                        println("WARN: $bgName not found, altered to base bg")
                     }
+                }
+
+                scenecontrolSerialized.forEach { (ratingClass, scContent) ->
+                    zos.putNextEntry(ZipEntry("$songId/$ratingClass.sc.json"))
+                    zos.write(scContent.toByteArray(charset = Charsets.UTF_8))
+                    zos.closeEntry()
                 }
 
                 zos.close()

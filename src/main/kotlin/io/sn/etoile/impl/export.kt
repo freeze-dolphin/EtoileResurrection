@@ -5,7 +5,7 @@ import com.charleskorn.kaml.yamlMap
 import com.charleskorn.kaml.yamlScalar
 import com.tairitsu.compose.arcaea.Chart
 import com.tairitsu.compose.arcaea.LocalizedString
-import io.sn.etoile.*
+import io.sn.etoile.utils.*
 import kotlinx.serialization.builtins.ListSerializer
 import kotlinx.serialization.decodeFromString
 import java.awt.Color
@@ -376,9 +376,9 @@ class ArcpkgConvertRequest(
                 val audioPreviewEnd: Long = chart.previewEnd ?: 5000
 
                 val difficultyEntry = DifficultyEntry(
-                    __audioPath = audioPath,
-                    __jacketPath = jacketPath,
-                    __chartPath = ratingClassRaw,
+                    _audioPath = audioPath,
+                    _jacketPath = jacketPath,
+                    _chartPath = ratingClassRaw,
 
                     ratingClass = ratingClass,
                     chartDesigner = charter,
@@ -494,8 +494,8 @@ class ArcpkgConvertRequest(
                     if (bpmText != baseDifficulty.bpmText) difficultyEntry.bpmText = bpmText
                     if (baseBpm != baseDifficulty.bpmBase) difficultyEntry.bpmBase = baseBpm
                     if (side != baseDifficulty.side) difficultyEntry.side = side
-                    if (audioPath != baseDifficulty.__audioPath) difficultyEntry.audioOverride = true
-                    if (jacketPath != baseDifficulty.__jacketPath) difficultyEntry.jacketOverride = true
+                    if (audioPath != baseDifficulty._audioPath) difficultyEntry.audioOverride = true
+                    if (jacketPath != baseDifficulty._jacketPath) difficultyEntry.jacketOverride = true
                     if (audioPreview != baseDifficulty.audioPreview) difficultyEntry.audioPreview = audioPreview
                     if (audioPreviewEnd != baseDifficulty.audioPreviewEnd) difficultyEntry.audioPreviewEnd = audioPreviewEnd
                     if (bg != baseDifficulty.bg) difficultyEntry.bg = bg
@@ -507,8 +507,8 @@ class ArcpkgConvertRequest(
             val songDir = File(exportDirSongs, id)
             if (!songDir.exists()) songDir.mkdirs()
 
-            extractFileFromZipOverwrite(arcpkgZipFile, "${entry.directory}/${baseDifficulty.__audioPath}", songDir, "base.ogg")
-            extractFileFromZipOverwrite(arcpkgZipFile, "${entry.directory}/${baseDifficulty.__jacketPath}", songDir, "base.jpg")
+            extractFileFromZipOverwrite(arcpkgZipFile, "${entry.directory}/${baseDifficulty._audioPath}", songDir, "base.ogg")
+            extractFileFromZipOverwrite(arcpkgZipFile, "${entry.directory}/${baseDifficulty._jacketPath}", songDir, "base.jpg")
 
             val fileBase = File(songDir, "base.jpg")
             val origImg = ImageIO.read(fileBase)
@@ -529,7 +529,7 @@ class ArcpkgConvertRequest(
             }
 
             difficulties.forEach { diffEntry ->
-                val aff = readFileFromZip(arcpkgZipFile, "${entry.directory}/${diffEntry.__chartPath!!}")
+                val aff = readFileFromZip(arcpkgZipFile, "${entry.directory}/${diffEntry._chartPath!!}")
                 val convertion = Chart.fromAcf(aff)
 
                 if (convertion.second.ignoredTimingGroupEffects.isNotEmpty() || convertion.second.ignoredScenecontrols.isNotEmpty()) {

@@ -1,11 +1,13 @@
-@file:OptIn(ExperimentalSerializationApi::class)
-
-package io.sn.etoile
+package io.sn.etoile.utils
 
 import com.charleskorn.kaml.*
 import com.tairitsu.compose.arcaea.LocalizedString
-import kotlinx.serialization.*
-import kotlinx.serialization.descriptors.*
+import kotlinx.serialization.KSerializer
+import kotlinx.serialization.SerialName
+import kotlinx.serialization.Serializable
+import kotlinx.serialization.Transient
+import kotlinx.serialization.descriptors.buildClassSerialDescriptor
+import kotlinx.serialization.descriptors.element
 import kotlinx.serialization.encoding.Decoder
 import kotlinx.serialization.encoding.Encoder
 import kotlinx.serialization.json.Json
@@ -45,9 +47,9 @@ data class PacklistEntry(
 
 @Serializable
 data class DifficultyEntry(
-    @Transient var __audioPath: String? = null,
-    @Transient var __jacketPath: String? = null,
-    @Transient var __chartPath: String? = null,
+    @Transient var _audioPath: String? = null,
+    @Transient var _jacketPath: String? = null,
+    @Transient var _chartPath: String? = null,
 
     val ratingClass: Int,
     val chartDesigner: String,
@@ -323,6 +325,11 @@ fun file(vararg dirs: String): File = dirs.reduce { acc, next ->
 
 val json = Json {
     prettyPrint = true
+    ignoreUnknownKeys = true
+}
+
+val jsonMinified = Json {
+    prettyPrint = false
     ignoreUnknownKeys = true
 }
 

@@ -32,3 +32,8 @@ playground/
 result/
 
 **/*.wav
+
+arcanaeden.bat
+**/*.sc.formatted.json*
+
+/src/test/kotlin/playground.kt

@@ -1,4 +1,4 @@
-package io.sn.etoile
+package io.sn.etoile.utils
 
 import com.charleskorn.kaml.Yaml
 import kotlinx.serialization.decodeFromString
