@@ -90,14 +90,16 @@ class ArcpkgPackRequest(
             }
 
             val noteStyle = when (sideStyle) {
-                DifficultySkin.SideStyle.LIGHT -> DifficultySkin.NoteStyle.LIGHT
-                DifficultySkin.SideStyle.COLORLESS -> DifficultySkin.NoteStyle.LIGHT
-                DifficultySkin.SideStyle.LEPHON -> DifficultySkin.NoteStyle.LIGHT
+                DifficultySkin.SideStyle.LIGHT,
+                DifficultySkin.SideStyle.COLORLESS,
+                DifficultySkin.SideStyle.LEPHON,
+                    -> DifficultySkin.NoteStyle.LIGHT
+
                 DifficultySkin.SideStyle.CONFLICT -> DifficultySkin.NoteStyle.CONFLICT
             }
 
             val particleStyle = when {
-                setId.startsWith("nijuusei") -> DifficultySkin.ParticleStyle.MIRAI_CONFLICT
+                setId.startsWith("nijuusei") -> DifficultySkin.ParticleStyle.MIRAI_LIGHT
                 setId.startsWith("mirai") -> {
                     when (sideStyle) {
                         DifficultySkin.SideStyle.CONFLICT -> DifficultySkin.ParticleStyle.MIRAI_CONFLICT
@@ -120,7 +122,7 @@ class ArcpkgPackRequest(
                 bg.startsWith("rei") || bg == "tanoc_red" -> DifficultySkin.TrackStyle.REI
                 bg.startsWith("lethaeus") || bg == "saikyostronger" -> DifficultySkin.TrackStyle.BLACK
 
-                setId == "nijuusei" || bg.startsWith("nijuusei") -> DifficultySkin.TrackStyle.NIJUUSEI
+                (setId == "nijuusei" || bg.startsWith("nijuusei")) && sideStyle == DifficultySkin.SideStyle.CONFLICT -> DifficultySkin.TrackStyle.NIJUUSEI // fix #2
                 setId == "finale" && side == 1 -> DifficultySkin.TrackStyle.FINALE
 
                 else -> DifficultySkin.TrackStyle.NONE
@@ -176,7 +178,11 @@ class ArcpkgPackRequest(
             ChartEntry(
                 chartPath = "${it.ratingClass}.aff",
                 audioPath = if (it.audioOverride == true) "${it.ratingClass}.ogg" else "base.ogg",
-                jacketPath = if (it.jacketOverride == true) "${it.ratingClass}.jpg" else {
+                jacketPath = if (it.jacketOverride == true) {
+                    if (songsDir.resolve(songId).resolve("1080_${it.ratingClass}.jpg").exists()) {
+                        "1080_${it.ratingClass}.jpg"
+                    } else "${it.ratingClass}.jpg" // fix #2
+                } else {
                     if (songsDir.resolve(songId).resolve("1080_base.jpg").exists()) {
                         "1080_base.jpg"
                     } else "base.jpg"
