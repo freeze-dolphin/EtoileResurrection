@@ -1,6 +1,7 @@
 package io.sn.etoile.impl
 
 import com.charleskorn.kaml.encodeToStream
+import com.github.ajalt.mordant.animation.progress.BlockingAnimator
 import com.tairitsu.compose.arcaea.Chart
 import io.sn.etoile.utils.*
 import io.sn.etoile.utils.scenecontrol.ScenecontrolService
@@ -80,7 +81,7 @@ class ArcpkgPackRequest(
         /**
          * Logic of skinning for special songs
          */
-        private fun getSkin(side: Int, songId: String, setId: String, bg: String): DifficultySkin {
+        private fun getSkin(side: Int, songId: String, setId: String, bg: String?): DifficultySkin {
             val sideStyle = when (side) {
                 0 -> DifficultySkin.SideStyle.LIGHT
                 1 -> DifficultySkin.SideStyle.CONFLICT
@@ -88,6 +89,14 @@ class ArcpkgPackRequest(
                 3 -> DifficultySkin.SideStyle.LEPHON
                 else -> DifficultySkin.SideStyle.LIGHT
             }
+
+            val qualifiedBg = bg
+                ?: when (sideStyle) {
+                    DifficultySkin.SideStyle.LIGHT -> "base_light"
+                    DifficultySkin.SideStyle.CONFLICT -> "base_conflict"
+                    DifficultySkin.SideStyle.COLORLESS -> "epilogue"
+                    DifficultySkin.SideStyle.LEPHON -> "lephon"
+                }
 
             val noteStyle = when (sideStyle) {
                 DifficultySkin.SideStyle.LIGHT,
@@ -98,32 +107,38 @@ class ArcpkgPackRequest(
                 DifficultySkin.SideStyle.CONFLICT -> DifficultySkin.NoteStyle.CONFLICT
             }
 
-            val particleStyle = when {
-                setId.startsWith("nijuusei") -> DifficultySkin.ParticleStyle.MIRAI_LIGHT
-                setId.startsWith("mirai") -> {
+            val particleStyle = when (setId) {
+                "mirai" -> {
                     when (sideStyle) {
                         DifficultySkin.SideStyle.CONFLICT -> DifficultySkin.ParticleStyle.MIRAI_CONFLICT
                         else -> DifficultySkin.ParticleStyle.MIRAI_LIGHT
                     }
                 }
 
-                bg == "lethaeus" -> DifficultySkin.ParticleStyle.MIRAI_CONFLICT
-
-                else -> DifficultySkin.ParticleStyle.NONE
+                "nijuusei" -> DifficultySkin.ParticleStyle.MIRAI_LIGHT
+                else -> sideStyle.toParticleStyle()
             }
 
             val trackStyle = when {
-                songId == "tempestissimo" -> DifficultySkin.TrackStyle.TEMPESTISSIMO
-                songId == "pentiment" -> DifficultySkin.TrackStyle.PENTIMENT
-                songId == "arcanaeden" -> DifficultySkin.TrackStyle.ARCANA
-                songId == "alexandrite" -> DifficultySkin.TrackStyle.BLACK
+                qualifiedBg.startsWith("byd_") -> sideStyle.toTrackStyle()
 
-                side == 2 -> DifficultySkin.TrackStyle.COLORLESS
-                bg.startsWith("rei") || bg == "tanoc_red" -> DifficultySkin.TrackStyle.REI
-                bg.startsWith("lethaeus") || bg == "saikyostronger" -> DifficultySkin.TrackStyle.BLACK
+                songId.startsWith("alexandrite") -> DifficultySkin.TrackStyle.BLACK
 
-                (setId == "nijuusei" || bg.startsWith("nijuusei")) && sideStyle == DifficultySkin.SideStyle.CONFLICT -> DifficultySkin.TrackStyle.NIJUUSEI // fix #2
-                setId == "finale" && side == 1 -> DifficultySkin.TrackStyle.FINALE
+                qualifiedBg == "dynamix_conflict" -> DifficultySkin.TrackStyle.BLACK
+                qualifiedBg == "mirai_conflict" -> DifficultySkin.TrackStyle.BLACK
+                qualifiedBg == "lethaeus" -> DifficultySkin.TrackStyle.BLACK
+                qualifiedBg == "mirai_awakened" -> DifficultySkin.TrackStyle.BLACK
+                qualifiedBg == "saikyostronger" -> DifficultySkin.TrackStyle.BLACK
+
+                !qualifiedBg.startsWith("nijuusei") || qualifiedBg != "vs_conflict" -> when {
+                    songId.startsWith("etherstrike") -> DifficultySkin.TrackStyle.REI
+                    songId.startsWith("tempestissimo") -> DifficultySkin.TrackStyle.TEMPESTISSIMO
+                    qualifiedBg == "finale_conflict" || qualifiedBg == "alterego" -> DifficultySkin.TrackStyle.FINALE
+                    qualifiedBg == "pentiment" || qualifiedBg == "apophenia" -> DifficultySkin.TrackStyle.PENTIMENT
+                    qualifiedBg == "arcanaeden" -> DifficultySkin.TrackStyle.ARCANA
+
+                    else -> sideStyle.toTrackStyle()
+                }
 
                 else -> DifficultySkin.TrackStyle.NONE
             }
@@ -188,11 +203,12 @@ class ArcpkgPackRequest(
                     } else "base.jpg"
                 },
                 backgroundPath = when {
-                    it.bg?.startsWith("base_") == true -> null
-                    it.bg != null -> {
+                    it.bg != null -> { // overrideBackground
                         bgToExtract[it.bg!!] = searchBgFile(it.bg!!)
                         "${it.bg}.jpg"
                     }
+
+                    bg.startsWith("base_") -> null // use default
 
                     else -> {
                         bgToExtract[bg] = searchBgFile(bg)
@@ -210,7 +226,15 @@ class ArcpkgPackRequest(
                 difficulty = getDifficultyString(it.ratingClass, it.rating, it.ratingPlus == true),
                 chartConstant = it.rating + if (it.ratingPlus == true) 0.7F else 0F,
                 difficultyColor = getDifficultyColor(it.ratingClass),
-                skin = getSkin(side, songId, setId, bg),
+                skin = getSkin(
+                    side, songId, setId, when {
+                        it.bg != null -> it.bg
+
+                        bg.startsWith("base_") -> null
+
+                        else -> bg
+                    }
+                ),
                 previewStart = it.audioPreview ?: 0,
                 previewEnd = it.audioPreviewEnd ?: 5000,
                 searchTags = listOf(

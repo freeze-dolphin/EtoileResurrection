@@ -15,12 +15,12 @@ import java.io.File
 
 @Serializable
 data class Songlist(
-    val songs: List<SonglistEntry>
+    val songs: List<SonglistEntry>,
 )
 
 @Serializable
 data class Packlist(
-    val packs: List<PacklistEntry>
+    val packs: List<PacklistEntry>,
 )
 
 @Serializable
@@ -31,7 +31,7 @@ data class PacklistEntry(
     @SerialName("is_extend_pack") val isExtendPack: Boolean,
     @SerialName("custom_banner") val customBanner: Boolean,
     @SerialName("name_localized") val nameLocalized: LocalizedString,
-    @SerialName("description_localized") val descriptionLocalized: LocalizedString
+    @SerialName("description_localized") val descriptionLocalized: LocalizedString,
 ) {
     companion object {
         fun fromDefaultPacklistEntry(id: String, nameLocalized: LocalizedString, descriptionLocalized: LocalizedString) = PacklistEntry(
@@ -104,7 +104,7 @@ enum class ArcpkgEntryType {
 
 @Serializable(ImportInformationEntrySerializer::class)
 data class ImportInformationEntry(
-    val directory: String, val identifier: String, val settingsFile: String, val version: Int = 0, val type: ArcpkgEntryType
+    val directory: String, val identifier: String, val settingsFile: String, val version: Int = 0, val type: ArcpkgEntryType,
 )
 
 class ImportInformationEntrySerializer : KSerializer<ImportInformationEntry> {
@@ -177,7 +177,21 @@ data class DifficultySkin(
         COLORLESS,
 
         @SerialName("lephon")
-        LEPHON
+        LEPHON;
+
+        fun toTrackStyle() = when (this) {
+            LIGHT -> TrackStyle.LIGHT
+            CONFLICT -> TrackStyle.CONFLICT
+            COLORLESS -> TrackStyle.COLORLESS
+            LEPHON -> TrackStyle.LIGHT
+        }
+
+        fun toParticleStyle() = when (this) {
+            LIGHT -> ParticleStyle.LIGHT
+            CONFLICT -> ParticleStyle.CONFLICT
+            COLORLESS -> ParticleStyle.COLORLESS
+            LEPHON -> ParticleStyle.LIGHT
+        }
     }
 
     @Serializable
@@ -307,12 +321,12 @@ data class ChartEntry(
     val skin: DifficultySkin?,
     val previewStart: Long? = 0,
     val previewEnd: Long? = 5000,
-    val searchTags: String? = null
+    val searchTags: String? = null,
 )
 
 @Serializable
 data class ProjectInformation(
-    val lastOpenedChartPath: String, val charts: List<ChartEntry>
+    val lastOpenedChartPath: String, val charts: List<ChartEntry>,
 )
 
 fun getCurrentSystemTime(): Long = System.currentTimeMillis() / 1000L
