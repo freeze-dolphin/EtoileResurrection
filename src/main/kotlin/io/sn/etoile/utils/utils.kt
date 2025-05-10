@@ -318,7 +318,7 @@ data class ChartEntry(
     val difficulty: String,
     val chartConstant: Float? = null,
     val difficultyColor: String,
-    val skin: DifficultySkin?,
+    val skin: DifficultySkin? = DifficultySkin(),
     val previewStart: Long? = 0,
     val previewEnd: Long? = 5000,
     val searchTags: String? = null,

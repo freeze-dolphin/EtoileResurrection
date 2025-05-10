@@ -36,7 +36,7 @@ data class ExportConfiguration(
 class ArcpkgConvertRequest(
     private val arcpkgs: Set<Path>,
     private val identifierPrefix: String,
-    private val exportConfiguration: ExportConfiguration
+    private val exportConfiguration: ExportConfiguration,
 ) {
 
     companion object {
@@ -61,7 +61,7 @@ class ArcpkgConvertRequest(
             fileName: String,
             destDir: File,
             overrideFileName: String? = null,
-            resizeToBg1080p: Boolean = false
+            resizeToBg1080p: Boolean = false,
         ): Int {
             val zipEntry = zipFile.getEntry(fileName)
 
@@ -81,7 +81,7 @@ class ArcpkgConvertRequest(
             fileName: String,
             destDir: File,
             overrideFileName: String? = null,
-            resizeToBg1080p: Boolean = false
+            resizeToBg1080p: Boolean = false,
         ): Int {
             val zipEntry = zipFile.getEntry(fileName)
             var rt = 0
@@ -105,7 +105,7 @@ class ArcpkgConvertRequest(
             fileName: String,
             destDir: File,
             overrideFileName: String? = null,
-            resizeToBg1080p: Boolean = false
+            resizeToBg1080p: Boolean = false,
         ): Int {
             val zipEntry = zipFile.getEntry(fileName)
             var rt = 0
@@ -128,7 +128,7 @@ class ArcpkgConvertRequest(
             fileName: String,
             destDir: File,
             identifier: String,
-            resizeToBg1080p: Boolean = false
+            resizeToBg1080p: Boolean = false,
         ): Pair<Int, String> {
             val renamed = unifyBgName(identifier + "_" + File(fileName).name)
             return extractFileFromZipOverwrite(zipFile, fileName, destDir, renamed, resizeToBg1080p) to renamed
@@ -150,7 +150,7 @@ class ArcpkgConvertRequest(
             zipEntry: ZipEntry,
             fileName: String,
             outputFile: File,
-            resizeToBg1080p: Boolean = false
+            resizeToBg1080p: Boolean = false,
         ) {
             zipFile.getInputStream(zipEntry).use { input ->
                 FileOutputStream(outputFile).use { output ->
@@ -179,10 +179,16 @@ class ArcpkgConvertRequest(
             }
         }
 
-        private val ratingClassRegex = Regex("""\b\d\b""")
+        private val ratingClassRegex = Regex("""([a-zA-Z]+)\s+?(.+?)(\+?)${'$'}""")
 
-        fun matchRatingClass(difficultyText: String): MatchResult? {
-            return ratingClassRegex.find(difficultyText)
+        fun matchDifficultyText(difficultyText: String): Triple<String, String, Boolean>? {
+            val matchResult = ratingClassRegex.find(difficultyText)
+
+            return if (matchResult != null && matchResult.groupValues.size >= 4) {
+                Triple(matchResult.groupValues[1], matchResult.groupValues[2], matchResult.groupValues[3] == "+")
+            } else {
+                null
+            }
         }
 
         fun unifyBgName(raw: String): String {
@@ -252,7 +258,7 @@ class ArcpkgConvertRequest(
         index: List<ImportInformationEntry>,
         arcpkgZipFile: ZipFile,
         songlist: MutableList<SonglistEntry>,
-        set: String
+        set: String,
     ) {
         index.forEachIndexed { procIdx, entry ->
             val procTextRaw = "[${procIdx + 1}/${index.size}]"
@@ -268,7 +274,7 @@ class ArcpkgConvertRequest(
             val difficulties = mutableListOf<DifficultyEntry>()
             lateinit var baseDifficulty: DifficultyEntry
 
-            val id = entry.identifier.removePrefix(identifierPrefix)
+            val id = entry.identifier.removePrefix(identifierPrefix).removePrefix(".")
             val idName = "[id=${entry.identifier}]"
 
             println("$procText Processing: ${entry.directory} $idName")
@@ -310,10 +316,12 @@ class ArcpkgConvertRequest(
                     rating = constant.toInt()
                     ratingPlus = constant - rating >= 0.7
                 } else {
-                    val matchRst = matchRatingClass(difficultyText)
+                    val matchRst = matchDifficultyText(difficultyText)
                         ?: throw RuntimeException("Invalid difficulty information for ${entry.directory}/${entry.settingsFile} $idName")
-                    rating = matchRst.value.toInt()
-                    ratingPlus = difficultyText.endsWith("+")
+
+                    val (_, ratingString, ratingPlusBoolean) = matchRst
+                    rating = ratingString.toInt()
+                    ratingPlus = ratingPlusBoolean
                 }
 
                 lateinit var sideString: String
