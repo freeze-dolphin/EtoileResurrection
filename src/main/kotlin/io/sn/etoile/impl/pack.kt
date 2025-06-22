@@ -28,22 +28,22 @@ class ArcpkgPackRequest(
 
     private val identifier = "$prefix.$songId"
 
-    private val bgSearchDir: List<Path> = listOf(
-        file(songsDir.toString(), songId).toPath(),
-        file(songsDir.toString(), "..", "img", "bg").toPath(),
-        file(songsDir.toString(), "..", "img", "bg", "1080").toPath()
+    private val bgSearchDir: List<Pair<Path, Boolean>> = listOf(
+        file(songsDir.toString(), songId).toPath() to false,
+        file(songsDir.toString(), "..", "img", "bg").toPath() to true,
+        file(songsDir.toString(), "..", "img", "bg", "1080").toPath() to true
     )
 
-    private fun searchBgFile(bgName: String): Path? {
-        if (bgName.startsWith("base_")) return null
+    private fun searchBgFile(bgName: String): Pair<Path?, Boolean> {
+        if (bgName.startsWith("base_")) return Pair(null, false)
         bgSearchDir.find {
-            if (!it.exists()) return@find false
-            it.listDirectoryEntries().any { subdirFile -> subdirFile.name == "$bgName.jpg" }
+            if (!it.first.exists()) return@find false
+            it.first.listDirectoryEntries().any { subdirFile -> subdirFile.name == "$bgName.jpg" }
         }.let {
             if (it != null) {
-                return Path.of(it.toString(), "$bgName.jpg")
+                return Pair(Path.of(it.first.toString(), "$bgName.jpg"), it.second)
             }
-            return null
+            return Pair(null, false)
         }
     }
 
@@ -186,7 +186,7 @@ class ArcpkgPackRequest(
         val side = songEntry.side!!
         val difficulties: List<DifficultyEntry> = songEntry.difficulties!!.filter { it.rating >= 0 }
 
-        val bgToExtract = mutableMapOf<String, Path?>()
+        val bgToExtract = mutableMapOf<String, Pair<Path?, Boolean>>()
 
         val lastOpenedChartPath = getLastOpenedChartPath(difficulties)
         val charts = difficulties.map {
@@ -301,20 +301,25 @@ class ArcpkgPackRequest(
                 }
 
                 Files.list(songsDir.resolve(songId)).filter {
-                    it.name.endsWith(".jpg") || it.name.endsWith(".ogg") || it.name.endsWith(".wav")
+                    (it.name.endsWith(".jpg") && !bgToExtract.map { bgToExtract -> bgToExtract.key }.contains(it.name)) || it.name.endsWith(
+                        ".ogg"
+                    ) || it.name.endsWith(".wav")
                 }.forEach {
                     zos.putNextEntry(ZipEntry("$songId/${it.name}"))
                     zos.write(it.readBytes())
                     zos.closeEntry()
                 }
 
-                bgToExtract.forEach { (bgName, bgPath) ->
-                    if (bgPath != null) {
-                        zos.putNextEntry(ZipEntry("$songId/$bgName.jpg"))
-                        zos.write(bgPath.readBytes())
-                        zos.closeEntry()
-                    } else if (!bgName.startsWith("base_")) {
-                        println("WARN: $bgName not found, altered to base bg")
+                bgToExtract.forEach { (bgName, pair) ->
+                    val (bgPath, needExtract) = pair
+                    if (needExtract) {
+                        if (bgPath != null) {
+                            zos.putNextEntry(ZipEntry("$songId/$bgName.jpg"))
+                            zos.write(bgPath.readBytes())
+                            zos.closeEntry()
+                        } else if (!bgName.startsWith("base_")) {
+                            println("WARN: $bgName not found, altered to base bg")
+                        }
                     }
                 }
 

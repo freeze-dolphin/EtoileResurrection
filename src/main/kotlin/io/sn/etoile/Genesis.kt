@@ -107,6 +107,10 @@ class ExportCommand : CliktCommand(name = "export") {
         names = arrayOf("--output", "-o"), help = "The output of the song output, defaults to './result'"
     ).file(mustExist = true, canBeDir = true, canBeFile = false).default(file(".", "result"))
 
+    private val disableDiffEntriesCompletion by option(
+        names = arrayOf("--disable-diff-entries-completion"), help = "Disable difficulty-entries auto completion for missing .aff"
+    ).flag(default = false)
+
     override fun run() {
         ArcpkgConvertRequest(
             arcpkgs, prefix, ExportConfiguration(
@@ -114,7 +118,8 @@ class ExportCommand : CliktCommand(name = "export") {
                 exportVersion = exportVersion,
                 exportTime = exportTime.toLong(),
                 exportDirectory = exportOutput,
-                exportBgMode = ExportBgMode.valueOf(exportBgMode.uppercase())
+                exportBgMode = ExportBgMode.valueOf(exportBgMode.uppercase()),
+                enableDiffEntriesCompletion = !disableDiffEntriesCompletion
             )
         ).exec()
     }

@@ -31,6 +31,7 @@ data class ExportConfiguration(
     val exportBgMode: ExportBgMode,
     val exportDirectory: File,
     val exportTime: Long = getCurrentSystemTime(),
+    val enableDiffEntriesCompletion: Boolean = true,
 )
 
 class ArcpkgConvertRequest(
@@ -288,7 +289,7 @@ class ArcpkgConvertRequest(
                 if (ratingClassRaw.endsWith(".aff") && ratingClassRaw.removeSuffix(".aff").toIntOrNull()
                         .also { ratingClassDigit = it } != null && (0..4).contains(ratingClassDigit!!)
                 ) {
-                    ratingClass = ratingClassDigit!!
+                    ratingClass = ratingClassDigit
                 } else {
                     ratingClass = when {
                         difficultyText.startsWith("Eternal") -> 4
@@ -297,7 +298,10 @@ class ArcpkgConvertRequest(
                         difficultyText.startsWith("Present") -> 1
                         difficultyText.startsWith("Past") -> 0
 
-                        else -> throw RuntimeException("Unable to detect ratingClass $idName")
+                        else -> {
+                            println("$procIndent Unable to detect ratingClass $idName, defaulting to 'Future'")
+                            2
+                        }
                     }
                 }
                 val audioPath = chart.audioPath
@@ -546,18 +550,20 @@ class ArcpkgConvertRequest(
                 File(songDir, "${diffEntry.ratingClass}.aff").writeText(convertion.first.serializeForArcaea())
             }
 
-            (0..2).forEach { ratingClass ->
-                if (difficulties.none {
-                        it.ratingClass == ratingClass
-                    }) {
-                    difficulties.add(
-                        DifficultyEntry(
-                            ratingClass = ratingClass,
-                            chartDesigner = "",
-                            jacketDesigner = "",
-                            rating = -1
+            if (exportConfiguration.enableDiffEntriesCompletion) {
+                (0..2).forEach { ratingClass ->
+                    if (difficulties.none {
+                            it.ratingClass == ratingClass
+                        }) {
+                        difficulties.add(
+                            DifficultyEntry(
+                                ratingClass = ratingClass,
+                                chartDesigner = "",
+                                jacketDesigner = "",
+                                rating = -1
+                            )
                         )
-                    )
+                    }
                 }
             }
 
