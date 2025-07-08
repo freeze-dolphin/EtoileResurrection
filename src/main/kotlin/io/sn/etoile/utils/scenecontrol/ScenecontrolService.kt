@@ -18,7 +18,7 @@ class ScenecontrolService(
 ) {
     private val referencedControllers: MutableList<ISceneController> = mutableListOf()
 
-    val scene: Scene = Scene(this)
+    var scene: Scene = Scene(this)
     val context: Context = Context(this)
 
     private fun processScenecontrol(scenecontrol: Scenecontrol) {

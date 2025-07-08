@@ -254,22 +254,22 @@ class ArcpkgPackRequest(
         })
 
         // generate .sc.json
-        val tgDifficulties = difficulties.map {
+        val tgDifficulties = difficulties.map { it.ratingClass }.zip(difficulties.map {
             loadChart(songsDir.resolve(songId).resolve("${it.ratingClass}.aff"))
-        }
+        })
 
-        val scDifficulties = tgDifficulties.map {
-            extractScenecontrols(it)
-        }
+        val scDifficulties = tgDifficulties.map { it.first }.zip(tgDifficulties.map {
+            extractScenecontrols(it.second)
+        })
 
         val scenecontrolSerialized =
-            difficulties.filterIndexed { idx, _ -> // filter charts with scenecontrols that need to be serialized
-                scDifficulties[idx].isNotEmpty()
+            difficulties.filter { diff -> // filter charts with scenecontrols that need to be serialized
+                scDifficulties.first { it.first == diff.ratingClass }.second.isNotEmpty()
             }.let { scCharts ->
                 scCharts.map { it.ratingClass }.zip(List(scCharts.size) { idx ->
-                    val chartScenecontrols = scDifficulties[idx]
-                    val chartTimingGroups = tgDifficulties[idx]
-                    val service = ScenecontrolService(chartScenecontrols, chartTimingGroups, idx)
+                    val chartScenecontrols = scDifficulties.first { it.first == scCharts[idx].ratingClass }.second
+                    val chartTimingGroups = tgDifficulties.first { it.first == scCharts[idx].ratingClass }.second
+                    val service = ScenecontrolService(chartScenecontrols, chartTimingGroups, difficulties[idx].ratingClass)
                     service.export()
                 })
             }

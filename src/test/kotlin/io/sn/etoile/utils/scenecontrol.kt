@@ -27,7 +27,7 @@ object ScenecontrolSerializationTest {
 
     @Test
     fun `scDotJson flatten print`() {
-        val chartFile = Path("Z:/Workspace/arc/fragments-category/songs/lfdyrmx/2.aff")
+        val chartFile = Path("Z:/Workspace/arc/beatmaps/ace/empty_test/4.aff")
         assumeTrue(chartFile.exists())
 
         val timingGroups = loadChart(chartFile)
@@ -35,7 +35,7 @@ object ScenecontrolSerializationTest {
         val actualSc = service.serialize()
 
         val expectedScJson =
-            Path("Z:/Workspace/idea/EtoileResurrection/result/lowiro.lfdyrmx/lfdyrmx/2.sc.json")
+            Path("Z:/Workspace/arc/beatmaps/ace/empty_test/4.sc.json")
         assumeTrue(expectedScJson.exists())
 
         val expectedSc = json.decodeFromString<List<SerializedUnit>>(
@@ -68,14 +68,14 @@ object ScenecontrolSerializationTest {
 
         }
 
-        val expectedScFlattened = expectedSc.find { it.type == "tg.8" }!!.let { (_, properties) ->
+        val expectedScFlattened = expectedSc.find { it.type == "tg.1" }!!.let { (_, properties) ->
             properties!!.map {
                 flattenChannelPropertyToString(expectedSc, it)
             }
         }.joinToString(separator = ", ", prefix = "[", postfix = "]")
 
 
-        val actualScFlattened = actualSc!!.find { it.type == "tg.8" }!!.let { (_, properties) ->
+        val actualScFlattened = actualSc!!.find { it.type == "tg.1" }!!.let { (_, properties) ->
             properties!!.map {
                 flattenChannelPropertyToString(actualSc, it)
             }

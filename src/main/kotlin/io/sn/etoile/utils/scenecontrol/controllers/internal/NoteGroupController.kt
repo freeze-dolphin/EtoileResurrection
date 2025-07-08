@@ -63,17 +63,17 @@ class NoteGroupController(override var serializedType: String) :
         }
 
     override var enableColorModule: Boolean = false
-    override var colorR: ValueChannel = ConstantChannel(0f)
+    override var colorR: ValueChannel = ConstantChannel(255f)
         set(value) {
             field = value
             enableColorModule = true
         }
-    override var colorG: ValueChannel = ConstantChannel(0f)
+    override var colorG: ValueChannel = ConstantChannel(255f)
         set(value) {
             field = value
             enableColorModule = true
         }
-    override var colorB: ValueChannel = ConstantChannel(0f)
+    override var colorB: ValueChannel = ConstantChannel(255f)
         set(value) {
             field = value
             enableColorModule = true
