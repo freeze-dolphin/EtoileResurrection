@@ -166,8 +166,9 @@ class ArcpkgPackRequest(
             )
         }
 
-        private fun getLastOpenedChartPath(difficulties: List<DifficultyEntry>): String {
-            if (difficulties.isEmpty()) throw RuntimeException("No charts exist for this song")
+        private fun getLastOpenedChartPath(songlistEntry: SonglistEntry): String {
+            val difficulties = songlistEntry.difficulties
+            if (difficulties == null || difficulties.isEmpty()) throw RuntimeException("No charts exist for ${songlistEntry.id}")
 
             return if (difficulties.any { it.ratingClass == 2 }) {
                 "2.aff"
@@ -188,7 +189,7 @@ class ArcpkgPackRequest(
 
         val bgToExtract = mutableMapOf<String, Pair<Path?, Boolean>>()
 
-        val lastOpenedChartPath = getLastOpenedChartPath(difficulties)
+        val lastOpenedChartPath = getLastOpenedChartPath(songEntry)
         val charts = difficulties.map {
             ChartEntry(
                 chartPath = "${it.ratingClass}.aff",
@@ -250,7 +251,14 @@ class ArcpkgPackRequest(
         // convertion of the chart
         val chartConverted = difficulties.map { it.ratingClass }.zip(difficulties.map {
             val chartFile = file(songsDir.toString(), songId, "${it.ratingClass}.aff")
-            Chart.fromAff(chartFile.readText(charset = Charsets.UTF_8)).serializeForArcCreate()
+            var rt: String
+            try {
+                rt = Chart.fromAff(chartFile.readText(charset = Charsets.UTF_8)).serializeForArcCreate()
+            } catch (e: Exception) {
+                e.printStackTrace()
+                throw RuntimeException("Error converting chart $songId (${it.ratingClass}.aff): ${e.message}")
+            }
+            rt
         })
 
         // generate .sc.json
