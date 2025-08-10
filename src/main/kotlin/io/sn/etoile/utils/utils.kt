@@ -286,8 +286,11 @@ data class DifficultySkin(
 
     @Serializable
     enum class SingleLineStyle {
-        @SerialName("")
+        @SerialName("none")
         NONE,
+
+        @SerialName("")
+        NULL,
 
         @SerialName("light")
         LIGHT,
