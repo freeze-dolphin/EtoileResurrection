@@ -1,7 +1,6 @@
 package io.sn.etoile.impl
 
 import com.charleskorn.kaml.encodeToStream
-import com.github.ajalt.mordant.animation.progress.BlockingAnimator
 import com.tairitsu.compose.arcaea.Chart
 import io.sn.etoile.utils.*
 import io.sn.etoile.utils.scenecontrol.ScenecontrolService
