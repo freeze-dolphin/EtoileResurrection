@@ -1,22 +1,43 @@
-<p align="right">
-
-[![en](https://img.shields.io/badge/lang-en-blue.svg)](README.md)
-[![zh-Hans](https://img.shields.io/badge/lang-zh--Hans-red.svg)](README.zh-Hans.md)
-
-</p>
-
 # EtoileResurrection
+
+---
+
+[English](README.md) | [简体中文](README.zh-Hans.md)
+
+---
 
 Command-line tool for convertion of **.aff** charts between [`ArcCreate`](https://github.com/Arcthesia/ArcCreate) and the official Arcaea
 format.
 
-## Usage
+Available commands:
 
-There are two command currenly:
-
-- `pack`: To pack the official Arcaea chart format into ArcCreate **.arcpkg** files.
-- `export`: To unpack ArcCreate **.arcpkg** files, extract background images, convert chart format, and generate `songlist`, `packlist`
+- `export`: **(ArcCreate -> Arcaea)** to unpack ArcCreate **.arcpkg** files, extract background images, convert chart format, and generate
+  `songlist`, `packlist`
   file.
+- `pack`: **(Arcaea -> ArcCreate)** to pack the official Arcaea chart format into ArcCreate **.arcpkg** files.
+
+## Features
+
+### Common
+
+- [x] hitsound waveform files extraction
+- [x] var-len ArcTaps convertion
+- [x] ArcResolution conversion (Experimental)
+
+### `export`
+
+- [x] audio, jacket, background files extraction
+- [x] generation for `songlist` & `packlist` according to `project.arcproj`
+
+### `pack`
+
+- [x] bundled background
+- [x] generation for `project.arcproj` according to `songlist`
+- [x] scenecontrol serialization (.sc.json generation)
+- [x] track skinning logic from GameScene.cpp
+- [ ] gray ArcNotes support (force gracePeriod)
+
+## Usage
 
 ### `export`
 
