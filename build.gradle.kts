@@ -9,6 +9,7 @@ val xmlutilVersion: String by project
 plugins {
     kotlin("jvm") version "2.0.0-RC1"
     kotlin("plugin.serialization") version "1.9.23"
+    id("com.ryandens.jlink-application") version "0.4.1"
 
     java
     application
