@@ -39,13 +39,22 @@ jlinkJre {
 
 distributions {
     main {
-        distributionBaseName = "EtoileResurrection.Swing"
+        distributionBaseName = "EtoileResurrection.Swing-win64"
         version = getCheckedOutGitCommitHash(7)
         contents {
-            from(
-                layout.buildDirectory.dir("launch4j"),
-            )
-            duplicatesStrategy = DuplicatesStrategy.INCLUDE
+            from(layout.buildDirectory.dir("launch4j"))
+            exclude("jre")
+            duplicatesStrategy = DuplicatesStrategy.EXCLUDE
+        }
+    }
+
+    create("noJre") {
+        distributionBaseName = "EtoileResurrection.Swing-win64-nojre"
+        version = getCheckedOutGitCommitHash(7)
+        contents {
+            from(layout.buildDirectory.dir("launch4j"))
+            exclude("jre")
+            duplicatesStrategy = DuplicatesStrategy.EXCLUDE
         }
     }
 }
@@ -97,5 +106,13 @@ tasks.named("distTar") {
 }
 
 tasks.named("distZip") {
+    dependsOn("createExe")
+}
+
+tasks.named("noJreDistZip") {
+    dependsOn("createExe")
+}
+
+tasks.named("noJreDistTar") {
     dependsOn("createExe")
 }
