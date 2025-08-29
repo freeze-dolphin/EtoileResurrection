@@ -3,7 +3,6 @@ val kotlinxVersion: String by rootProject
 plugins {
     kotlin("jvm")
     kotlin("plugin.serialization") version "2.2.10"
-    id("com.ryandens.jlink-application") version "0.4.1"
 
     java
     application
@@ -14,7 +13,7 @@ group = "io.sn"
 dependencies {
     implementation("com.github.ajalt.clikt:clikt:5.0.3")
     implementation("org.jetbrains.kotlinx:kotlinx-serialization-json:${kotlinxVersion}")
-    
+
     implementation(project(":core"))
 }
 
@@ -48,8 +47,13 @@ fun getCheckedOutGitCommitHash(takeFromHash: Int = 12): String { // https://gist
 
 distributions {
     main {
+        distributionBaseName = "EtoileResurrection"
         version = getCheckedOutGitCommitHash(7)
     }
+}
+
+tasks.startScripts {
+    applicationName = "EtoileResurrection"
 }
 
 tasks.named<Test>("test") {
