@@ -48,7 +48,7 @@ fun getCheckedOutGitCommitHash(takeFromHash: Int = 12): String { // https://gist
 
 distributions {
     main {
-        version = getCheckedOutGitCommitHash(6)
+        version = getCheckedOutGitCommitHash(7)
     }
 }
 

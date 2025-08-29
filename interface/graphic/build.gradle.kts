@@ -7,7 +7,7 @@ plugins {
     id("edu.sc.seis.launch4j") version "4.0.0"
 
     java
-    application
+    distribution
 }
 
 group = "io.sn"
@@ -26,13 +26,9 @@ java {
     }
 }
 
-application {
-    mainClass.set("io.sn.etoile.launch.SwingGenesisKt")
-}
-
 launch4j {
-    mainClassName = application.mainClass.get()
-    outfile = "EtoileResurrection.Swing.exe"
+    mainClassName = "io.sn.etoile.launch.SwingGenesisKt"
+    outfile = "EtoileResurrection.Swing-${getCheckedOutGitCommitHash(7)}.exe"
     downloadUrl = "https://learn.microsoft.com/java/openjdk/download"
     bundledJrePath = "jre"
 }
@@ -41,9 +37,28 @@ jlinkJre {
     modules.set(setOf("java.base", "java.desktop", "java.logging"))
 }
 
-fun getCheckedOutGitCommitHash(): String { // https://gist.github.com/JonasGroeger/7620911
+distributions {
+    main {
+        distributionBaseName = "EtoileResurrection.Swing"
+        version = getCheckedOutGitCommitHash(7)
+        contents {
+            from(
+                layout.buildDirectory.dir("launch4j"),
+            )
+            duplicatesStrategy = DuplicatesStrategy.INCLUDE
+        }
+    }
+}
+
+tasks.startScripts {
+    doLast {
+        unixScript.delete()
+        windowsScript.delete()
+    }
+}
+
+fun getCheckedOutGitCommitHash(takeFromHash: Int = 12): String { // https://gist.github.com/JonasGroeger/7620911
     val gitFolder = "${rootProject.projectDir}/.git/"
-    val takeFromHash = 12
 
     /*
      * '.git/HEAD' contains either
@@ -60,12 +75,6 @@ fun getCheckedOutGitCommitHash(): String { // https://gist.github.com/JonasGroeg
     return refHead.readText().trim().take(takeFromHash)
 }
 
-distributions {
-    main {
-        version = getCheckedOutGitCommitHash().substring(0 until 7)
-    }
-}
-
 tasks.named<Test>("test") {
     useJUnitPlatform()
 }
@@ -75,11 +84,18 @@ tasks.named("createExe") {
 
     val sourceJre = layout.buildDirectory.dir("jlink-jre/jre")
     val targetJre = layout.buildDirectory.dir("launch4j/jre")
-
     inputs.dir(sourceJre)
     outputs.dir(targetJre)
 
     doLast {
         sourceJre.get().asFile.copyRecursively(targetJre.get().asFile, overwrite = true)
     }
+}
+
+tasks.named("distTar") {
+    dependsOn("createExe")
+}
+
+tasks.named("distZip") {
+    dependsOn("createExe")
 }
