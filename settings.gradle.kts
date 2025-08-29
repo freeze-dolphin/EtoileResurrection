@@ -4,6 +4,10 @@ plugins {
 }
 
 rootProject.name = "EtoileResurrection"
+include(":core", ":console", ":graphic")
+
+project(":console").projectDir = file("interface/console")
+project(":graphic").projectDir = file("interface/graphic")
 
 @Suppress("UnstableApiUsage")
 dependencyResolutionManagement {

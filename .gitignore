@@ -26,7 +26,7 @@ build
 .idea/
 .kotlin/
 
-/src/test/resources/ArcCreate_project/.project_backup/
+/core/src/test/resources/ArcCreate_project/.project_backup/
 
 playground/
 result/
@@ -36,4 +36,4 @@ result/
 arcanaeden.bat
 **/*.sc.formatted.json*
 
-/src/test/kotlin/playground.kt
+/core/src/test/kotlin/playground.kt

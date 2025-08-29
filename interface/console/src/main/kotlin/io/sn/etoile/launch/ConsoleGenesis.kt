@@ -1,4 +1,4 @@
-package io.sn.etoile
+package io.sn.etoile.launch
 
 import com.github.ajalt.clikt.core.CliktCommand
 import com.github.ajalt.clikt.core.main

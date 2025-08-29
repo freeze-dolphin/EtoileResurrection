@@ -15,6 +15,8 @@ import java.io.BufferedReader
 import java.io.File
 import java.io.FileOutputStream
 import java.io.InputStreamReader
+import java.io.OutputStream
+import java.io.PrintStream
 import java.nio.file.Path
 import java.util.zip.ZipEntry
 import java.util.zip.ZipFile
@@ -46,7 +48,7 @@ class ArcpkgConvertRequest(
             val content = StringBuilder()
 
             zipFile.getInputStream(entry).use { inputStream ->
-                BufferedReader(InputStreamReader(inputStream, charset("utf-8"))).use { reader ->
+                BufferedReader(InputStreamReader(inputStream)).use { reader ->
                     var line: String?
                     while (reader.readLine().also { line = it } != null) {
                         content.append(line + System.lineSeparator())
@@ -55,6 +57,20 @@ class ArcpkgConvertRequest(
             }
 
             return content.toString()
+        }
+
+        fun extractHitsoundWaveformFileFromZip(
+            zipFile: ZipFile,
+            destDir: File,
+        ): List<String> {
+            val entries = zipFile.entries().toList()
+            val waveforms = entries.filter { !it.isDirectory && it.name.endsWith(".wav") && it.name.startsWith(destDir.name) }
+
+            waveforms.forEach {
+                extractFileFromZip(zipFile, it, it.name, destDir.parentFile.resolve(it.name))
+            }
+
+            return waveforms.map { it.name }
         }
 
         fun extractFileFromZipPrecise(
@@ -260,6 +276,8 @@ class ArcpkgConvertRequest(
         arcpkgZipFile: ZipFile,
         songlist: MutableList<SonglistEntry>,
         set: String,
+        s: PrintStream = System.out,
+        postProcessor: ((List<ImportInformationEntry>) -> Unit)? = null,
     ) {
         index.forEachIndexed { procIdx, entry ->
             val procTextRaw = "[${procIdx + 1}/${index.size}]"
@@ -270,15 +288,17 @@ class ArcpkgConvertRequest(
                 "${entry.directory}/${entry.settingsFile}"
             ).let { yaml.decodeFromString<ProjectInformation>(it) }
 
+            postProcessor?.invoke(index)
+
             val charts = settings.charts
 
             val difficulties = mutableListOf<DifficultyEntry>()
             lateinit var baseDifficulty: DifficultyEntry
 
-            val id = entry.identifier.removePrefix(identifierPrefix).removePrefix(".")
+            val id = entry.identifier.removePrefix("$identifierPrefix.")
             val idName = "[id=${entry.identifier}]"
 
-            println("$procText Processing: ${entry.directory} $idName")
+            s.println("$procText Processing: ${entry.directory} $idName")
 
             charts.forEach { chart ->
                 val difficultyText = chart.difficulty
@@ -299,7 +319,7 @@ class ArcpkgConvertRequest(
                         difficultyText.startsWith("Past") -> 0
 
                         else -> {
-                            println("$procIndent Unable to detect ratingClass $idName, defaulting to 'Future'")
+                            s.println("$procIndent Unable to detect ratingClass $idName, defaulting to 'Future'")
                             2
                         }
                     }
@@ -321,10 +341,17 @@ class ArcpkgConvertRequest(
                     ratingPlus = constant - rating >= 0.7
                 } else {
                     val matchRst = matchDifficultyText(difficultyText)
-                        ?: throw RuntimeException("Invalid difficulty information for ${entry.directory}/${entry.settingsFile} $idName")
+                        ?: run {
+                            s.println("$procIndent Unable to detect difficulty $difficultyText, defaulting to 'Future ?'")
+                            Triple("Future", "?", false)
+                        }
 
                     val (_, ratingString, ratingPlusBoolean) = matchRst
-                    rating = ratingString.toInt()
+                    rating = try {
+                        if (ratingString[0] == '?') 0 else ratingString.toInt()
+                    } catch (_: NumberFormatException) {
+                        0
+                    }
                     ratingPlus = ratingPlusBoolean
                 }
 
@@ -352,7 +379,7 @@ class ArcpkgConvertRequest(
                         }
 
                         else -> {
-                            println("$procIndent Unable to parse side: ${skin.side}, defaulting to 'light'")
+                            s.println("$procIndent Unable to parse side: ${skin.side}, defaulting to 'light'")
                             sideString = "light"
                             0
                         }
@@ -400,13 +427,13 @@ class ArcpkgConvertRequest(
 
                 if (extractBg) {
                     val bgPath = "${entry.directory}/$bgRaw"
-                    println("$procIndent Extracting bg: $bgPath")
+                    s.println("$procIndent Extracting bg: $bgPath")
 
                     when (exportConfiguration.exportBgMode) {
                         ExportBgMode.SIMPLIFIED -> {
                             val rt = extractFileFromZipSimplified(arcpkgZipFile, bgPath, exportDirBg, null, true)
                             when (rt) {
-                                2 -> println(
+                                2 -> s.println(
                                     "$procIndent | Already exists: ${
                                         file(
                                             exportDirBg.path,
@@ -416,7 +443,7 @@ class ArcpkgConvertRequest(
                                 )
 
                                 1 -> {
-                                    println("$procIndent | Unable to extract: $bgPath, alter to use bundled bg: $bgBundled")
+                                    s.println("$procIndent | Unable to extract: $bgPath, alter to use bundled bg: $bgBundled")
                                     bg = bgBundled
                                 }
                             }
@@ -424,7 +451,7 @@ class ArcpkgConvertRequest(
 
                         ExportBgMode.PRECISE -> {
                             if (extractFileFromZipPrecise(arcpkgZipFile, bgPath, exportDirBg, null, true) != 0) {
-                                println("$procIndent | Unable to extract: $bgPath, alter to use bundled bg: $bgBundled")
+                                s.println("$procIndent | Unable to extract: $bgPath, alter to use bundled bg: $bgBundled")
                                 bg = bgBundled
                             }
                         }
@@ -432,7 +459,7 @@ class ArcpkgConvertRequest(
                         ExportBgMode.OVERWRITE -> {
                             val rt = extractFileFromZipOverwrite(arcpkgZipFile, bgPath, exportDirBg, null, true)
                             when (rt) {
-                                2 -> println(
+                                2 -> s.println(
                                     "$procIndent | Already exists: ${
                                         file(
                                             exportDirBg.path,
@@ -442,7 +469,7 @@ class ArcpkgConvertRequest(
                                 )
 
                                 1 -> {
-                                    println("$procIndent | Unable to extract: $bgPath, alter to use bundled bg: $bgBundled")
+                                    s.println("$procIndent | Unable to extract: $bgPath, alter to use bundled bg: $bgBundled")
                                     bg = bgBundled
                                 }
                             }
@@ -458,7 +485,7 @@ class ArcpkgConvertRequest(
                             )
                             when (rt) {
                                 2 -> {
-                                    println(
+                                    s.println(
                                         "$procIndent | Already exists: ${
                                             file(
                                                 exportDirBg.path,
@@ -470,7 +497,7 @@ class ArcpkgConvertRequest(
                                 }
 
                                 1 -> {
-                                    println("$procIndent | Unable to extract: $bgPath, alter to use bundled bg: $bgBundled")
+                                    s.println("$procIndent | Unable to extract: $bgPath, alter to use bundled bg: $bgBundled")
                                     bg = bgBundled
                                 }
 
@@ -482,7 +509,7 @@ class ArcpkgConvertRequest(
                         }
                     }
                 } else {
-                    println("$procIndent Using bundled bg: $bg")
+                    s.println("$procIndent Using bundled bg: $bg")
                 }
 
                 if (bg != bgBundled) bg = bg.removeSuffix(".jpg")
@@ -521,6 +548,9 @@ class ArcpkgConvertRequest(
 
             extractFileFromZipOverwrite(arcpkgZipFile, "${entry.directory}/${baseDifficulty._audioPath}", songDir, "base.ogg")
             extractFileFromZipOverwrite(arcpkgZipFile, "${entry.directory}/${baseDifficulty._jacketPath}", songDir, "base.jpg")
+            extractHitsoundWaveformFileFromZip(arcpkgZipFile, songDir).forEach {
+                s.println("$procIndent Extracting waveform file: $it")
+            }
 
             val fileBase = File(songDir, "base.jpg")
             val origImg = ImageIO.read(fileBase)
@@ -545,7 +575,7 @@ class ArcpkgConvertRequest(
                 val convertion = Chart.fromAcf(aff)
 
                 if (convertion.second.ignoredTimingGroupEffects.isNotEmpty() || convertion.second.ignoredScenecontrols.isNotEmpty()) {
-                    println("$procIndent Ignoring ${convertion.second.ignoredTimingGroupEffects.size}x timingGroup effects, and ${convertion.second.ignoredScenecontrols.size}x scenecontrols")
+                    s.println("$procIndent Ignoring ${convertion.second.ignoredTimingGroupEffects.size}x timingGroup effects, and ${convertion.second.ignoredScenecontrols.size}x scenecontrols")
                 }
                 File(songDir, "${diffEntry.ratingClass}.aff").writeText(convertion.first.serializeForArcaea())
             }
@@ -593,7 +623,9 @@ class ArcpkgConvertRequest(
         }
     }
 
-    fun exec() {
+    fun exec(output: OutputStream = System.out, postProcessor: ((List<ImportInformationEntry>) -> Unit)? = null) {
+        val s = PrintStream(output)
+
         if (!createDirs()) {
             throw RuntimeException("Failed to create necessary directories.")
         }
@@ -611,7 +643,7 @@ class ArcpkgConvertRequest(
             }.let { packEntries ->
                 if (packEntries.isEmpty()) {
                     // alter to use `exportSet`
-                    processSongs("", index, zipFile, songlist, exportConfiguration.exportSet)
+                    processSongs("", index, zipFile, songlist, exportConfiguration.exportSet, s, postProcessor)
                 } else {
                     // batch process for each pack
                     packEntries.forEachIndexed { procIdx, packEntry ->
@@ -622,7 +654,7 @@ class ArcpkgConvertRequest(
                             "${packEntry.directory}/${packEntry.settingsFile}"
                         ).let { yaml.parseToYamlNode(it) }
 
-                        println("$procText Processing pack: ${packEntry.directory} [id=${packEntry.identifier}]")
+                        s.println("$procText Processing pack: ${packEntry.directory} [id=${packEntry.identifier}]")
 
                         val packCover = settings content "imagePath"
                         val songIds = settings.yamlMap.get<YamlList>("levelIdentifiers")!!.items.map { node ->
@@ -644,11 +676,18 @@ class ArcpkgConvertRequest(
                             "$procIndent ",
                             index.filter { entry ->
                                 songIds.contains(entry.identifier)
-                            }, zipFile, songlist, packId
+                            },
+                            zipFile,
+                            songlist,
+                            packId,
+                            s,
+                            postProcessor
                         )
                     }
                 }
             }
+
+            zipFile.close()
         }
 
         json.encodeToString(Songlist.serializer(), Songlist(songlist)).let {

@@ -7,6 +7,8 @@ import io.sn.etoile.utils.scenecontrol.ScenecontrolService
 import io.sn.etoile.utils.scenecontrol.extractScenecontrols
 import io.sn.etoile.utils.scenecontrol.loadChart
 import java.io.FileOutputStream
+import java.io.OutputStream
+import java.io.PrintStream
 import java.nio.file.Files
 import java.nio.file.Path
 import java.util.zip.ZipEntry
@@ -25,7 +27,7 @@ class ArcpkgPackRequest(
     private val songsDir: Path = songlistPath.parent
     private val songId: String = song.id
 
-    private val identifier = "$prefix.$songId"
+    private val identifier = "$prefix${if (prefix.isEmpty()) "" else "."}$songId"
 
     private val bgSearchDir: List<Pair<Path, Boolean>> = listOf(
         file(songsDir.toString(), songId).toPath() to false,
@@ -178,7 +180,9 @@ class ArcpkgPackRequest(
 
     }
 
-    fun exec() {
+    fun exec(output: OutputStream = System.out) {
+        val s = PrintStream(output)
+
         val songEntry = song
 
         val bg = songEntry.bg!!
@@ -254,7 +258,7 @@ class ArcpkgPackRequest(
             try {
                 rt = Chart.fromAff(chartFile.readText(charset = Charsets.UTF_8)).serializeForArcCreate()
             } catch (e: Exception) {
-                e.printStackTrace()
+                e.printStackTrace(s)
                 throw RuntimeException("Error converting chart $songId (${it.ratingClass}.aff): ${e.message}")
             }
             rt
@@ -282,7 +286,7 @@ class ArcpkgPackRequest(
             }
 
         // pack all up
-        val arcpkgFile = packOutputPath.resolve("$prefix.$songId.arcpkg").toFile()
+        val arcpkgFile = packOutputPath.resolve("$identifier.arcpkg").toFile()
         arcpkgFile.createNewFile()
 
         FileOutputStream(arcpkgFile).use { fos ->
@@ -325,7 +329,7 @@ class ArcpkgPackRequest(
                             zos.write(bgPath.readBytes())
                             zos.closeEntry()
                         } else if (!bgName.startsWith("base_")) {
-                            println("WARN: $bgName not found, altered to base bg")
+                            s.println("WARN: $bgName not found, altered to base bg")
                         }
                     }
                 }
@@ -343,7 +347,7 @@ class ArcpkgPackRequest(
             fos.close()
         }
 
-        println("Packed successfully to: ${arcpkgFile.canonicalPath}")
+        s.println("Packed successfully to: ${arcpkgFile.canonicalPath}")
     }
 
 }

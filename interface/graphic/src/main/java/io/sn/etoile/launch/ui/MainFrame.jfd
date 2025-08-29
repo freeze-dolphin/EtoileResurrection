@@ -1,0 +1,431 @@
+JFDML JFormDesigner: "8.2.4.0.393" Java: "21.0.7" encoding: "UTF-8"
+
+new FormModel {
+	"i18n.autoExternalize": true
+	"i18n.bundlePackage": "lang"
+	"i18n.bundleName": "MainFrame"
+	"i18n.keyPrefix": "MainFrame"
+	contentType: "form/swing"
+	root: new FormRoot {
+		add( new FormWindow( "javax.swing.JFrame", new FormLayoutManager( class java.awt.BorderLayout ) ) {
+			name: "this"
+			"preferredSize": new java.awt.Dimension( 500, 400 )
+			"defaultCloseOperation": 2
+			"minimumSize": new java.awt.Dimension( 500, 400 )
+			"title": "EtoileResurrection"
+			addEvent( new FormEvent( "java.awt.event.WindowListener", "windowClosed", "thisWindowClosed", true ) )
+			add( new FormContainer( "javax.swing.JTabbedPane", new FormLayoutManager( class javax.swing.JTabbedPane ) ) {
+				name: "tabbedPane"
+				"tabPlacement": 2
+				add( new FormContainer( "javax.swing.JPanel", new FormLayoutManager( class java.awt.BorderLayout ) ) {
+					name: "tabStart"
+					add( new FormComponent( "javax.swing.JLabel" ) {
+						name: "usageHint"
+						"text": new FormMessage( null, "MainFrame.usageHint.text" )
+						"horizontalAlignment": 0
+						"font": new com.jformdesigner.model.SwingDerivedFont( null, 65536, 0, false )
+						"foreground": sfield java.awt.Color gray
+					}, new FormLayoutConstraints( class java.lang.String ) {
+						"value": "Center"
+					} )
+				}, new FormLayoutConstraints( null ) {
+					"title": new FormMessage( null, "MainFrame.tabStart.tab.title" )
+				} )
+				add( new FormContainer( "javax.swing.JPanel", new FormLayoutManager( class java.awt.BorderLayout ) {
+					"hgap": 4
+				} ) {
+					name: "tabPack"
+					add( new FormContainer( "javax.swing.JPanel", new FormLayoutManager( class javax.swing.BoxLayout ) ) {
+						name: "viewPackHeader"
+						add( new FormContainer( "javax.swing.JPanel", new FormLayoutManager( class java.awt.BorderLayout ) ) {
+							name: "_emptyPack"
+							"preferredSize": &Dimension0 new java.awt.Dimension( 8, 0 )
+						} )
+						add( new FormContainer( "javax.swing.JPanel", new FormLayoutManager( class java.awt.BorderLayout ) ) {
+							name: "viewPackHeaderRect"
+							add( new FormContainer( "javax.swing.JPanel", new FormLayoutManager( class javax.swing.BoxLayout ) {
+								"axis": 1
+							} ) {
+								name: "viewPackHeaderContent"
+								add( new FormComponent( "javax.swing.JLabel" ) {
+									name: "labelSlst"
+									"text": new FormMessage( null, "MainFrame.labelSlst.text" )
+									"horizontalAlignment": 2
+									"minimumSize": &Dimension1 new java.awt.Dimension( 54, 27 )
+									"maximumSize": &Dimension2 new java.awt.Dimension( 54, 27 )
+									"preferredSize": &Dimension3 new java.awt.Dimension( 54, 27 )
+								} )
+								add( new FormComponent( "javax.swing.JLabel" ) {
+									name: "labelSongId"
+									"text": new FormMessage( null, "MainFrame.labelSongId.text" )
+									"horizontalAlignment": 2
+									"maximumSize": &Dimension4 new java.awt.Dimension( 54, 27 )
+									"minimumSize": &Dimension5 new java.awt.Dimension( 54, 27 )
+									"preferredSize": &Dimension6 new java.awt.Dimension( 54, 27 )
+								} )
+								add( new FormComponent( "javax.swing.JLabel" ) {
+									name: "_labelPlaceholder1"
+									"horizontalAlignment": 2
+									"maximumSize": #Dimension4
+									"minimumSize": #Dimension5
+									"preferredSize": #Dimension6
+								} )
+								add( new FormComponent( "javax.swing.JLabel" ) {
+									name: "labelPrefix"
+									"text": new FormMessage( null, "MainFrame.labelPrefix.text" )
+									"horizontalAlignment": 2
+									"maximumSize": #Dimension4
+									"minimumSize": #Dimension5
+									"preferredSize": #Dimension6
+								} )
+								add( new FormComponent( "javax.swing.JLabel" ) {
+									name: "labelOutputDir"
+									"text": new FormMessage( null, "MainFrame.labelOutputDir.text" )
+									"horizontalAlignment": 2
+									"maximumSize": #Dimension4
+									"minimumSize": #Dimension5
+									"preferredSize": #Dimension6
+								} )
+								add( new FormComponent( "javax.swing.JLabel" ) {
+									name: "labelOutput"
+									"text": new FormMessage( null, "MainFrame.labelOutput.text" )
+									"horizontalAlignment": 2
+									"maximumSize": #Dimension4
+									"minimumSize": #Dimension5
+									"preferredSize": #Dimension6
+								} )
+							}, new FormLayoutConstraints( class java.lang.String ) {
+								"value": "North"
+							} )
+						} )
+					}, new FormLayoutConstraints( class java.lang.String ) {
+						"value": "West"
+					} )
+					add( new FormContainer( "javax.swing.JPanel", new FormLayoutManager( class javax.swing.BoxLayout ) {
+						"axis": 1
+					} ) {
+						name: "viewPackMain"
+						add( new FormContainer( "javax.swing.JPanel", new FormLayoutManager( class javax.swing.BoxLayout ) ) {
+							name: "paramSlst"
+							add( new FormComponent( "javax.swing.JTextField" ) {
+								name: "txtSlst"
+								"maximumSize": new java.awt.Dimension( 2147483647, 27 )
+								"editable": false
+							} )
+							add( new FormComponent( "javax.swing.JButton" ) {
+								name: "btnSlst"
+								"text": new FormMessage( null, "MainFrame.btnSlst.text" )
+								"margin": &Insets0 new java.awt.Insets( 2, 4, 2, 4 )
+								addEvent( new FormEvent( "java.awt.event.ActionListener", "actionPerformed", "btnSlst", true ) )
+							} )
+						} )
+						add( new FormContainer( "javax.swing.JPanel", new FormLayoutManager( class javax.swing.BoxLayout ) {
+							"axis": 0
+						} ) {
+							name: "paramSongIdCombo"
+							add( new FormComponent( "javax.swing.JComboBox" ) {
+								name: "comboSongId"
+								"maximumSize": new java.awt.Dimension( 32767, 27 )
+								"enabled": false
+								addEvent( new FormEvent( "java.awt.event.ActionListener", "actionPerformed", "comboSongId", true ) )
+							} )
+						} )
+						add( new FormContainer( "javax.swing.JPanel", new FormLayoutManager( class javax.swing.BoxLayout ) {
+							"axis": 0
+						} ) {
+							name: "paramSongIdRe"
+							add( new FormComponent( "javax.swing.JTextField" ) {
+								name: "txtSongIdRegex"
+								"maximumSize": &Dimension7 new java.awt.Dimension( 2147483647, 27 )
+								"enabled": false
+								addEvent( new FormEvent( "java.awt.event.ActionListener", "actionPerformed", "txtSongIdRegex", true ) )
+							} )
+							add( new FormComponent( "javax.swing.JCheckBox" ) {
+								name: "toggleSongIdRegex"
+								"toolTipText": new FormMessage( null, "MainFrame.toggleSongIdRegex.toolTipText" )
+								"text": "re"
+								"enabled": false
+								addEvent( new FormEvent( "java.awt.event.ActionListener", "actionPerformed", "toggleSongIdRegex", true ) )
+							} )
+						} )
+						add( new FormComponent( "javax.swing.JTextField" ) {
+							name: "txtPrefixPack"
+							"maximumSize": #Dimension7
+							"enabled": false
+							"toolTipText": new FormMessage( null, "MainFrame.txtPrefixPack.toolTipText" )
+							addEvent( new FormEvent( "java.awt.event.ActionListener", "actionPerformed", "txtSongIdRegex", true ) )
+						} )
+						add( new FormContainer( "javax.swing.JPanel", new FormLayoutManager( class javax.swing.BoxLayout ) {
+							"axis": 0
+						} ) {
+							name: "paramOutputDir"
+							add( new FormComponent( "javax.swing.JTextField" ) {
+								name: "txtOutputDir"
+								"maximumSize": #Dimension7
+								"enabled": false
+								"editable": false
+							} )
+							add( new FormComponent( "javax.swing.JButton" ) {
+								name: "btnOutputDir"
+								"text": new FormMessage( null, "MainFrame.btnOutputDir.text" )
+								"margin": #Insets0
+								"enabled": false
+								addEvent( new FormEvent( "java.awt.event.ActionListener", "actionPerformed", "btnOutputDir", true ) )
+							} )
+						} )
+						add( new FormContainer( "javax.swing.JScrollPane", new FormLayoutManager( class javax.swing.JScrollPane ) ) {
+							name: "sclPackOutput"
+							add( new FormComponent( "javax.swing.JTextArea" ) {
+								name: "txtPackOutput"
+								"editable": false
+								"enabled": false
+							} )
+						} )
+						add( new FormComponent( "javax.swing.JProgressBar" ) {
+							name: "progPack"
+						} )
+						add( new FormContainer( "javax.swing.JPanel", new FormLayoutManager( class javax.swing.BoxLayout ) {
+							"axis": 0
+						} ) {
+							name: "areaExecutions"
+							add( new FormComponent( "javax.swing.JButton" ) {
+								name: "btnPack"
+								"text": new FormMessage( null, "MainFrame.btnPack.text" )
+								"enabled": false
+								addEvent( new FormEvent( "java.awt.event.ActionListener", "actionPerformed", "btnPack", true ) )
+							} )
+							add( new FormComponent( "javax.swing.JButton" ) {
+								name: "btnPackAndReset"
+								"text": new FormMessage( null, "MainFrame.btnPackAndReset.text" )
+								"enabled": false
+								addEvent( new FormEvent( "java.awt.event.ActionListener", "actionPerformed", "btnPackAndReset", true ) )
+							} )
+							add( new FormComponent( "javax.swing.JButton" ) {
+								name: "btnResetPack"
+								"text": new FormMessage( null, "MainFrame.btnResetPack.text" )
+								"enabled": false
+								addEvent( new FormEvent( "java.awt.event.ActionListener", "actionPerformed", "btnResetPack", true ) )
+							} )
+						} )
+					}, new FormLayoutConstraints( class java.lang.String ) {
+						"value": "Center"
+					} )
+					add( new FormContainer( "javax.swing.JPanel", new FormLayoutManager( class java.awt.BorderLayout ) ) {
+						name: "_emptyEast"
+						"preferredSize": &Dimension8 new java.awt.Dimension( 8, 0 )
+					}, new FormLayoutConstraints( class java.lang.String ) {
+						"value": "East"
+					} )
+					add( new FormContainer( "javax.swing.JPanel", new FormLayoutManager( class java.awt.BorderLayout ) ) {
+						name: "_emptySouth"
+						"preferredSize": &Dimension9 new java.awt.Dimension( 0, 8 )
+					}, new FormLayoutConstraints( class java.lang.String ) {
+						"value": "South"
+					} )
+				}, new FormLayoutConstraints( null ) {
+					"title": new FormMessage( null, "MainFrame.tabPack.tab.title_2" )
+				} )
+				add( new FormContainer( "javax.swing.JPanel", new FormLayoutManager( class java.awt.BorderLayout ) ) {
+					name: "tabExport"
+					add( new FormContainer( "javax.swing.JPanel", new FormLayoutManager( class javax.swing.BoxLayout ) ) {
+						name: "viewExportHeader"
+						add( new FormContainer( "javax.swing.JPanel", new FormLayoutManager( class java.awt.BorderLayout ) ) {
+							name: "_emptyExport"
+							"preferredSize": #Dimension0
+						} )
+						add( new FormContainer( "javax.swing.JPanel", new FormLayoutManager( class java.awt.BorderLayout ) ) {
+							name: "viewExportHeaderRect"
+							add( new FormContainer( "javax.swing.JPanel", new FormLayoutManager( class javax.swing.BoxLayout ) {
+								"axis": 1
+							} ) {
+								name: "viewExportHeaderContent"
+								add( new FormComponent( "javax.swing.JLabel" ) {
+									name: "labelArcpkgs"
+									"text": new FormMessage( null, "MainFrame.labelArcpkgs.text" )
+									"horizontalAlignment": 2
+									"minimumSize": #Dimension1
+									"maximumSize": #Dimension2
+									"preferredSize": #Dimension3
+								} )
+								add( new FormComponent( "javax.swing.JLabel" ) {
+									name: "labelPackToExport"
+									"text": "Pack:"
+									"horizontalAlignment": 2
+									"maximumSize": #Dimension4
+									"minimumSize": #Dimension5
+									"preferredSize": #Dimension6
+								} )
+								add( new FormComponent( "javax.swing.JLabel" ) {
+									name: "labelVersionExport"
+									"text": "Version:"
+									"horizontalAlignment": 2
+									"maximumSize": #Dimension4
+									"minimumSize": #Dimension5
+									"preferredSize": #Dimension6
+								} )
+								add( new FormComponent( "javax.swing.JLabel" ) {
+									name: "labelPrefix2"
+									"text": new FormMessage( null, "MainFrame.labelPrefix2.text" )
+									"horizontalAlignment": 2
+									"maximumSize": #Dimension4
+									"minimumSize": #Dimension5
+									"preferredSize": #Dimension6
+								} )
+								add( new FormComponent( "javax.swing.JLabel" ) {
+									name: "labelOutputDir2"
+									"text": new FormMessage( null, "MainFrame.labelOutputDir2.text" )
+									"horizontalAlignment": 2
+									"maximumSize": #Dimension4
+									"minimumSize": #Dimension5
+									"preferredSize": #Dimension6
+								} )
+								add( new FormComponent( "javax.swing.JLabel" ) {
+									name: "labelOutput2"
+									"text": new FormMessage( null, "MainFrame.labelOutput2.text" )
+									"horizontalAlignment": 2
+									"maximumSize": #Dimension4
+									"minimumSize": #Dimension5
+									"preferredSize": #Dimension6
+								} )
+							}, new FormLayoutConstraints( class java.lang.String ) {
+								"value": "North"
+							} )
+						} )
+					}, new FormLayoutConstraints( class java.lang.String ) {
+						"value": "West"
+					} )
+					add( new FormContainer( "javax.swing.JPanel", new FormLayoutManager( class javax.swing.BoxLayout ) {
+						"axis": 1
+					} ) {
+						name: "viewExportMain"
+						add( new FormContainer( "javax.swing.JPanel", new FormLayoutManager( class javax.swing.BoxLayout ) ) {
+							name: "paramArcpkg"
+							add( new FormComponent( "javax.swing.JComboBox" ) {
+								name: "comboArcpkg"
+								"maximumSize": new java.awt.Dimension( 32767, 27 )
+								addEvent( new FormEvent( "java.awt.event.ActionListener", "actionPerformed", "comboArcpkg", true ) )
+							} )
+							add( new FormComponent( "javax.swing.JButton" ) {
+								name: "btnArcpkg"
+								"text": new FormMessage( null, "MainFrame.btnArcpkg.text" )
+								"margin": #Insets0
+								addEvent( new FormEvent( "java.awt.event.ActionListener", "actionPerformed", "btnArcpkg", true ) )
+							} )
+						} )
+						add( new FormComponent( "javax.swing.JTextField" ) {
+							name: "txtPackExport"
+							"maximumSize": #Dimension7
+							"enabled": false
+							"toolTipText": new FormMessage( null, "MainFrame.txtPackExport.toolTipText" )
+						} )
+						add( new FormComponent( "javax.swing.JTextField" ) {
+							name: "txtVersionExport"
+							"maximumSize": #Dimension7
+							"enabled": false
+							"toolTipText": "Determine the version when this song is added. (Default: 1.0)"
+							addEvent( new FormEvent( "java.awt.event.ActionListener", "actionPerformed", "txtVersionExport", true ) )
+						} )
+						add( new FormComponent( "javax.swing.JTextField" ) {
+							name: "txtPrefixExport"
+							"maximumSize": #Dimension7
+							"enabled": false
+							"toolTipText": new FormMessage( null, "MainFrame.txtPrefixExport.toolTipText" )
+						} )
+						add( new FormContainer( "javax.swing.JPanel", new FormLayoutManager( class javax.swing.BoxLayout ) {
+							"axis": 0
+						} ) {
+							name: "paramOutputDir2"
+							add( new FormComponent( "javax.swing.JTextField" ) {
+								name: "txtOutputDirExport"
+								"maximumSize": #Dimension7
+								"enabled": false
+							} )
+							add( new FormComponent( "javax.swing.JButton" ) {
+								name: "btnOutputDirExport"
+								"text": new FormMessage( null, "MainFrame.btnOutputDirExport.text" )
+								"margin": #Insets0
+								"enabled": false
+								addEvent( new FormEvent( "java.awt.event.ActionListener", "actionPerformed", "btnOutputDirExport", true ) )
+							} )
+						} )
+						add( new FormContainer( "javax.swing.JScrollPane", new FormLayoutManager( class javax.swing.JScrollPane ) ) {
+							name: "sclExportOutput"
+							add( new FormComponent( "javax.swing.JTextArea" ) {
+								name: "txtExportOutput"
+								"editable": false
+								"enabled": false
+							} )
+						} )
+						add( new FormComponent( "javax.swing.JProgressBar" ) {
+							name: "progExport"
+						} )
+						add( new FormContainer( "javax.swing.JPanel", new FormLayoutManager( class javax.swing.BoxLayout ) {
+							"axis": 0
+						} ) {
+							name: "areaExecutions2"
+							add( new FormComponent( "javax.swing.JButton" ) {
+								name: "btnExport"
+								"text": new FormMessage( null, "MainFrame.btnExport.text" )
+								"enabled": false
+								addEvent( new FormEvent( "java.awt.event.ActionListener", "actionPerformed", "btnExport", true ) )
+							} )
+							add( new FormComponent( "javax.swing.JButton" ) {
+								name: "btnExportAndReset"
+								"text": new FormMessage( null, "MainFrame.btnExportAndReset.text" )
+								"enabled": false
+								addEvent( new FormEvent( "java.awt.event.ActionListener", "actionPerformed", "btnExportAndReset", true ) )
+							} )
+							add( new FormComponent( "javax.swing.JButton" ) {
+								name: "btnResetExport"
+								"text": new FormMessage( null, "MainFrame.btnResetExport.text" )
+								"enabled": false
+								addEvent( new FormEvent( "java.awt.event.ActionListener", "actionPerformed", "btnResetExport", true ) )
+							} )
+						} )
+					}, new FormLayoutConstraints( class java.lang.String ) {
+						"value": "Center"
+					} )
+					add( new FormContainer( "javax.swing.JPanel", new FormLayoutManager( class java.awt.BorderLayout ) ) {
+						name: "_emptyEast2"
+						"preferredSize": #Dimension8
+					}, new FormLayoutConstraints( class java.lang.String ) {
+						"value": "East"
+					} )
+					add( new FormContainer( "javax.swing.JPanel", new FormLayoutManager( class java.awt.BorderLayout ) ) {
+						name: "_emptySouth2"
+						"preferredSize": #Dimension9
+					}, new FormLayoutConstraints( class java.lang.String ) {
+						"value": "South"
+					} )
+				}, new FormLayoutConstraints( null ) {
+					"title": new FormMessage( null, "MainFrame.tabExport.tab.title" )
+				} )
+			}, new FormLayoutConstraints( class java.lang.String ) {
+				"value": "Center"
+			} )
+			menuBar: new FormContainer( "javax.swing.JMenuBar", new FormLayoutManager( class javax.swing.JMenuBar ) ) {
+				name: "menuBar"
+				add( new FormContainer( "javax.swing.JMenu", new FormLayoutManager( class javax.swing.JMenu ) ) {
+					name: "mAbout"
+					"text": new FormMessage( null, "MainFrame.mAbout.text" )
+					add( new FormComponent( "javax.swing.JMenuItem" ) {
+						name: "mLaf"
+						"text": "FlatLaf"
+						addEvent( new FormEvent( "java.awt.event.ActionListener", "actionPerformed", "mLaf", true ) )
+					} )
+					add( new FormComponent( "javax.swing.JSeparator" ) {
+						name: "separator2"
+					} )
+					add( new FormComponent( "javax.swing.JMenuItem" ) {
+						name: "mGithub"
+						"text": new FormMessage( null, "MainFrame.mGithub.text" )
+						addEvent( new FormEvent( "java.awt.event.ActionListener", "actionPerformed", "mGithub", true ) )
+					} )
+				} )
+			}
+		}, new FormLayoutConstraints( null ) {
+			"location": new java.awt.Point( 90, 110 )
+			"size": new java.awt.Dimension( 425, 350 )
+		} )
+	}
+}
