@@ -5,12 +5,14 @@
 package io.sn.etoile.launch.ui;
 
 import io.sn.etoile.launch.UIHandler;
+import org.jetbrains.annotations.Nullable;
 
 import javax.swing.*;
 import java.awt.*;
 import java.awt.event.ActionEvent;
 import java.awt.event.WindowAdapter;
 import java.awt.event.WindowEvent;
+import java.util.Locale;
 import java.util.ResourceBundle;
 
 /**
@@ -93,10 +95,38 @@ public class MainFrame extends JFrame {
         UIHandler.Export.INSTANCE.txtVersionExport(this, e);
     }
 
+    private void btnLangEnglish(ActionEvent e) {
+        UIHandler.INSTANCE.refreshI18n(this, Locale.ENGLISH, true);
+    }
+
+    private void btnLangChinese(ActionEvent e) {
+        UIHandler.INSTANCE.refreshI18n(this, Locale.CHINESE, true);
+    }
+
+    private void btnThemeLight(ActionEvent e) {
+        UIHandler.INSTANCE.changeTheme(this, "light");
+    }
+
+    private void btnThemeDark(ActionEvent e) {
+        UIHandler.INSTANCE.changeTheme(this, "dark");
+    }
+
+    private void btnThemeDefault(ActionEvent e) {
+        UIHandler.INSTANCE.changeTheme(this, "default");
+    }
+
     private void initComponents() {
         // JFormDesigner - Component initialization - DO NOT MODIFY  //GEN-BEGIN:initComponents  @formatter:off
-        ResourceBundle bundle = ResourceBundle.getBundle("lang.MainFrame");
+        ResourceBundle bundle = this.getBundle("lang.MainFrame");
         menuBar = new JMenuBar();
+        mSetting = new JMenu();
+        mLang = new JMenu();
+        btnLangEnglish = new JRadioButtonMenuItem();
+        btnLangChinese = new JRadioButtonMenuItem();
+        mTheme = new JMenu();
+        btnThemeLight = new JRadioButtonMenuItem();
+        btnThemeDark = new JRadioButtonMenuItem();
+        btnThemeDefault = new JRadioButtonMenuItem();
         mAbout = new JMenu();
         mLaf = new JMenuItem();
         separator2 = new JSeparator();
@@ -184,6 +214,43 @@ public class MainFrame extends JFrame {
 
         //======== menuBar ========
         {
+
+            //======== mSetting ========
+            {
+
+                //======== mLang ========
+                {
+
+                    //---- btnLangEnglish ----
+                    btnLangEnglish.setText("English");
+                    btnLangEnglish.addActionListener(e -> btnLangEnglish(e));
+                    mLang.add(btnLangEnglish);
+
+                    //---- btnLangChinese ----
+                    btnLangChinese.setText("\u7b80\u4f53\u4e2d\u6587");
+                    btnLangChinese.addActionListener(e -> btnLangChinese(e));
+                    mLang.add(btnLangChinese);
+                }
+                mSetting.add(mLang);
+
+                //======== mTheme ========
+                {
+
+                    //---- btnThemeLight ----
+                    btnThemeLight.addActionListener(e -> btnThemeLight(e));
+                    mTheme.add(btnThemeLight);
+
+                    //---- btnThemeDark ----
+                    btnThemeDark.addActionListener(e -> btnThemeDark(e));
+                    mTheme.add(btnThemeDark);
+
+                    //---- btnThemeDefault ----
+                    btnThemeDefault.addActionListener(e -> btnThemeDefault(e));
+                    mTheme.add(btnThemeDefault);
+                }
+                mSetting.add(mTheme);
+            }
+            menuBar.add(mSetting);
 
             //======== mAbout ========
             {
@@ -599,9 +666,33 @@ public class MainFrame extends JFrame {
         // JFormDesigner - End of component initialization  //GEN-END:initComponents  @formatter:on
     }
 
+    @Nullable
+    @Override
+    public Locale getLocale() {
+        return locale;
+    }
+
+    @Override
+    public void setLocale(@Nullable Locale locale) {
+        this.locale = locale;
+    }
+
+    @Nullable
+    public Locale locale = null;
+
+    private ResourceBundle getBundle(String baseName) {
+        return getLocale() == null ? ResourceBundle.getBundle(baseName) : ResourceBundle.getBundle(baseName, getLocale());
+    }
+
     public void initComponentsI18n() {
         // JFormDesigner - Component i18n initialization - DO NOT MODIFY  //GEN-BEGIN:initI18n  @formatter:off
-        ResourceBundle bundle = ResourceBundle.getBundle("lang.MainFrame");
+        ResourceBundle bundle = this.getBundle("lang.MainFrame");
+        mSetting.setText(bundle.getString("MainFrame.mSetting.text"));
+        mLang.setText(bundle.getString("MainFrame.mLang.text"));
+        mTheme.setText(bundle.getString("MainFrame.mTheme.text"));
+        btnThemeLight.setText(bundle.getString("MainFrame.btnThemeLight.text"));
+        btnThemeDark.setText(bundle.getString("MainFrame.btnThemeDark.text"));
+        btnThemeDefault.setText(bundle.getString("MainFrame.btnThemeDefault.text"));
         mAbout.setText(bundle.getString("MainFrame.mAbout.text"));
         mGithub.setText(bundle.getString("MainFrame.mGithub.text"));
         usageHint.setText(bundle.getString("MainFrame.usageHint.text"));
@@ -636,6 +727,14 @@ public class MainFrame extends JFrame {
 
     // JFormDesigner - Variables declaration - DO NOT MODIFY  //GEN-BEGIN:variables  @formatter:off
     public JMenuBar menuBar;
+    public JMenu mSetting;
+    public JMenu mLang;
+    public JRadioButtonMenuItem btnLangEnglish;
+    public JRadioButtonMenuItem btnLangChinese;
+    public JMenu mTheme;
+    public JRadioButtonMenuItem btnThemeLight;
+    public JRadioButtonMenuItem btnThemeDark;
+    public JRadioButtonMenuItem btnThemeDefault;
     public JMenu mAbout;
     public JMenuItem mLaf;
     public JSeparator separator2;

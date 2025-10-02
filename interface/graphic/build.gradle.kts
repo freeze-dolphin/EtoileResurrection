@@ -1,4 +1,5 @@
 val kotlinxVersion: String by rootProject
+val affComposeVersion: String by rootProject
 
 plugins {
     kotlin("jvm")
@@ -15,9 +16,9 @@ group = "io.sn"
 dependencies {
     implementation("com.formdev:flatlaf:3.6.1")
     implementation("org.jetbrains.kotlinx:kotlinx-serialization-json:${kotlinxVersion}")
-    implementation(project(":core"))
 
-    project(":core")
+    implementation("com.github.freeze-dolphin:aff-compose:${affComposeVersion}")
+    implementation(project(":core"))
 }
 
 java {
@@ -30,6 +31,7 @@ launch4j {
     mainClassName = "io.sn.etoile.launch.SwingGenesisKt"
     outfile = "EtoileResurrection.Swing-${getCheckedOutGitCommitHash(7)}.exe"
     downloadUrl = "https://learn.microsoft.com/java/openjdk/download"
+    jvmOptions = listOf("-Dfile.encoding=UTF-8")
     bundledJrePath = "jre"
 }
 
@@ -88,7 +90,8 @@ tasks.named<Test>("test") {
     useJUnitPlatform()
 }
 
-tasks.named("createExe") {
+tasks.named("distTar") {
+    dependsOn("createExe")
     dependsOn("jlinkJre")
 
     val sourceJre = layout.buildDirectory.dir("jlink-jre/jre")
@@ -101,12 +104,18 @@ tasks.named("createExe") {
     }
 }
 
-tasks.named("distTar") {
-    dependsOn("createExe")
-}
-
 tasks.named("distZip") {
     dependsOn("createExe")
+    dependsOn("jlinkJre")
+
+    val sourceJre = layout.buildDirectory.dir("jlink-jre/jre")
+    val targetJre = layout.buildDirectory.dir("launch4j/jre")
+    inputs.dir(sourceJre)
+    outputs.dir(targetJre)
+
+    doLast {
+        sourceJre.get().asFile.copyRecursively(targetJre.get().asFile, overwrite = true)
+    }
 }
 
 tasks.named("noJreDistZip") {

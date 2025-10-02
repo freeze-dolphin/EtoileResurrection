@@ -2,6 +2,7 @@
 
 package io.sn.etoile.launch
 
+import com.tairitsu.compose.arcaea.parser.ArcaeaChartANTLRLoadException
 import io.sn.etoile.impl.ArcpkgConvertRequest
 import io.sn.etoile.impl.ArcpkgPackRequest
 import io.sn.etoile.impl.ExportBgMode
@@ -12,6 +13,8 @@ import io.sn.etoile.launch.ui.MainFrame
 import io.sn.etoile.utils.Songlist
 import io.sn.etoile.utils.json
 import kotlinx.serialization.SerializationException
+import kotlinx.serialization.json.jsonArray
+import kotlinx.serialization.json.jsonObject
 import java.awt.Desktop
 import java.awt.datatransfer.DataFlavor
 import java.awt.dnd.*
@@ -20,33 +23,29 @@ import java.awt.event.WindowEvent
 import java.io.File
 import java.net.URI
 import java.nio.file.Path
-import javax.swing.DefaultComboBoxModel
-import javax.swing.JFileChooser
-import javax.swing.JOptionPane
-import javax.swing.SwingUtilities
+import java.util.*
+import javax.swing.*
 import javax.swing.filechooser.FileFilter
 import javax.swing.filechooser.FileNameExtensionFilter
 import kotlin.io.path.Path
 import kotlin.system.exitProcess
-
 
 class SonglistFileFilter(val desc: String) : FileFilter() {
     override fun accept(f: File?): Boolean {
         if (f == null) return false
         if (f.isDirectory) return true
 
-        try {
-            val slst = json.decodeFromString<Songlist>(f.readText())
-            return slst.songs.any { it.deleted != true }
+        return try {
+            (f.name.endsWith(".json") || f.name.contains("(songlist|slst)".toRegex())) && json.parseToJsonElement(f.readText()).jsonObject["songs"]!!.jsonArray.isNotEmpty()
         } catch (_: Exception) {
-            return false
+            false
         }
     }
 
     override fun getDescription(): String? = desc
 }
 
-class SonglistDropTargetListener(val sub: MainFrame) : DropTargetListener {
+class SonglistDropTargetListener(val sub: MainFrame, val locale: Locale) : DropTargetListener {
     override fun dragEnter(dtde: DropTargetDragEvent) {
         if (dtde.isDataFlavorSupported(DataFlavor.javaFileListFlavor)) {
             dtde.acceptDrag(DnDConstants.ACTION_COPY)
@@ -85,7 +84,12 @@ class SonglistDropTargetListener(val sub: MainFrame) : DropTargetListener {
                     stepAfterSonglistSelection(sub, file)
                 } catch (es: SerializationException) {
                     es.printStackTrace()
-                    JOptionPane.showMessageDialog(sub, "Invalid songlist.", "Error", JOptionPane.ERROR_MESSAGE)
+                    JOptionPane.showMessageDialog(
+                        sub,
+                        getLocalizedMessage(locale, "msg.ui.invalidSonglist"),
+                        getLocalizedMessage(locale, "msgbox.title.err"),
+                        JOptionPane.ERROR_MESSAGE
+                    )
                     return
                 }
             }
@@ -107,6 +111,9 @@ fun validateSemver(s: String): Boolean = s.isEmpty() || s.matches(VERSION_REGEX)
 object UIHandler {
 
     lateinit var config: Config
+    val locale: Locale by lazy {
+        Locale(config.localization)
+    }
 
     fun resetPackPage(sub: MainFrame) {
         sub.txtSlst.text = null
@@ -151,13 +158,47 @@ object UIHandler {
         sub.comboArcpkg.model = DefaultComboBoxModel()
     }
 
+    fun refreshI18n(sub: MainFrame, locale: Locale, shouldSaveConfig: Boolean = false) {
+        sub.locale = locale
+        sub.initComponentsI18n()
+
+        if (shouldSaveConfig) {
+            config.localization = locale.language
+            config.saveConfig()
+        }
+    }
+
     fun initializeComponents(sub: MainFrame, config: Config) {
         this.config = config
 
-        if (config.localization) sub.initComponentsI18n()
+        ButtonGroup().apply {
+            add(sub.btnLangChinese)
+            add(sub.btnLangEnglish)
+        }
+
+        ButtonGroup().apply {
+            add(sub.btnThemeLight)
+            add(sub.btnThemeDark)
+            add(sub.btnThemeDefault)
+        }
+
+        val locale = Locale(UIHandler.config.localization)
+
+        when {
+            locale.language == "zh" -> sub.btnLangChinese.isSelected = true
+            else -> sub.btnLangEnglish.isSelected = true
+        }
+
+        when (config.theme) {
+            "light" -> sub.btnThemeLight.isSelected = true
+            "dark" -> sub.btnThemeDark.isSelected = true
+            else -> sub.btnThemeDefault.isSelected = true
+        }
+
+        refreshI18n(sub, locale)
 
         // set drop target
-        sub.txtSlst.dropTarget = DropTarget(sub.txtSlst, SonglistDropTargetListener(sub))
+        sub.txtSlst.dropTarget = DropTarget(sub.txtSlst, SonglistDropTargetListener(sub, locale))
 
         // reset components
         resetPackPage(sub)
@@ -189,7 +230,7 @@ object UIHandler {
         fun buttonSonglistSelection(sub: MainFrame, e: ActionEvent) {
             val chooser = JFileChooser().apply {
                 currentDirectory = File(config.lastPackedSonglistPath)
-                fileFilter = SonglistFileFilter("songlist Files")
+                fileFilter = SonglistFileFilter(getLocalizedMessage(locale, "filechooser.songlist"))
             }
             val chooseResult = chooser.showOpenDialog(sub)
 
@@ -218,8 +259,20 @@ object UIHandler {
             return DefaultComboBoxModel(rst.toTypedArray())
         }
 
-        private fun getCurrentSonglist(sub: MainFrame): Songlist {
-            return json.decodeFromString<Songlist>(File(sub.txtSlst.text).readText())
+        private fun getCurrentSonglist(sub: MainFrame): Songlist? {
+            val f = File(sub.txtSlst.text)
+            try {
+                return json.decodeFromString<Songlist>(f.readText())
+            } catch (e: Exception) {
+                e.printStackTrace()
+                JOptionPane.showMessageDialog(
+                    sub,
+                    e,
+                    getLocalizedMessage(locale, "msgbox.title.err"),
+                    JOptionPane.ERROR_MESSAGE
+                )
+                return null
+            }
         }
 
         fun toggleSongIdRegex(sub: MainFrame, e: ActionEvent) {
@@ -227,13 +280,16 @@ object UIHandler {
             sub.progPack.isVisible = sub.toggleSongIdRegex.isSelected
 
             sub.comboSongId.model =
-                getComboSongIdModel(getCurrentSonglist(sub), if (sub.toggleSongIdRegex.isSelected) sub.txtSongIdRegex.text else null)
+                getComboSongIdModel(
+                    getCurrentSonglist(sub) ?: return,
+                    if (sub.toggleSongIdRegex.isSelected) sub.txtSongIdRegex.text else null
+                )
         }
 
         fun txtSongIdRegex(sub: MainFrame, e: ActionEvent) {
             if (!sub.toggleSongIdRegex.isSelected) return
 
-            sub.comboSongId.model = getComboSongIdModel(getCurrentSonglist(sub), sub.txtSongIdRegex.text)
+            sub.comboSongId.model = getComboSongIdModel(getCurrentSonglist(sub) ?: return, sub.txtSongIdRegex.text)
         }
 
         fun comboSongId(sub: MainFrame, e: ActionEvent) {
@@ -242,6 +298,7 @@ object UIHandler {
 
         fun btnPack(sub: MainFrame, e: ActionEvent, shouldReset: Boolean) {
             val slst = getCurrentSonglist(sub)
+            if (slst == null) return
 
             sub.txtPackOutput.text = null
             val outputStream = TextAreaOutputStream(sub.txtPackOutput, sub.sclPackOutput)
@@ -260,50 +317,90 @@ object UIHandler {
                 sub.txtOutputDir,
             )
 
+            val packOutputPath = Path(sub.txtOutputDir.text)
             var success = true
             val opThread = Thread {
                 tmpDisable.forEach { it.isEnabled = false }
 
-                if (sub.toggleSongIdRegex.isSelected) {
-                    // regex mode
-                    val songs =
-                        slst.songs.filter { it.id.matches(sub.txtSongIdRegex.text.toRegex()) && it.deleted != true }.sortedBy { it.id }
+                try {
+                    if (sub.toggleSongIdRegex.isSelected) {
+                        // regex mode
+                        val songs =
+                            slst.songs.filter { it.id.matches(sub.txtSongIdRegex.text.toRegex()) && it.deleted != true }.sortedBy { it.id }
 
-                    sub.progPack.value = 0
-                    sub.progPack.maximum = songs.size
+                        sub.progPack.value = 0
+                        sub.progPack.maximum = songs.size
 
-                    if (songs.isEmpty()) {
-                        JOptionPane.showMessageDialog(sub, "No matching song.", "Error:", JOptionPane.ERROR_MESSAGE)
-                        success = false
-                        return@Thread
-                    }
+                        if (songs.isEmpty()) {
+                            JOptionPane.showMessageDialog(
+                                sub,
+                                getLocalizedMessage(locale, "msg.ui.noMatchingSong"),
+                                getLocalizedMessage(locale, "msgbox.title.err"),
+                                JOptionPane.ERROR_MESSAGE
+                            )
+                            success = false
+                            return@Thread
+                        }
 
-                    songs.forEach { song ->
-                        ArcpkgPackRequest(
-                            songlistPath = Path(sub.txtSlst.text),
-                            song = song,
-                            prefix = sub.txtPrefixPack.text,
-                            packOutputPath = Path(sub.txtOutputDir.text)
-                        ).exec(outputStream)
-                        sub.progPack.value += 1
-                    }
-                } else {
-                    // single mode
-                    val songId = sub.comboSongId.model.selectedItem as String
-
-                    try {
+                        songs.forEach { song ->
+                            ArcpkgPackRequest(
+                                songlistPath = Path(sub.txtSlst.text),
+                                song = song,
+                                prefix = sub.txtPrefixPack.text,
+                                packOutputPath = packOutputPath
+                            ).exec(outputStream)
+                            sub.progPack.value += 1
+                        }
+                    } else {
+                        // single mode
+                        val songId = sub.comboSongId.model.selectedItem as String
                         val song = slst.songs.first { it.id == songId && it.deleted != true }
                         ArcpkgPackRequest(
                             songlistPath = Path(sub.txtSlst.text),
                             song = song,
                             prefix = sub.txtPrefixPack.text,
-                            packOutputPath = Path(sub.txtOutputDir.text)
+                            packOutputPath = packOutputPath
                         ).exec(outputStream)
-                    } catch (e: NoSuchElementException) {
-                        JOptionPane.showMessageDialog(sub, "No matching song.", "Error:", JOptionPane.ERROR_MESSAGE)
-                        success = false
-                        return@Thread
                     }
+                } catch (nse: NoSuchElementException) {
+                    JOptionPane.showMessageDialog(
+                        sub,
+                        getLocalizedMessage(locale, "msg.ui.noMatchingSong"),
+                        getLocalizedMessage(locale, "msgbox.title.err"),
+                        JOptionPane.ERROR_MESSAGE
+                    )
+                    success = false
+                    return@Thread
+                } catch (rte: RuntimeException) {
+                    rte.printStackTrace()
+                    JOptionPane.showMessageDialog(
+                        sub,
+                        "RuntimeException: \n${rte}",
+                        getLocalizedMessage(locale, "msgbox.title.err"),
+                        JOptionPane.ERROR_MESSAGE
+                    )
+                    success = false
+                    return@Thread
+                } catch (aex: ArcaeaChartANTLRLoadException) {
+                    aex.printStackTrace()
+                    JOptionPane.showMessageDialog(
+                        sub,
+                        "ArcaeaChartANTLRLoadException: \n${aex}",
+                        getLocalizedMessage(locale, "msgbox.title.err"),
+                        JOptionPane.ERROR_MESSAGE
+                    )
+                    success = false
+                    return@Thread
+                } catch (e: Exception) {
+                    e.printStackTrace()
+                    JOptionPane.showMessageDialog(
+                        sub,
+                        e,
+                        getLocalizedMessage(locale, "msgbox.title.err"),
+                        JOptionPane.ERROR_MESSAGE
+                    )
+                    success = false
+                    return@Thread
                 }
             }
             opThread.start()
@@ -317,6 +414,8 @@ object UIHandler {
 
                     if (success && shouldReset) resetPackPage(sub)
                     sub.txtPackOutput.append("${if (success) "Done" else "Failed"}!\n")
+
+                    // TODO remove arcpkgs on failure
                 }
             }.start()
         }
@@ -354,7 +453,7 @@ object UIHandler {
         fun btnArcpkg(sub: MainFrame, e: ActionEvent) {
             val chooser = JFileChooser().apply {
                 currentDirectory = File(config.lastSelectedArcpkgPath)
-                fileFilter = FileNameExtensionFilter("ArcCreate Package", "arcpkg", "zip")
+                fileFilter = FileNameExtensionFilter(getLocalizedMessage(locale, "filechooser.arcpkg"), "arcpkg", "zip")
                 isMultiSelectionEnabled = true
             }
             val chooseResult = chooser.showOpenDialog(sub)
@@ -466,15 +565,30 @@ object UIHandler {
                     }
                 } catch (rte: RuntimeException) {
                     rte.printStackTrace()
-                    JOptionPane.showMessageDialog(sub, rte.message, "Runtime Error:", JOptionPane.ERROR_MESSAGE)
+                    JOptionPane.showMessageDialog(
+                        sub,
+                        "RuntimeException: \n${rte}",
+                        getLocalizedMessage(locale, "msgbox.title.err"),
+                        JOptionPane.ERROR_MESSAGE
+                    )
+                    success = false
+                    return@Thread
+                } catch (aex: ArcaeaChartANTLRLoadException) {
+                    aex.printStackTrace()
+                    JOptionPane.showMessageDialog(
+                        sub,
+                        "ArcaeaChartANTLRLoadException: \n${aex}",
+                        getLocalizedMessage(locale, "msgbox.title.err"),
+                        JOptionPane.ERROR_MESSAGE
+                    )
                     success = false
                     return@Thread
                 } catch (e: Exception) {
                     e.printStackTrace()
                     JOptionPane.showMessageDialog(
                         sub,
-                        "You should check the runtime console and report this to the developer.\n" + e.message,
-                        "Critical Error:",
+                        e,
+                        getLocalizedMessage(locale, "msgbox.title.err"),
                         JOptionPane.ERROR_MESSAGE
                     )
                     success = false
@@ -501,8 +615,8 @@ object UIHandler {
             if (!validation) {
                 JOptionPane.showMessageDialog(
                     sub,
-                    "Invalid version: '${sub.txtVersionExport.text}'.",
-                    "Error:",
+                    getLocalizedMessage(locale, "msg.ui.invalidVersion", sub.txtVersionExport.text),
+                    getLocalizedMessage(locale, "msgbox.title.err"),
                     JOptionPane.ERROR_MESSAGE
                 )
             }
@@ -525,7 +639,19 @@ object UIHandler {
             } else throw RuntimeException("No browser support.")
         } catch (e: Exception) {
             e.printStackTrace()
-            JOptionPane.showMessageDialog(sub, "Unable to open url.", "Error:", JOptionPane.ERROR_MESSAGE)
+            JOptionPane.showMessageDialog(
+                sub,
+                getLocalizedMessage(locale, "msg.ui.openBrowser", e.message),
+                getLocalizedMessage(locale, "msgbox.title.err"),
+                JOptionPane.ERROR_MESSAGE
+            )
         }
+    }
+
+    fun changeTheme(sub: MainFrame, theme: String) {
+        config.theme = theme
+        config.saveConfig()
+        setupLaf(config)
+        SwingUtilities.updateComponentTreeUI(sub)
     }
 }

@@ -1,4 +1,5 @@
 # EtoileResurrection
+*Reborn of [Etoile](https://github.com/freeze-dolphin/EtoileLegacy)*
 
 ---
 

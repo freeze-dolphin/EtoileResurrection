@@ -29,6 +29,8 @@ class ArcpkgPackRequest(
 
     private val identifier = "$prefix${if (prefix.isEmpty()) "" else "."}$songId"
 
+    fun getArcpkgFileName(): String = "$identifier.arcpkg"
+
     private val bgSearchDir: List<Pair<Path, Boolean>> = listOf(
         file(songsDir.toString(), songId).toPath() to false,
         file(songsDir.toString(), "..", "img", "bg").toPath() to true,
@@ -188,7 +190,12 @@ class ArcpkgPackRequest(
         val bg = songEntry.bg!!
         val setId = songEntry.set!!
         val side = songEntry.side!!
-        val difficulties: List<DifficultyEntry> = songEntry.difficulties!!.filter { it.rating >= 0 }
+        val difficulties: List<DifficultyEntry> =
+            songEntry.difficulties!!.filter {
+                val aff = songsDir.resolve(songId).resolve("${it.ratingClass}.aff")
+
+                it.rating >= 0 && aff.exists()
+            }
 
         val bgToExtract = mutableMapOf<String, Pair<Path?, Boolean>>()
 

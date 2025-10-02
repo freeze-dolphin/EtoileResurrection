@@ -127,7 +127,7 @@ data class Config(
     var lastExportPackname: String,
     var lastExportVersion: String,
     var lastExportOutputDirectoryPath: String,
-    var localization: Boolean,
+    var localization: String,
     var theme: String,
 ) {
     companion object {
@@ -148,10 +148,16 @@ val defaultConfig by lazy {
         "single",
         "1.0",
         userDir,
-        true,
+        Locale.getDefault().language,
         "default"
     )
 }
+
+fun getLocalizedMessage(locale: Locale, key: String): String =
+    ResourceBundle.getBundle("lang.Messages", locale).getString(key)
+
+fun getLocalizedMessage(locale: Locale, key: String, vararg args: Any?): String =
+    String.format(ResourceBundle.getBundle("lang.Messages", locale).getString(key), *args)
 
 fun setupConfig(): Config {
     try {
@@ -170,7 +176,13 @@ fun setupConfig(): Config {
             Config.configFile.writeText(json.encodeToString(defaultConfig))
         } catch (e1: Exception) {
             e1.printStackTrace()
-            JOptionPane.showMessageDialog(null, "Unable to create config file: ${e1.toString()}", "Error:", JOptionPane.ERROR_MESSAGE)
+            val locale = Locale(defaultConfig.localization)
+            JOptionPane.showMessageDialog(
+                null,
+                getLocalizedMessage(locale, "msg.genesis.configInit", e1.message),
+                getLocalizedMessage(locale, "msgbox.title.err"),
+                JOptionPane.ERROR_MESSAGE
+            )
             exitProcess(-1)
         }
         return defaultConfig
