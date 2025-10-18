@@ -27,9 +27,13 @@ data class Packlist(
 data class PacklistEntry(
     val id: String,
     val section: String = "sidestory",
-    @SerialName("plus_character") val plusCharacter: Int,
-    @SerialName("is_extend_pack") val isExtendPack: Boolean,
-    @SerialName("custom_banner") val customBanner: Boolean,
+    @SerialName("custom_banner") val customBanner: Boolean? = null,
+    @SerialName("plus_character") val plusCharacter: Int = -1,
+    @SerialName("pack_parent") val packParent: String? = null,
+    @SerialName("is_extend_pack") val isExtendPack: Boolean? = null,
+    @SerialName("is_active_extend_pack") val isActiveExtendPack: Boolean? = null,
+    @SerialName("small_pack_image") val smallPackImage: Boolean? = null,
+    @SerialName("cutout_pack_image") val cutoutPackImage: Boolean? = null,
     @SerialName("name_localized") val nameLocalized: LocalizedString,
     @SerialName("description_localized") val descriptionLocalized: LocalizedString,
 ) {
@@ -101,6 +105,13 @@ enum class ArcpkgEntryType {
     @SerialName("pack")
     PACK;
 }
+
+@Serializable
+data class PackInformation(
+    val imagePath: String,
+    val levelIdentifiers: List<String>,
+    val packName: String,
+)
 
 @Serializable(ImportInformationEntrySerializer::class)
 data class ImportInformationEntry(

@@ -11,6 +11,7 @@ import com.github.ajalt.clikt.parameters.options.*
 import com.github.ajalt.clikt.parameters.types.choice
 import com.github.ajalt.clikt.parameters.types.file
 import com.github.ajalt.clikt.parameters.types.path
+import io.sn.etoile.impl.ArcpkgCombineRequest
 import io.sn.etoile.impl.ArcpkgConvertRequest
 import io.sn.etoile.impl.ArcpkgPackRequest
 import io.sn.etoile.impl.ExportBgMode
@@ -22,22 +23,22 @@ import kotlin.io.path.readText
 
 class PackCommand : CliktCommand(name = "pack") {
 
-    private val songlistPath: Path by argument(name = "songlist", help = "songlist file to be processed on").path(
+    private val songlistPath: Path by argument(name = "songlist", help = "The songlist file to be processed on").path(
         mustExist = true, mustBeReadable = true, canBeFile = true, canBeDir = false
     ).validate {
         require(
             try {
                 json.parseToJsonElement(it.toFile().readText(Charsets.UTF_8))
                 true
-            } catch (e: Exception) {
+            } catch (_: Exception) {
                 false
             }
-        ) { "invalid songlist format" }
+        ) { "Invalid json format" }
     }
 
     private val packOutputPath by option(
-        names = arrayOf("--outputDir", "-o"), help = "The output path of the result"
-    ).path(mustExist = true, canBeFile = false, canBeDir = true, mustBeWritable = true).default(File(".").toPath())
+        names = arrayOf("--outputDir", "-o"), help = "The output dir, defaults to './result'"
+    ).path(mustExist = true, canBeFile = false, canBeDir = true, mustBeWritable = true).default(File("./result").toPath())
 
     private val prefix by option(names = arrayOf("--prefix", "-p"), help = "The prefix of the song id").required()
 
@@ -72,6 +73,7 @@ class PackCommand : CliktCommand(name = "pack") {
 
             if (songs.isEmpty()) throw RuntimeException("Song not found: $songId")
             if (songs.size > 1) throw RuntimeException("Duplicated songs found: $songs")
+
             ArcpkgPackRequest(
                 songlistPath = songlistPath,
                 song = songs[0],
@@ -104,7 +106,7 @@ class ExportCommand : CliktCommand(name = "export") {
     ).default((System.currentTimeMillis() / 1000L).toString())
 
     private val exportOutput by option(
-        names = arrayOf("--output", "-o"), help = "The output of the song output, defaults to './result'"
+        names = arrayOf("--outputDir", "-o"), help = "The output dir, defaults to './result'"
     ).file(mustExist = true, canBeDir = true, canBeFile = false).default(file(".", "result"))
 
     private val disableDiffEntriesCompletion by option(
@@ -125,12 +127,89 @@ class ExportCommand : CliktCommand(name = "export") {
     }
 }
 
+class CombineCommand : CliktCommand(name = "combine") {
+    private val arcpkgs: Set<Path> by argument(name = "arcpkgs", help = ".arcpkg files to be processed on").path(
+        mustExist = true, mustBeReadable = true, canBeDir = false
+    ).multiple().unique()
+
+    private val prefix by option(names = arrayOf("--prefix", "-p"), help = "The prefix of the song id").required()
+
+    private val songlistPath: Path by argument(name = "songlist", help = "The songlist file to be processed on").path(
+        mustExist = true, mustBeReadable = true, canBeFile = true, canBeDir = false
+    ).validate {
+        require(
+            try {
+                json.parseToJsonElement(it.toFile().readText(Charsets.UTF_8))
+                true
+            } catch (_: Exception) {
+                false
+            }
+        ) { "Invalid json format" }
+    }
+
+    private val packlistPath: Path by argument(name = "packlist", help = "The packlist file to be processed on").path(
+        mustExist = true, mustBeReadable = true, canBeFile = true, canBeDir = false
+    ).validate {
+        require(
+            try {
+                json.parseToJsonElement(it.toFile().readText(Charsets.UTF_8))
+                true
+            } catch (_: Exception) {
+                false
+            }
+        ) { "Invalid json format" }
+    }
+
+    private val combineOutput by option(
+        names = arrayOf("--output", "-o"), help = "The output of the result .arcpkg, defaults to './result'"
+    ).file(mustExist = true, canBeDir = true, canBeFile = false).default(file(".", "result"))
+
+    private val packId: String by option(
+        names = arrayOf("--packId", "--id", "-s"), help = "The identity of the pack to be combined"
+    ).required()
+
+    private val regexMode: Boolean by option(
+        names = arrayOf("--regex", "-re"),
+        help = "Enable regex matching mode for packId"
+    ).flag("--noregex", default = false)
+
+    override fun run() {
+        val packlist = json.decodeFromString<Packlist>(packlistPath.toFile().readText(Charsets.UTF_8)).packs
+        val songlist = json.decodeFromString<Songlist>(songlistPath.readText(charset = Charsets.UTF_8)).songs
+
+        val packs: List<PacklistEntry> = if (regexMode) {
+            val regex = packId.toRegex()
+            val packs = packlist.filter { it.id.matches(regex) }
+
+            if (packs.isEmpty()) throw RuntimeException("No song is matched with: $packId")
+
+            packs
+        } else {
+            val packs = packlist.filter { it.id == packId }
+
+            if (packs.isEmpty()) throw RuntimeException("Song not found: $packId")
+            if (packs.size > 1) throw RuntimeException("Duplicated songs found: $packId")
+
+            packs
+        }
+
+        ArcpkgCombineRequest(
+            packlistPath = packlistPath,
+            arcpkgs = arcpkgs,
+            songlist = songlist,
+            packlist = packs,
+            prefix = prefix,
+            outputFile = combineOutput
+        ).exec()
+    }
+
+}
+
 class EtoileRessurectionCommand : CliktCommand(name = "EtoileResurrection") {
     override fun run() = Unit
 }
 
 fun main(args: Array<String>) {
-
     /*
     val usage: Array<String> = arrayOf(
         "Etoile Resurrection",
@@ -143,7 +222,5 @@ fun main(args: Array<String>) {
         "The convert result will be in `\$PWD/result/`"
     )
     */
-
-    EtoileRessurectionCommand().subcommands(PackCommand(), ExportCommand()).main(args)
-
+    EtoileRessurectionCommand().subcommands(PackCommand(), ExportCommand(), CombineCommand()).main(args)
 }

@@ -2,6 +2,10 @@ package io.sn.etoile.impl
 
 import com.charleskorn.kaml.encodeToStream
 import com.tairitsu.compose.arcaea.Chart
+import io.sn.etoile.impl.ArcpkgPackRequestUtil.getDifficultyColor
+import io.sn.etoile.impl.ArcpkgPackRequestUtil.getDifficultyString
+import io.sn.etoile.impl.ArcpkgPackRequestUtil.getLastOpenedChartPath
+import io.sn.etoile.impl.ArcpkgPackRequestUtil.getSkin
 import io.sn.etoile.utils.*
 import io.sn.etoile.utils.scenecontrol.ScenecontrolService
 import io.sn.etoile.utils.scenecontrol.extractScenecontrols
@@ -17,6 +21,134 @@ import kotlin.io.path.exists
 import kotlin.io.path.listDirectoryEntries
 import kotlin.io.path.name
 import kotlin.io.path.readBytes
+
+const val charterLowiro = "© lowiro"
+
+private object ArcpkgPackRequestUtil {
+    fun getDifficultyString(ratingClass: Int, rating: Int, ratingPlus: Boolean): String {
+        val prefix = when (ratingClass) {
+            0 -> "Past"
+            1 -> "Present"
+            2 -> "Future"
+            3 -> "Beyond"
+            4 -> "Eternal"
+            else -> "Future"
+        }
+        if (rating <= 0) {
+            return "$prefix ?"
+        }
+        return "$prefix $rating${if (ratingPlus) "+" else ""}"
+    }
+
+    fun getDifficultyColor(ratingClass: Int): String = when (ratingClass) {
+        0 -> "#3A6B78FF"
+        1 -> "#566947FF"
+        // 2 -> "#482B54FF"
+        3 -> "#7C1C30FF"
+        4 -> "#433455FF"
+        else -> "#482B54FF"
+    }
+
+    /**
+     * Logic of skinning for special songs
+     */
+    fun getSkin(side: Int, songId: String, setId: String, bg: String?): DifficultySkin {
+        val sideStyle = when (side) {
+            0 -> DifficultySkin.SideStyle.LIGHT
+            1 -> DifficultySkin.SideStyle.CONFLICT
+            2 -> DifficultySkin.SideStyle.COLORLESS
+            3 -> DifficultySkin.SideStyle.LEPHON
+            else -> DifficultySkin.SideStyle.LIGHT
+        }
+
+        val qualifiedBg = bg
+            ?: when (sideStyle) {
+                DifficultySkin.SideStyle.LIGHT -> "base_light"
+                DifficultySkin.SideStyle.CONFLICT -> "base_conflict"
+                DifficultySkin.SideStyle.COLORLESS -> "epilogue"
+                DifficultySkin.SideStyle.LEPHON -> "lephon"
+            }
+
+        val noteStyle = when (sideStyle) {
+            DifficultySkin.SideStyle.LIGHT,
+            DifficultySkin.SideStyle.COLORLESS,
+            DifficultySkin.SideStyle.LEPHON,
+                -> DifficultySkin.NoteStyle.LIGHT
+
+            DifficultySkin.SideStyle.CONFLICT -> DifficultySkin.NoteStyle.CONFLICT
+        }
+
+        val particleStyle = when (setId) {
+            "mirai" -> {
+                when (sideStyle) {
+                    DifficultySkin.SideStyle.CONFLICT -> DifficultySkin.ParticleStyle.MIRAI_CONFLICT
+                    else -> DifficultySkin.ParticleStyle.MIRAI_LIGHT
+                }
+            }
+
+            "nijuusei" -> DifficultySkin.ParticleStyle.MIRAI_LIGHT
+            else -> sideStyle.toParticleStyle()
+        }
+
+        val trackStyle = when {
+            qualifiedBg.startsWith("byd_") -> sideStyle.toTrackStyle()
+
+            songId.startsWith("alexandrite") -> DifficultySkin.TrackStyle.BLACK
+
+            qualifiedBg == "dynamix_conflict" -> DifficultySkin.TrackStyle.BLACK
+            qualifiedBg == "mirai_conflict" -> DifficultySkin.TrackStyle.BLACK
+            qualifiedBg == "lethaeus" -> DifficultySkin.TrackStyle.BLACK
+            qualifiedBg == "mirai_awakened" -> DifficultySkin.TrackStyle.BLACK
+            qualifiedBg == "saikyostronger" -> DifficultySkin.TrackStyle.BLACK
+
+            !qualifiedBg.startsWith("nijuusei") || qualifiedBg != "vs_conflict" -> when {
+                songId.startsWith("etherstrike") -> DifficultySkin.TrackStyle.REI
+                songId.startsWith("tempestissimo") -> DifficultySkin.TrackStyle.TEMPESTISSIMO
+                qualifiedBg == "finale_conflict" || qualifiedBg == "alterego" -> DifficultySkin.TrackStyle.FINALE
+                qualifiedBg == "pentiment" || qualifiedBg == "apophenia" -> DifficultySkin.TrackStyle.PENTIMENT
+                qualifiedBg == "arcanaeden" -> DifficultySkin.TrackStyle.ARCANA
+
+                else -> sideStyle.toTrackStyle()
+            }
+
+            else -> DifficultySkin.TrackStyle.NONE
+        }
+
+        val accentStyle = when {
+            setId == "dynamix" || songId == "alexandrite" -> DifficultySkin.AccentStyle.DYNAMIX
+            else -> DifficultySkin.AccentStyle.NONE
+        }
+
+        val singleLineStyle = if (setId == "single") {
+            if (songId == "neowings") DifficultySkin.SingleLineStyle.NEO
+            else when (noteStyle) {
+                DifficultySkin.NoteStyle.CONFLICT -> DifficultySkin.SingleLineStyle.CONFLICT
+                else -> DifficultySkin.SingleLineStyle.LIGHT
+            }
+        } else DifficultySkin.SingleLineStyle.NONE
+
+        return DifficultySkin(
+            side = sideStyle,
+            note = noteStyle,
+            particle = particleStyle,
+            accent = accentStyle,
+            track = trackStyle,
+            singleLine = singleLineStyle,
+        )
+    }
+
+    fun getLastOpenedChartPath(songlistEntry: SonglistEntry): String {
+        val difficulties = songlistEntry.difficulties
+        if (difficulties == null || difficulties.isEmpty()) throw RuntimeException("No charts exist for ${songlistEntry.id}")
+
+        return if (difficulties.any { it.ratingClass == 2 }) {
+            "2.aff"
+        } else {
+            "${difficulties.last().ratingClass}.aff"
+        }
+    }
+
+}
 
 class ArcpkgPackRequest(
     songlistPath: Path,
@@ -55,132 +187,6 @@ class ArcpkgPackRequest(
             directory = songId, identifier = identifier, settingsFile = "project.arcproj", version = 0, type = ArcpkgEntryType.LEVEL
         )
     )
-
-    companion object {
-        fun getDifficultyString(ratingClass: Int, rating: Int, ratingPlus: Boolean): String {
-            val prefix = when (ratingClass) {
-                0 -> "Past"
-                1 -> "Present"
-                2 -> "Future"
-                3 -> "Beyond"
-                4 -> "Eternal"
-                else -> "Future"
-            }
-            if (rating <= 0) {
-                return "$prefix ?"
-            }
-            return "$prefix $rating${if (ratingPlus) "+" else ""}"
-        }
-
-        private fun getDifficultyColor(ratingClass: Int): String = when (ratingClass) {
-            0 -> "#3A6B78FF"
-            1 -> "#566947FF"
-            // 2 -> "#482B54FF"
-            3 -> "#7C1C30FF"
-            4 -> "#433455FF"
-            else -> "#482B54FF"
-        }
-
-        /**
-         * Logic of skinning for special songs
-         */
-        private fun getSkin(side: Int, songId: String, setId: String, bg: String?): DifficultySkin {
-            val sideStyle = when (side) {
-                0 -> DifficultySkin.SideStyle.LIGHT
-                1 -> DifficultySkin.SideStyle.CONFLICT
-                2 -> DifficultySkin.SideStyle.COLORLESS
-                3 -> DifficultySkin.SideStyle.LEPHON
-                else -> DifficultySkin.SideStyle.LIGHT
-            }
-
-            val qualifiedBg = bg
-                ?: when (sideStyle) {
-                    DifficultySkin.SideStyle.LIGHT -> "base_light"
-                    DifficultySkin.SideStyle.CONFLICT -> "base_conflict"
-                    DifficultySkin.SideStyle.COLORLESS -> "epilogue"
-                    DifficultySkin.SideStyle.LEPHON -> "lephon"
-                }
-
-            val noteStyle = when (sideStyle) {
-                DifficultySkin.SideStyle.LIGHT,
-                DifficultySkin.SideStyle.COLORLESS,
-                DifficultySkin.SideStyle.LEPHON,
-                    -> DifficultySkin.NoteStyle.LIGHT
-
-                DifficultySkin.SideStyle.CONFLICT -> DifficultySkin.NoteStyle.CONFLICT
-            }
-
-            val particleStyle = when (setId) {
-                "mirai" -> {
-                    when (sideStyle) {
-                        DifficultySkin.SideStyle.CONFLICT -> DifficultySkin.ParticleStyle.MIRAI_CONFLICT
-                        else -> DifficultySkin.ParticleStyle.MIRAI_LIGHT
-                    }
-                }
-
-                "nijuusei" -> DifficultySkin.ParticleStyle.MIRAI_LIGHT
-                else -> sideStyle.toParticleStyle()
-            }
-
-            val trackStyle = when {
-                qualifiedBg.startsWith("byd_") -> sideStyle.toTrackStyle()
-
-                songId.startsWith("alexandrite") -> DifficultySkin.TrackStyle.BLACK
-
-                qualifiedBg == "dynamix_conflict" -> DifficultySkin.TrackStyle.BLACK
-                qualifiedBg == "mirai_conflict" -> DifficultySkin.TrackStyle.BLACK
-                qualifiedBg == "lethaeus" -> DifficultySkin.TrackStyle.BLACK
-                qualifiedBg == "mirai_awakened" -> DifficultySkin.TrackStyle.BLACK
-                qualifiedBg == "saikyostronger" -> DifficultySkin.TrackStyle.BLACK
-
-                !qualifiedBg.startsWith("nijuusei") || qualifiedBg != "vs_conflict" -> when {
-                    songId.startsWith("etherstrike") -> DifficultySkin.TrackStyle.REI
-                    songId.startsWith("tempestissimo") -> DifficultySkin.TrackStyle.TEMPESTISSIMO
-                    qualifiedBg == "finale_conflict" || qualifiedBg == "alterego" -> DifficultySkin.TrackStyle.FINALE
-                    qualifiedBg == "pentiment" || qualifiedBg == "apophenia" -> DifficultySkin.TrackStyle.PENTIMENT
-                    qualifiedBg == "arcanaeden" -> DifficultySkin.TrackStyle.ARCANA
-
-                    else -> sideStyle.toTrackStyle()
-                }
-
-                else -> DifficultySkin.TrackStyle.NONE
-            }
-
-            val accentStyle = when {
-                setId == "dynamix" || songId == "alexandrite" -> DifficultySkin.AccentStyle.DYNAMIX
-                else -> DifficultySkin.AccentStyle.NONE
-            }
-
-            val singleLineStyle = if (setId == "single") {
-                if (songId == "neowings") DifficultySkin.SingleLineStyle.NEO
-                else when (noteStyle) {
-                    DifficultySkin.NoteStyle.CONFLICT -> DifficultySkin.SingleLineStyle.CONFLICT
-                    else -> DifficultySkin.SingleLineStyle.LIGHT
-                }
-            } else DifficultySkin.SingleLineStyle.NONE
-
-            return DifficultySkin(
-                side = sideStyle,
-                note = noteStyle,
-                particle = particleStyle,
-                accent = accentStyle,
-                track = trackStyle,
-                singleLine = singleLineStyle,
-            )
-        }
-
-        private fun getLastOpenedChartPath(songlistEntry: SonglistEntry): String {
-            val difficulties = songlistEntry.difficulties
-            if (difficulties == null || difficulties.isEmpty()) throw RuntimeException("No charts exist for ${songlistEntry.id}")
-
-            return if (difficulties.any { it.ratingClass == 2 }) {
-                "2.aff"
-            } else {
-                "${difficulties.last().ratingClass}.aff"
-            }
-        }
-
-    }
 
     fun exec(output: OutputStream = System.out) {
         val s = PrintStream(output)
@@ -231,7 +237,7 @@ class ArcpkgPackRequest(
                 syncBaseBpm = false,
                 title = songEntry.titleLocalized!!.en,
                 composer = songEntry.artist!!,
-                charter = if (prefix == "lowiro") "© Lowiro" else it.chartDesigner.let { ctr -> if (ctr.contains("\n")) "" else ctr },
+                charter = if (prefix == "lowiro") charterLowiro else it.chartDesigner.let { ctr -> if (ctr.contains("\n")) "" else ctr },
                 alias = if (prefix == "lowiro") it.chartDesigner else null,
                 illustrator = it.jacketDesigner,
                 difficulty = getDifficultyString(it.ratingClass, it.rating, it.ratingPlus == true),

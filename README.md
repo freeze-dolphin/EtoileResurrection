@@ -1,4 +1,5 @@
 # EtoileResurrection
+
 *Reborn of [Etoile](https://github.com/freeze-dolphin/EtoileLegacy)*
 
 ---
@@ -16,6 +17,8 @@ Available commands:
   `songlist`, `packlist`
   file.
 - `pack`: **(Arcaea -> ArcCreate)** to pack the official Arcaea chart format into ArcCreate **.arcpkg** files.
+
+- `combine`: **(ArcCreate -> ArcCreate)** to combine multiple ArcCreate **.arcpkg** files into one according to `packlist`.
 
 ## Features
 
