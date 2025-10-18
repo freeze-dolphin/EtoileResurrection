@@ -29,6 +29,7 @@ class ArcpkgCombineRequest(
     val songlist: List<SonglistEntry>,
     val packlist: List<PacklistEntry>,
     val prefix: String?,
+    val appendSingle: Boolean,
     val outputFile: File,
 ) {
     private val songsDir: Path = packlistPath.parent
@@ -66,7 +67,7 @@ class ArcpkgCombineRequest(
         singleAppended.addAll(packlist)
         singleAppended.add(PacklistEntry.fromDefaultPacklistEntry("single", LocalizedString("Single"), LocalizedString("")))
 
-        singleAppended.filter { it.packParent == null }.forEach { pack ->
+        (if (appendSingle) singleAppended else packlist).filter { it.packParent == null }.forEach { pack ->
             val arcpkgFile = outputFile.resolve("${pack.id}.arcpkg")
             arcpkgFile.createNewFile()
 
@@ -89,7 +90,10 @@ class ArcpkgCombineRequest(
                     zos.closeEntry()
 
                     zos.putNextEntry(ZipEntry(".pack/pack.yml"))
-                    yaml.encodeToStream(PackInformation("pack.png", includedSongs.map { it.first.identifier }, pack.nameLocalized.en), zos)
+                    yaml.encodeToStream(
+                        PackInformation("pack.png", includedSongs.map { it.first.identifier }, pack.nameLocalized.en),
+                        zos
+                    )
                     zos.closeEntry()
 
                     val coverFile = searchPackCoverFileFromId(pack.id)

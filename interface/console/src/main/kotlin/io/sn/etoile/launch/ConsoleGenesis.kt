@@ -171,7 +171,12 @@ class CombineCommand : CliktCommand(name = "combine") {
     private val regexMode: Boolean by option(
         names = arrayOf("--regex", "-re"),
         help = "Enable regex matching mode for packId"
-    ).flag("--noregex", default = false)
+    ).flag("--no-regex", default = false)
+
+    private val appendSingle: Boolean by option(
+        names = arrayOf("--append-single", "-a"),
+        help = "Append single pack information to the packlist"
+    ).flag("--no-single", default = false)
 
     override fun run() {
         val packlist = json.decodeFromString<Packlist>(packlistPath.toFile().readText(Charsets.UTF_8)).packs
@@ -199,6 +204,7 @@ class CombineCommand : CliktCommand(name = "combine") {
             songlist = songlist,
             packlist = packs,
             prefix = prefix,
+            appendSingle = appendSingle,
             outputFile = combineOutput
         ).exec()
     }
