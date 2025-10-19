@@ -65,7 +65,7 @@ class ArcpkgCombineRequest(
 
         val singleAppended = mutableListOf<PacklistEntry>()
         singleAppended.addAll(packlist)
-        singleAppended.add(PacklistEntry.fromDefaultPacklistEntry("single", LocalizedString("Single"), LocalizedString("")))
+        singleAppended.add(PacklistEntry.fromDefaultPacklistEntry("single", "arcaea", LocalizedString("Single"), LocalizedString("")))
 
         (if (appendSingle) singleAppended else packlist).filter { it.packParent == null }.forEach { pack ->
             val arcpkgFile = outputFile.resolve("${pack.id}.arcpkg")

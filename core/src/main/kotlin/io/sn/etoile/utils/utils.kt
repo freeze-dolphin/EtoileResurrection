@@ -26,7 +26,7 @@ data class Packlist(
 @Serializable
 data class PacklistEntry(
     val id: String,
-    val section: String = "sidestory",
+    val section: String,
     @SerialName("custom_banner") val customBanner: Boolean? = null,
     @SerialName("plus_character") val plusCharacter: Int = -1,
     @SerialName("pack_parent") val packParent: String? = null,
@@ -38,8 +38,9 @@ data class PacklistEntry(
     @SerialName("description_localized") val descriptionLocalized: LocalizedString,
 ) {
     companion object {
-        fun fromDefaultPacklistEntry(id: String, nameLocalized: LocalizedString, descriptionLocalized: LocalizedString) = PacklistEntry(
+        fun fromDefaultPacklistEntry(id: String, section: String, nameLocalized: LocalizedString, descriptionLocalized: LocalizedString) = PacklistEntry(
             id = id,
+            section = section,
             plusCharacter = -1,
             isExtendPack = true,
             customBanner = false,
