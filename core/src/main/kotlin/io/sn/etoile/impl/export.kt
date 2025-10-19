@@ -668,6 +668,7 @@ class ArcpkgConvertRequest(
                         packlist.add(
                             PacklistEntry.fromDefaultPacklistEntry(
                                 id = packId,
+                                section = "sidestory",
                                 nameLocalized = LocalizedString(packName),
                                 descriptionLocalized = LocalizedString("")
                             )
