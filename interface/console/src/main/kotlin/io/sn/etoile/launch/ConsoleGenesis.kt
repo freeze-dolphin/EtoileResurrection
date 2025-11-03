@@ -7,21 +7,32 @@ import com.github.ajalt.clikt.parameters.arguments.argument
 import com.github.ajalt.clikt.parameters.arguments.multiple
 import com.github.ajalt.clikt.parameters.arguments.unique
 import com.github.ajalt.clikt.parameters.arguments.validate
-import com.github.ajalt.clikt.parameters.options.*
+import com.github.ajalt.clikt.parameters.options.default
+import com.github.ajalt.clikt.parameters.options.flag
+import com.github.ajalt.clikt.parameters.options.option
+import com.github.ajalt.clikt.parameters.options.required
 import com.github.ajalt.clikt.parameters.types.choice
 import com.github.ajalt.clikt.parameters.types.file
+import com.github.ajalt.clikt.parameters.types.int
 import com.github.ajalt.clikt.parameters.types.path
-import io.sn.etoile.impl.ArcpkgCombineRequest
-import io.sn.etoile.impl.ArcpkgConvertRequest
-import io.sn.etoile.impl.ArcpkgPackRequest
-import io.sn.etoile.impl.ExportBgMode
-import io.sn.etoile.impl.ExportConfiguration
+import com.sun.management.OperatingSystemMXBean
+import io.sn.etoile.impl.*
 import io.sn.etoile.utils.*
+import kotlinx.coroutines.Dispatchers
+import kotlinx.coroutines.launch
+import kotlinx.coroutines.runBlocking
 import java.io.File
+import java.lang.management.ManagementFactory
 import java.nio.file.Path
 import kotlin.io.path.readText
+import kotlin.math.min
+import kotlin.system.exitProcess
 
 class PackCommand : CliktCommand(name = "pack") {
+
+    private val cpuCores = Runtime.getRuntime().availableProcessors()
+    private val totalRamGB =
+        OperatingSystemMXBean::class.java.cast(ManagementFactory.getOperatingSystemMXBean()).totalMemorySize / (1024.0 * 1024 * 1024)
 
     private val songlistPath: Path by argument(name = "songlist", help = "The songlist file to be processed on").path(
         mustExist = true, mustBeReadable = true, canBeFile = true, canBeDir = false
@@ -56,40 +67,68 @@ class PackCommand : CliktCommand(name = "pack") {
         help = "Skip packing if target .arcpkg is already existed"
     ).flag("--overwrite", default = false)
 
+    private val parallelJobs: Int by option(
+        names = arrayOf("--jobs", "-j"),
+        help = "The number of parallel jobs to run, defaults to `(min(RAM/2GB, threads)`"
+    ).int().default(min(cpuCores, (totalRamGB / 2).toInt()))
+
+    private fun packMapper(song: SonglistEntry) {
+        ArcpkgPackRequest(
+            songlistPath = songlistPath,
+            song = song,
+            prefix = prefix,
+            packOutputPath = packOutputPath
+        ).exec()
+    }
+
     override fun run() {
         val songlist = json.decodeFromString<Songlist>(songlistPath.readText(charset = Charsets.UTF_8)).songs
 
-        if (regexMode) {
-            val regex = songId.toRegex()
-            val songs = songlist.filter { it.id.matches(regex) && it.deleted != true }
-
-            if (songs.isEmpty()) throw RuntimeException("No song is matched with: $songId")
-
-            songs.forEach { song ->
-                val arcpkgFile = packOutputPath.resolve("${song.id}.arcpkg").toFile()
-                if ((skipOnExist && arcpkgFile.exists()).not()) {
-                    ArcpkgPackRequest(
-                        songlistPath = songlistPath,
-                        song = song,
-                        prefix = prefix,
-                        packOutputPath = packOutputPath
-                    ).exec()
-                }
+        var songs: List<SonglistEntry> = songlist.filter {
+            val idMatching = if (regexMode) {
+                val regex = songId.toRegex()
+                it.id.matches(regex)
+            } else {
+                it.id == songId
             }
-        } else {
-            val songs = songlist.filter { it.id == songId && it.deleted != true }
+            idMatching && it.deleted != true
+        }
 
-            if (songs.isEmpty()) throw RuntimeException("Song not found: $songId")
-            if (songs.size > 1) throw RuntimeException("Duplicated songs found: $songs")
+        if (songs.isEmpty()) throw RuntimeException("No song is matched with: $songId")
 
-            val arcpkgFile = packOutputPath.resolve("${songs[0].id}.arcpkg").toFile()
-            if ((skipOnExist && arcpkgFile.exists()).not()) {
-                ArcpkgPackRequest(
-                    songlistPath = songlistPath,
-                    song = songs[0],
-                    prefix = prefix,
-                    packOutputPath = packOutputPath
-                ).exec()
+        songs = songs.filter {
+            val targetFile = packOutputPath.resolve(ArcpkgPackRequestUtil.getIdentifier(prefix, it.id) + ".arcpkg").toFile()
+            (targetFile.exists() && skipOnExist).not()
+        }
+
+        if (songs.isEmpty()) {
+            println("Skipped all songs due to existence")
+            exitProcess(0)
+        }
+
+        if (!regexMode && songs.size > 1) throw RuntimeException("Duplicated songs found: $songs")
+
+        val parted = greedyPartition(songs.size, min(parallelJobs, songs.size))
+        println(
+            "Packing ${songs.size} song(s)\n" +
+                "CPU Core: ${Runtime.getRuntime().availableProcessors()}\n" +
+                "Deploying $parallelJobs job(s)\n" +
+                "Partition: $parted"
+        )
+
+        val listJobs = mutableListOf(0)
+        parted.forEachIndexed { index, partSize ->
+            listJobs.add(listJobs[index] + partSize)
+        }
+
+        runBlocking {
+            (1 until listJobs.size).forEach { jobIndex ->
+                println("#$jobIndex: \t${listJobs[jobIndex - 1]}\t - \t${listJobs[jobIndex]}")
+                launch(Dispatchers.IO) {
+                    songs.subList(listJobs[jobIndex - 1], listJobs[jobIndex]).forEach { song ->
+                        packMapper(song)
+                    }
+                }
             }
         }
     }

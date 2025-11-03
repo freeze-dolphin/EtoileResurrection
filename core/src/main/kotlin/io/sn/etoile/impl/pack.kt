@@ -24,7 +24,7 @@ import kotlin.io.path.readBytes
 
 const val charterLowiro = "© lowiro"
 
-private object ArcpkgPackRequestUtil {
+object ArcpkgPackRequestUtil {
     fun getDifficultyString(ratingClass: Int, rating: Int, ratingPlus: Boolean): String {
         val prefix = when (ratingClass) {
             0 -> "Past"
@@ -148,6 +148,8 @@ private object ArcpkgPackRequestUtil {
         }
     }
 
+
+    fun getIdentifier(prefix: String, songId: String): String = "$prefix${if (prefix.isEmpty()) "" else "."}$songId"
 }
 
 class ArcpkgPackRequest(
@@ -159,9 +161,7 @@ class ArcpkgPackRequest(
     private val songsDir: Path = songlistPath.parent
     private val songId: String = song.id
 
-    private val identifier = "$prefix${if (prefix.isEmpty()) "" else "."}$songId"
-
-    fun getArcpkgFileName(): String = "$identifier.arcpkg"
+    private fun getIdentifier() = ArcpkgPackRequestUtil.getIdentifier(prefix, songId)
 
     private val bgSearchDir: List<Pair<Path, Boolean>> = listOf(
         file(songsDir.toString(), songId).toPath() to false,
@@ -184,7 +184,7 @@ class ArcpkgPackRequest(
 
     private fun generateIndexEntry(): List<ImportInformationEntry> = listOf(
         ImportInformationEntry(
-            directory = songId, identifier = identifier, settingsFile = "project.arcproj", version = 0, type = ArcpkgEntryType.LEVEL
+            directory = songId, identifier = getIdentifier(), settingsFile = "project.arcproj", version = 0, type = ArcpkgEntryType.LEVEL
         )
     )
 
@@ -299,7 +299,7 @@ class ArcpkgPackRequest(
             }
 
         // pack all up
-        val arcpkgFile = packOutputPath.resolve("$identifier.arcpkg").toFile()
+        val arcpkgFile = packOutputPath.resolve("${getIdentifier()}.arcpkg").toFile()
         arcpkgFile.createNewFile()
 
         FileOutputStream(arcpkgFile).use { fos ->
