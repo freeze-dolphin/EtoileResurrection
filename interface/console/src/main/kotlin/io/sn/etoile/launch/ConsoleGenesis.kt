@@ -51,6 +51,11 @@ class PackCommand : CliktCommand(name = "pack") {
         help = "Enable regex matching mode for songId"
     ).flag("--noregex", default = false)
 
+    private val skipOnExist: Boolean by option(
+        names = arrayOf("--skipOnExist", "-sk"),
+        help = "Skip packing if target .arcpkg is already existed"
+    ).flag("--overwrite", default = false)
+
     override fun run() {
         val songlist = json.decodeFromString<Songlist>(songlistPath.readText(charset = Charsets.UTF_8)).songs
 
@@ -61,12 +66,15 @@ class PackCommand : CliktCommand(name = "pack") {
             if (songs.isEmpty()) throw RuntimeException("No song is matched with: $songId")
 
             songs.forEach { song ->
-                ArcpkgPackRequest(
-                    songlistPath = songlistPath,
-                    song = song,
-                    prefix = prefix,
-                    packOutputPath = packOutputPath
-                ).exec()
+                val arcpkgFile = packOutputPath.resolve("${song.id}.arcpkg").toFile()
+                if ((skipOnExist && arcpkgFile.exists()).not()) {
+                    ArcpkgPackRequest(
+                        songlistPath = songlistPath,
+                        song = song,
+                        prefix = prefix,
+                        packOutputPath = packOutputPath
+                    ).exec()
+                }
             }
         } else {
             val songs = songlist.filter { it.id == songId && it.deleted != true }
@@ -74,12 +82,15 @@ class PackCommand : CliktCommand(name = "pack") {
             if (songs.isEmpty()) throw RuntimeException("Song not found: $songId")
             if (songs.size > 1) throw RuntimeException("Duplicated songs found: $songs")
 
-            ArcpkgPackRequest(
-                songlistPath = songlistPath,
-                song = songs[0],
-                prefix = prefix,
-                packOutputPath = packOutputPath
-            ).exec()
+            val arcpkgFile = packOutputPath.resolve("${songs[0].id}.arcpkg").toFile()
+            if ((skipOnExist && arcpkgFile.exists()).not()) {
+                ArcpkgPackRequest(
+                    songlistPath = songlistPath,
+                    song = songs[0],
+                    prefix = prefix,
+                    packOutputPath = packOutputPath
+                ).exec()
+            }
         }
     }
 }
