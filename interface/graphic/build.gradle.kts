@@ -4,11 +4,10 @@ val affComposeVersion: String by rootProject
 plugins {
     kotlin("jvm")
     kotlin("plugin.serialization") version "2.2.10"
-    id("com.ryandens.jlink-application") version "0.4.1"
-    id("edu.sc.seis.launch4j") version "4.0.0"
 
     java
     distribution
+    application
 }
 
 group = "io.sn"
@@ -31,41 +30,10 @@ application {
     mainClass = "io.sn.etoile.launch.SwingGenesisKt"
 }
 
-launch4j {
-    mainClassName = "io.sn.etoile.launch.SwingGenesisKt"
-    outfile = "EtoileResurrection.Swing-${getCheckedOutGitCommitHash(7)}.exe"
-    downloadUrl = "https://learn.microsoft.com/java/openjdk/download"
-    jvmOptions = listOf("-Dfile.encoding=UTF-8")
-    bundledJrePath = "jre"
-}
-
-jlinkJre {
-    modules.set(setOf("java.base", "java.desktop", "java.logging"))
-}
-
 distributions {
     main {
         distributionBaseName = "EtoileResurrection.Swing-universal"
         version = getCheckedOutGitCommitHash(7)
-    }
-
-    create("win64") {
-        distributionBaseName = "EtoileResurrection.Swing-win64"
-        version = getCheckedOutGitCommitHash(7)
-        contents {
-            from(layout.buildDirectory.dir("launch4j"))
-            duplicatesStrategy = DuplicatesStrategy.EXCLUDE
-        }
-    }
-
-    create("win64NoJre") {
-        distributionBaseName = "EtoileResurrection.Swing-win64-noJre"
-        version = getCheckedOutGitCommitHash(7)
-        contents {
-            from(layout.buildDirectory.dir("launch4j"))
-            exclude("jre")
-            duplicatesStrategy = DuplicatesStrategy.EXCLUDE
-        }
     }
 }
 
@@ -89,40 +57,4 @@ fun getCheckedOutGitCommitHash(takeFromHash: Int = 12): String { // https://gist
 
 tasks.named<Test>("test") {
     useJUnitPlatform()
-}
-
-tasks.named("win64DistTar") {
-    dependsOn("createExe")
-    dependsOn("jlinkJre")
-
-    val sourceJre = layout.buildDirectory.dir("jlink-jre/jre")
-    val targetJre = layout.buildDirectory.dir("launch4j/jre")
-    inputs.dir(sourceJre)
-    outputs.dir(targetJre)
-
-    doLast {
-        sourceJre.get().asFile.copyRecursively(targetJre.get().asFile, overwrite = true)
-    }
-}
-
-tasks.named("win64DistZip") {
-    dependsOn("createExe")
-    dependsOn("jlinkJre")
-
-    val sourceJre = layout.buildDirectory.dir("jlink-jre/jre")
-    val targetJre = layout.buildDirectory.dir("launch4j/jre")
-    inputs.dir(sourceJre)
-    outputs.dir(targetJre)
-
-    doLast {
-        sourceJre.get().asFile.copyRecursively(targetJre.get().asFile, overwrite = true)
-    }
-}
-
-tasks.named("win64NoJreDistZip") {
-    dependsOn("createExe")
-}
-
-tasks.named("win64NoJreDistTar") {
-    dependsOn("createExe")
 }
