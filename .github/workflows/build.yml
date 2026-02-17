@@ -19,6 +19,7 @@ jobs:
 
       - name: Build
         run: |
+          chmod +x ./gradlew
           ./gradlew clean distZip win64DistZip win64NoJreDistZip
 
       - name: Release
