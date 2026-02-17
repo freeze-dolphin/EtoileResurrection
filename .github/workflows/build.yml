@@ -2,8 +2,7 @@ name: build.yml
 
 on:
   push:
-    tags:
-      - "v*"
+  workflow_dispatch:
 
 jobs:
   build:
