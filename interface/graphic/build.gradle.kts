@@ -54,7 +54,6 @@ distributions {
         version = getCheckedOutGitCommitHash(7)
         contents {
             from(layout.buildDirectory.dir("launch4j"))
-            exclude("jre")
             duplicatesStrategy = DuplicatesStrategy.EXCLUDE
         }
     }
