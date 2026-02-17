@@ -48,7 +48,7 @@ fun getCheckedOutGitCommitHash(takeFromHash: Int = 12): String { // https://gist
 
 distributions {
     main {
-        distributionBaseName = "EtoileResurrection"
+        distributionBaseName = "EtoileResurrection.Console-universal"
         version = getCheckedOutGitCommitHash(7)
     }
 }
