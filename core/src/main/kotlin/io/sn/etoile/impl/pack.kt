@@ -1,7 +1,9 @@
 package io.sn.etoile.impl
 
 import com.charleskorn.kaml.encodeToStream
-import com.tairitsu.compose.arcaea.Chart
+import com.tairitsu.compose.parser.ArcCreateChartSerializer
+import com.tairitsu.compose.parser.ArcaeaChartParser
+import com.tairitsu.compose.parser.ArcaeaChartSerializer
 import io.sn.etoile.impl.ArcpkgPackRequestUtil.getDifficultyColor
 import io.sn.etoile.impl.ArcpkgPackRequestUtil.getDifficultyString
 import io.sn.etoile.impl.ArcpkgPackRequestUtil.getLastOpenedChartPath
@@ -269,7 +271,8 @@ class ArcpkgPackRequest(
             val chartFile = file(songsDir.toString(), songId, "${it.ratingClass}.aff")
             var rt: String
             try {
-                rt = Chart.fromAff(chartFile.readText(charset = Charsets.UTF_8)).serializeForArcCreate()
+                val chart = ArcaeaChartParser.parse(chartFile.readText(charset = Charsets.UTF_8))
+                rt = ArcCreateChartSerializer.serialize(chart).joinToString(System.lineSeparator())
             } catch (e: Exception) {
                 e.printStackTrace(s)
                 throw RuntimeException("Error converting chart $songId (${it.ratingClass}.aff): ${e.message}")

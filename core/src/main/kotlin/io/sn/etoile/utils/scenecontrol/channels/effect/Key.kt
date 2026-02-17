@@ -1,11 +1,11 @@
 package io.sn.etoile.utils.scenecontrol.channels.effect
 
-import io.sn.aetherium.utils.EasingFunction
+import io.sn.aetherium.utils.EaseFunc
 
 data class Key(
     val timing: Long,
     val value: Float,
-    val easing: EasingFunction,
+    val easing: EaseFunc,
     val overrideIndex: Int = 0,
 ) : Comparable<Key> {
     fun serialize(): String = "$timing,$value,${getEasingString(easing)}"

@@ -1,7 +1,7 @@
 package io.sn.etoile.utils.scenecontrol
 
-import com.tairitsu.compose.arcaea.Scenecontrol
-import com.tairitsu.compose.arcaea.TimingGroup
+import com.tairitsu.compose.Scenecontrol
+import com.tairitsu.compose.TimingGroup
 import io.sn.etoile.utils.json
 import io.sn.etoile.utils.jsonMinified
 import io.sn.etoile.utils.scenecontrol.controllers.Scene

@@ -2,7 +2,6 @@
 
 package io.sn.etoile.launch
 
-import com.tairitsu.compose.arcaea.parser.ArcaeaChartANTLRLoadException
 import io.sn.etoile.impl.ArcpkgConvertRequest
 import io.sn.etoile.impl.ArcpkgPackRequest
 import io.sn.etoile.impl.ExportBgMode
@@ -381,16 +380,6 @@ object UIHandler {
                     )
                     success = false
                     return@Thread
-                } catch (aex: ArcaeaChartANTLRLoadException) {
-                    aex.printStackTrace()
-                    JOptionPane.showMessageDialog(
-                        sub,
-                        "ArcaeaChartANTLRLoadException: \n${aex}",
-                        getLocalizedMessage(locale, "msgbox.title.err"),
-                        JOptionPane.ERROR_MESSAGE
-                    )
-                    success = false
-                    return@Thread
                 } catch (e: Exception) {
                     e.printStackTrace()
                     JOptionPane.showMessageDialog(
@@ -568,16 +557,6 @@ object UIHandler {
                     JOptionPane.showMessageDialog(
                         sub,
                         "RuntimeException: \n${rte}",
-                        getLocalizedMessage(locale, "msgbox.title.err"),
-                        JOptionPane.ERROR_MESSAGE
-                    )
-                    success = false
-                    return@Thread
-                } catch (aex: ArcaeaChartANTLRLoadException) {
-                    aex.printStackTrace()
-                    JOptionPane.showMessageDialog(
-                        sub,
-                        "ArcaeaChartANTLRLoadException: \n${aex}",
                         getLocalizedMessage(locale, "msgbox.title.err"),
                         JOptionPane.ERROR_MESSAGE
                     )

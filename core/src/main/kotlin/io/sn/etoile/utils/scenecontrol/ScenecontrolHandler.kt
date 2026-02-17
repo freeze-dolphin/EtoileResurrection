@@ -1,12 +1,15 @@
 package io.sn.etoile.utils.scenecontrol
 
-import com.tairitsu.compose.arcaea.Scenecontrol
-import com.tairitsu.compose.arcaea.ScenecontrolType
+import com.tairitsu.compose.Scenecontrol
+import com.tairitsu.compose.ScenecontrolType
+import com.tairitsu.compose.TimingGroup
 import io.sn.aetherium.utils.linear
 import io.sn.etoile.utils.scenecontrol.channels.effect.KeyChannel
 import io.sn.etoile.utils.scenecontrol.channels.effect.constant
 import io.sn.etoile.utils.scenecontrol.channels.math.const
 import io.sn.etoile.utils.scenecontrol.controllers.Scene
+import kotlin.collections.getOrPut
+import kotlin.collections.indexOfFirst
 import kotlin.math.roundToInt
 import kotlin.properties.Delegates
 
@@ -89,11 +92,11 @@ class EnwidenCameraHandler(private val scene: Scene) : ScenecontrolHandler() {
         checkSetup()
 
         val timing = scenecontrol.time
-        val duration = scenecontrol.param1!!.toInt()
-        val toggle = scenecontrol.param2
+        val duration = scenecontrol.params[0].toInt()
+        val toggle = scenecontrol.params[1]
 
         enwidenCameraFactor.addKey(timing, enwidenCameraFactor.valueAt(timing))
-        enwidenCameraFactor.addKey(timing + duration, toggle!!.toFloat())
+        enwidenCameraFactor.addKey(timing + duration, toggle.toFloat())
     }
 
 }
@@ -151,12 +154,12 @@ class EnwidenLanesHandler(private val scene: Scene) : ScenecontrolHandler() {
         checkSetup()
 
         val timing = scenecontrol.time
-        val duration = scenecontrol.param1!!.toInt()
-        val toggle = scenecontrol.param2
+        val duration = scenecontrol.params[0].toInt()
+        val toggle = scenecontrol.params[1]
 
 
         enwidenLaneFactor.addKey(timing, enwidenLaneFactor.valueAt(timing))
-        enwidenLaneFactor.addKey(timing + duration, toggle!!.toFloat())
+        enwidenLaneFactor.addKey(timing + duration, toggle.toFloat())
     }
 
 }
@@ -170,9 +173,11 @@ class HideGroupHandler(private val scene: Scene) : ScenecontrolHandler() {
 
     override fun execute(scenecontrol: Scenecontrol) {
         val timing = scenecontrol.time
-        val isHidden = scenecontrol.param2!!
+        val isHidden = scenecontrol.params[1].toInt()
 
-        val tgIdx = scene.scenecontrolService.timingGroups.indexOfFirst { scenecontrol in it.getScenecontrols() }
+        val tgIdx = scene.scenecontrolService.timingGroups.indexOfFirst { it: TimingGroup ->
+            scenecontrol in it.getScenecontrols()
+        }
 
         val noteGroupController = scene.getNoteGroupController(tgIdx)
 
@@ -259,8 +264,8 @@ class TrackDisplayHandler(private val scene: Scene) : ScenecontrolHandler() {
             }
 
             ScenecontrolType.TRACK_DISPLAY -> {
-                duration = (scenecontrol.param1!! * 1000).roundToInt()
-                alpha = scenecontrol.param2!!
+                duration = (scenecontrol.params[0].toFloat() * 1000).roundToInt()
+                alpha = scenecontrol.params[1].toInt()
             }
 
             else -> throw RuntimeException("Unsupported scenecontrol type: ${scenecontrol.type} for TrackDisplayHandler")

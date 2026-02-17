@@ -3,8 +3,9 @@ package io.sn.etoile.impl
 import com.charleskorn.kaml.YamlList
 import com.charleskorn.kaml.yamlMap
 import com.charleskorn.kaml.yamlScalar
-import com.tairitsu.compose.arcaea.Chart
 import com.tairitsu.compose.arcaea.LocalizedString
+import com.tairitsu.compose.parser.ArcaeaChartSerializer
+import com.tairitsu.compose.parser.SimpleArcCreateChartParser
 import io.sn.etoile.utils.*
 import kotlinx.serialization.builtins.ListSerializer
 import kotlinx.serialization.decodeFromString
@@ -88,9 +89,9 @@ class ArcpkgConvertRequest(
                 if (!outputFile.parentFile.exists()) outputFile.parentFile.mkdirs()
                 extractFileFromZip(zipFile, zipEntry, fileName, outputFile, resizeToBg1080p)
                 return 0
-            } else {
-                return 1
             }
+
+            return 1
         }
 
         fun extractFileFromZipSimplified(
@@ -196,7 +197,7 @@ class ArcpkgConvertRequest(
             }
         }
 
-        private val ratingClassRegex = Regex("""([a-zA-Z]+)\s+?(.+?)(\+?)${'$'}""")
+        private val ratingClassRegex = Regex("""([a-zA-Z]+)\s+?(.+?)(\+?)$""")
 
         fun matchDifficultyText(difficultyText: String): Triple<String, String, Boolean>? {
             val matchResult = ratingClassRegex.find(difficultyText)
@@ -572,12 +573,10 @@ class ArcpkgConvertRequest(
 
             difficulties.forEach { diffEntry ->
                 val aff = readFileFromZip(arcpkgZipFile, "${entry.directory}/${diffEntry._chartPath!!}")
-                val convertion = Chart.fromAcf(aff)
-
-                if (convertion.second.ignoredTimingGroupEffects.isNotEmpty() || convertion.second.ignoredScenecontrols.isNotEmpty()) {
-                    s.println("$procIndent Ignoring ${convertion.second.ignoredTimingGroupEffects.size}x timingGroup effects, and ${convertion.second.ignoredScenecontrols.size}x scenecontrols")
-                }
-                File(songDir, "${diffEntry.ratingClass}.aff").writeText(convertion.first.serializeForArcaea())
+                val convertion = SimpleArcCreateChartParser.parse(aff)
+                File(songDir, "${diffEntry.ratingClass}.aff").writeText(
+                    ArcaeaChartSerializer.serialize(convertion).joinToString(System.lineSeparator())
+                )
             }
 
             if (exportConfiguration.enableDiffEntriesCompletion) {

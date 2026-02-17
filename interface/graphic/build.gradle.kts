@@ -27,6 +27,10 @@ java {
     }
 }
 
+application {
+    mainClass = "io.sn.etoile.launch.SwingGenesisKt"
+}
+
 launch4j {
     mainClassName = "io.sn.etoile.launch.SwingGenesisKt"
     outfile = "EtoileResurrection.Swing-${getCheckedOutGitCommitHash(7)}.exe"

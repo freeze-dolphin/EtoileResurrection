@@ -1,6 +1,6 @@
 package io.sn.etoile.utils.scenecontrol.channels.effect
 
-import io.sn.aetherium.utils.EasingFunction
+import io.sn.aetherium.utils.EaseFunc
 import io.sn.aetherium.utils.linear
 import io.sn.etoile.utils.scenecontrol.Union
 import io.sn.etoile.utils.scenecontrol.channels.ValueChannel
@@ -14,14 +14,14 @@ import io.sn.etoile.utils.scenecontrol.io.ScenecontrolSerialization
 class KeyChannel : ValueChannel() {
 
     val keys: MutableList<Key> = mutableListOf()
-    private var defaultEasing: EasingFunction? = null
+    private var defaultEasing: EaseFunc? = null
 
-    fun setDefaultEasing(easing: EasingFunction) {
+    fun setDefaultEasing(easing: EaseFunc) {
         defaultEasing = easing
     }
 
-    fun addKey(timing: Long, value: Float, easing: EasingFunction? = null) {
-        val e: EasingFunction = easing ?: (defaultEasing ?: linear)
+    fun addKey(timing: Long, value: Float, easing: EaseFunc? = null) {
+        val e: EaseFunc = easing ?: (defaultEasing ?: linear)
 
         val keyAtSameTiming = keys.filter { it.timing == timing }
         var overrideIndex = keyAtSameTiming.maxOfOrNull { it.overrideIndex } ?: 0
