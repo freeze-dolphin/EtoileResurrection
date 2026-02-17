@@ -24,7 +24,7 @@ jobs:
       - name: Build
         run: |
           chmod +x ./gradlew
-          ./gradlew clean distZip win64DistZip win64NoJreDistZip
+          ./gradlew clean distZip
 
       - name: Release
         uses: softprops/action-gh-release@v2
