@@ -45,6 +45,11 @@ jlinkJre {
 
 distributions {
     main {
+        distributionBaseName = "EtoileResurrection.Swing-universal"
+        version = getCheckedOutGitCommitHash(7)
+    }
+
+    create("win64") {
         distributionBaseName = "EtoileResurrection.Swing-win64"
         version = getCheckedOutGitCommitHash(7)
         contents {
@@ -54,21 +59,14 @@ distributions {
         }
     }
 
-    create("noJre") {
-        distributionBaseName = "EtoileResurrection.Swing-win64-nojre"
+    create("win64NoJre") {
+        distributionBaseName = "EtoileResurrection.Swing-win64-noJre"
         version = getCheckedOutGitCommitHash(7)
         contents {
             from(layout.buildDirectory.dir("launch4j"))
             exclude("jre")
             duplicatesStrategy = DuplicatesStrategy.EXCLUDE
         }
-    }
-}
-
-tasks.startScripts {
-    doLast {
-        unixScript.delete()
-        windowsScript.delete()
     }
 }
 
@@ -94,7 +92,7 @@ tasks.named<Test>("test") {
     useJUnitPlatform()
 }
 
-tasks.named("distTar") {
+tasks.named("win64DistTar") {
     dependsOn("createExe")
     dependsOn("jlinkJre")
 
@@ -108,7 +106,7 @@ tasks.named("distTar") {
     }
 }
 
-tasks.named("distZip") {
+tasks.named("win64DistZip") {
     dependsOn("createExe")
     dependsOn("jlinkJre")
 
@@ -122,10 +120,10 @@ tasks.named("distZip") {
     }
 }
 
-tasks.named("noJreDistZip") {
+tasks.named("win64NoJreDistZip") {
     dependsOn("createExe")
 }
 
-tasks.named("noJreDistTar") {
+tasks.named("win64NoJreDistTar") {
     dependsOn("createExe")
 }
