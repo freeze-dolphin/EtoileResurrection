@@ -1,84 +1,47 @@
-<p align="right">
-
-[![en](https://img.shields.io/badge/lang-en-blue.svg)](README.md)
-[![zh-Hans](https://img.shields.io/badge/lang-zh--Hans-red.svg)](README.zh-Hans.md)
-
-</p>
-
 # EtoileResurrection
+
+*Reborn of [Étoile](https://github.com/freeze-dolphin/EtoileLegacy)*
+
+![GitHub Actions Workflow Status](https://img.shields.io/github/actions/workflow/status/freeze-dolphin/EtoileResurrection/build.yml)
+
+---
+
+[English](README.md) | [简体中文](README.zh-Hans.md)
+
+---
 
 用于 `ArcCreate` 和官谱谱面格式之间相互转换的命令行工具
 
-## 使用方法
+**Java 版本要求：≥ 17**
+
+## 下载
+
+构建产物命名格式：`EtoileResurrection.{interface}-{platform}-{hash}.zip`
+
+- `interface`:
+    - **Console**: 控制台版本，适合批量处理或嵌入其他程序运行
+    - **Swing**: 使用 Swing 框架构建的窗口程序
+- `platform`:
+    - **universal**: 通过启动脚本自动搜索主机上安装的 Java 并运行程序
+    - **win64**: 使用 jlink + launch4j 构建的、适用于 64位 Windows 操作系统的版本
+    - **win64-noJre**: 使用 launch4j 构建的、适用于 64位 Windows 操作系统的版本，需要安装 Java 才可运行
+
+请在 [Releases](https://github.com/freeze-dolphin/EtoileResurrection/releases) 页面选择合适的版本下载
+
+## 功能（指令）
 
 - `pack`: 将官谱文件打包成 **.arcpkg** 格式
 - `export`: 解包 **.arcpkg** 文件，提取包内的背景文件、转换谱面格式、并自动生成 `songlist` 和 `packlist` 文件
+- `combine`: 根据 `packlist` 文件将多个 **.arcpkg** 单曲档案合并为单个 **.arcpkg** 曲包
+- `convert`: 将单个 **.aff** 谱面文件转换至指定格式（可用格式为：Arcaea 格式、ArcCreate 格式）
 
-### `export` 导出
+## 用法
 
-使用 `EtoileResurrection export -h` 命令来获取帮助信息:
+使用 `EtoileResurrection <command> -h` 命令来获取帮助信息
 
-<details><summary>帮助信息</summary>
-
-```
-Usage: EtoileResurrection export [<options>] [<arcpkgs>]...
-
-Options:
-  -p, --prefix=<text>       曲目名称的前缀，用于对背景文件的自动重命名
-  --export-bg-mode, --mode=(simplified|precise|overwrite|auto_rename)
-                            请看下表
-  -s, --pack, --set=<text>  导出到的目标曲包，默认为 single，即单曲曲包
-  -v, --version=<text>      曲目更新版本，默认为 1.0
-  -t, --time=<text>         曲目添加的日期，默认为系统当前时间，格式为 Unix 时间戳
-  -o, --output=<path>       导出路径，默认为当前目录下的 result 文件夹内
-  -h, --help                显示此信息并退出
-
-Arguments:
-  <arcpkgs>  要导出的单个 .arcpkg 文件路径
-
-```
-
-</details>
-
-#### `--export-bg-mode`
-
-| 背景导出策略               | 描述                                                                                      |
-|----------------------|-----------------------------------------------------------------------------------------|
-| simplified           | 忽略名称重复的背景文件，并发出警告                                                                       |
-| precise              | 以树状结构提取背景文件                                                                             |
-| overwrite            | 当有同名背景文件时，用新的背景覆盖写入，并发出警告                                                               |
-| auto_rename __(\*)__ | 背景文件名将被添加前缀以避免重名问题，例如: 在 img/bg 文件夹中，**pragmatism.jpg** 将被更名为 **prefix.pragmatism.jpg** |
-
-> __(\*)__: 默认行为
-
-#### 用例:
-
-```
-$ EtoileResurrection export N0N_ame.badapple.arcpkg --prefix default 
-```
+以下是一些较复杂参数的详细解释
 
 ### `pack` 打包
-
-使用 `EtoileResurrection pack -h` 命令来获取帮助信息:
-
-<details><summary>帮助信息</summary>
-
-```
-Usage: EtoileResurrection pack [<options>] <songlist>
-
-Options:
-  -o, --outputDir=<path>     打包结果的输出目录，默认为当前目录
-  -p, --prefix=<text>        曲目名称的前缀
-  -s, --songId, --id=<text>  要打包的曲目 songId，必须存在于 songlist 中
-  -re, --regex / --noregex   使用正则匹配 songId
-  -h, --help                 显示此信息并退出
-
-Arguments:
-  <songlist>  要导出的曲目的 songlist 文件路径
-
-```
-
-</details>
 
 #### `--regex`
 
@@ -96,4 +59,25 @@ Packed successfully to: .\result\lowiro.singularityvvvip.arcpkg
 
 ```
 $ EtoileResurrection pack songs\songlist --songId=mismal --prefix lowiro -o result\
+```
+
+### `export` 导出
+
+使用 `EtoileResurrection export -h` 命令来获取帮助信息:
+
+#### `--export-bg-mode`
+
+| 背景导出策略               | 描述                                                                                      |
+|----------------------|-----------------------------------------------------------------------------------------|
+| simplified           | 忽略名称重复的背景文件，并发出警告                                                                       |
+| precise              | 以树状结构提取背景文件                                                                             |
+| overwrite            | 当有同名背景文件时，用新的背景覆盖写入，并发出警告                                                               |
+| auto_rename __(\*)__ | 背景文件名将被添加前缀以避免重名问题，例如: 在 img/bg 文件夹中，**pragmatism.jpg** 将被更名为 **prefix.pragmatism.jpg** |
+
+> __(\*)__: 默认行为
+
+#### 用例:
+
+```
+$ EtoileResurrection export N0N_ame.badapple.arcpkg --prefix default 
 ```
