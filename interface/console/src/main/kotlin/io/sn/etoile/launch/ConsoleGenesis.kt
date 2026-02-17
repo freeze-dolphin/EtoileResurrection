@@ -261,12 +261,41 @@ class CombineCommand : CliktCommand(name = "combine") {
 
 }
 
+class ConvertCommand : CliktCommand(name = "convert") {
+    private val convertInput by argument(
+        name = "source", help = "The chart file to be converted"
+    ).file(mustExist = true, canBeDir = false, canBeFile = true)
+
+    private val convertInputType by option(
+        names = arrayOf("--type", "-t"),
+        help = "The type of the chart file to be converted\u0085(aff = Arcaea File Format; acf = ArcCreate File Format)"
+    ).choice("aff", "acf").required()
+
+    private val convertOutput by option(
+        names = arrayOf("--output", "-o"), help = "The relative path to where the result chart file to be placed, defaults to '(sourceFileName).convert.aff'"
+    ).file(mustExist = false, canBeDir = false, canBeFile = true)
+
+    override fun run() {
+        val type = when (convertInputType) {
+            "aff" -> ChartType.Arcaea
+            "acf" -> ChartType.ArcCreate
+            else -> {
+                throw IllegalArgumentException("invalid chart type: $convertInputType")
+            }
+        }
+
+        ChartConvertRequest(type, convertInput, convertOutput).exec()
+    }
+
+}
+
 class EtoileRessurectionCommand : CliktCommand(name = "EtoileResurrection") {
     override fun run() = Unit
 }
 
 fun main(args: Array<String>) {
     /*
+     * legacy help message
     val usage: Array<String> = arrayOf(
         "Etoile Resurrection",
         "USAGE: java -cp <PATH TO Aetherium.jar> io.sn.aetherium.implementations.crystals.EtoileRessurectionKt <PREFIX> <MODE> [arcpkgs]",
@@ -278,5 +307,5 @@ fun main(args: Array<String>) {
         "The convert result will be in `\$PWD/result/`"
     )
     */
-    EtoileRessurectionCommand().subcommands(PackCommand(), ExportCommand(), CombineCommand()).main(args)
+    EtoileRessurectionCommand().subcommands(PackCommand(), ExportCommand(), CombineCommand(), ConvertCommand()).main(args)
 }
