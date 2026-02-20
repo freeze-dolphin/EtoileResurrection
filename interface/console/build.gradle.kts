@@ -1,3 +1,4 @@
+val affComposeVersion: String by rootProject
 val kotlinxVersion: String by rootProject
 
 plugins {
@@ -18,6 +19,7 @@ dependencies {
     implementation("org.jetbrains.kotlin:kotlin-scripting-jvm-host")
     implementation("org.jetbrains.kotlinx:kotlinx-coroutines-core:1.10.2")
 
+    implementation("com.github.freeze-dolphin:aff-compose:${affComposeVersion}")
     implementation(project(":core"))
 }
 
