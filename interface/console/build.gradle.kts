@@ -14,8 +14,11 @@ dependencies {
     implementation("com.github.ajalt.clikt:clikt:5.0.3")
     implementation("org.jetbrains.kotlinx:kotlinx-serialization-json:${kotlinxVersion}")
 
-    implementation(project(":core"))
+    implementation("org.jetbrains.kotlin:kotlin-scripting-common")
+    implementation("org.jetbrains.kotlin:kotlin-scripting-jvm-host")
     implementation("org.jetbrains.kotlinx:kotlinx-coroutines-core:1.10.2")
+
+    implementation(project(":core"))
 }
 
 java {

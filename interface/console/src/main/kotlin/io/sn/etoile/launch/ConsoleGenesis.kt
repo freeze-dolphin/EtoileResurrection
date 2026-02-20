@@ -272,7 +272,8 @@ class ConvertCommand : CliktCommand(name = "convert") {
     ).choice("aff", "acf").required()
 
     private val convertOutput by option(
-        names = arrayOf("--output", "-o"), help = "The relative path to where the result chart file to be placed, defaults to '(sourceFileName).convert.aff'"
+        names = arrayOf("--output", "-o"),
+        help = "The relative path to where the result chart file to be placed, defaults to '(sourceFileName).convert.aff'"
     ).file(mustExist = false, canBeDir = false, canBeFile = true)
 
     override fun run() {
@@ -287,6 +288,22 @@ class ConvertCommand : CliktCommand(name = "convert") {
         ChartConvertRequest(type, convertInput, convertOutput).exec()
     }
 
+}
+
+class ScriptCommand : CliktCommand(name = "script") {
+    private val scriptPath by option(
+        names = arrayOf("--script", "-s"),
+        help = "The path to the .etoile.kts file to be executed"
+    ).file(mustExist = true, canBeDir = false, canBeFile = true).required()
+
+    private val scriptArgs by argument(help = "Arguments to be passed to the script").multiple()
+
+    override fun run() {
+        val result = EtoileScriptHost.evalFile(scriptPath, scriptArgs.toTypedArray())
+        result
+            .onSuccess { println("The script returns with: $it") }
+            .onFailure { it.printStackTrace() }
+    }
 }
 
 class EtoileRessurectionCommand : CliktCommand(name = "EtoileResurrection") {
@@ -307,5 +324,11 @@ fun main(args: Array<String>) {
         "The convert result will be in `\$PWD/result/`"
     )
     */
-    EtoileRessurectionCommand().subcommands(PackCommand(), ExportCommand(), CombineCommand(), ConvertCommand()).main(args)
+    EtoileRessurectionCommand().subcommands(
+        PackCommand(),
+        ExportCommand(),
+        CombineCommand(),
+        ConvertCommand(),
+        ScriptCommand()
+    ).main(args)
 }
