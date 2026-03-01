@@ -517,7 +517,7 @@ class ArcpkgConvertRequest(
 
                 if (ratingPlus) difficultyEntry.ratingPlus = true
 
-                if (difficulties.size == 0) {
+                if (difficulties.isEmpty()) {
                     baseDifficulty = difficultyEntry.copy(
                         titleLocalized = title,
                         artist = artist,
@@ -568,12 +568,12 @@ class ArcpkgConvertRequest(
             ImageIO.write(resized256, "jpg", File(songDir, "${imgPrefix}base_256.jpg"))
             if (is1080) {
                 ImageIO.write(resizedBase, "jpg", File(songDir, "${imgPrefix}base.jpg"))
-                fileBase.delete()
+                require(fileBase.delete())
             }
 
             difficulties.forEach { diffEntry ->
                 val aff = readFileFromZip(arcpkgZipFile, "${entry.directory}/${diffEntry._chartPath!!}")
-                val convertion = SimpleArcCreateChartParser.parse(aff)
+                val convertion = C2AConverter.parse(aff)
                 File(songDir, "${diffEntry.ratingClass}.aff").writeText(
                     ArcaeaChartSerializer.serialize(convertion).joinToString(System.lineSeparator())
                 )

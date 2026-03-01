@@ -141,7 +141,7 @@ object ArcpkgPackRequestUtil {
 
     fun getLastOpenedChartPath(songlistEntry: SonglistEntry): String {
         val difficulties = songlistEntry.difficulties
-        if (difficulties == null || difficulties.isEmpty()) throw RuntimeException("No charts exist for ${songlistEntry.id}")
+        if (difficulties.isNullOrEmpty()) throw RuntimeException("No charts exist for ${songlistEntry.id}")
 
         return if (difficulties.any { it.ratingClass == 2 }) {
             "2.aff"
@@ -271,7 +271,7 @@ class ArcpkgPackRequest(
             val chartFile = file(songsDir.toString(), songId, "${it.ratingClass}.aff")
             var rt: String
             try {
-                val chart = ArcaeaChartParser.parse(chartFile.readText(charset = Charsets.UTF_8))
+                val chart = A2CConverter.parse(chartFile.readText(charset = Charsets.UTF_8))
                 rt = ArcCreateChartSerializer.serialize(chart).joinToString(System.lineSeparator())
             } catch (e: Exception) {
                 e.printStackTrace(s)
