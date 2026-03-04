@@ -5,7 +5,6 @@ import com.charleskorn.kaml.yamlMap
 import com.charleskorn.kaml.yamlScalar
 import com.tairitsu.compose.arcaea.LocalizedString
 import com.tairitsu.compose.parser.ArcaeaChartSerializer
-import com.tairitsu.compose.parser.SimpleArcCreateChartParser
 import io.sn.etoile.utils.*
 import kotlinx.serialization.builtins.ListSerializer
 import kotlinx.serialization.decodeFromString
@@ -573,9 +572,9 @@ class ArcpkgConvertRequest(
 
             difficulties.forEach { diffEntry ->
                 val aff = readFileFromZip(arcpkgZipFile, "${entry.directory}/${diffEntry._chartPath!!}")
-                val convertion = C2AConverter.parse(aff)
+                val chart = C2AConverter.parse(aff)
                 File(songDir, "${diffEntry.ratingClass}.aff").writeText(
-                    ArcaeaChartSerializer.serialize(convertion).joinToString(System.lineSeparator())
+                    ArcaeaChartSerializer.serialize(chart).joinToString(System.lineSeparator())
                 )
             }
 

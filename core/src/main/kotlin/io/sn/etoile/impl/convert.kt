@@ -22,7 +22,7 @@ class A2CConverter : ArcaeaChartParser() {
     override val globalEventFilter: EventFilter = ShimFilter.A2C
 
     companion object {
-        val Instance by lazy { ArcaeaChartParser() }
+        val Instance by lazy { A2CConverter() }
         fun parse(content: String): Chart = Instance.parse(content)
     }
 }
@@ -32,7 +32,7 @@ class C2AConverter : SimpleArcCreateChartParser() {
     override val globalEventFilter: EventFilter = ShimFilter.C2A
 
     companion object {
-        val Instance by lazy { ArcaeaChartParser() }
+        val Instance by lazy { C2AConverter() }
         fun parse(content: String): Chart = Instance.parse(content)
     }
 }
