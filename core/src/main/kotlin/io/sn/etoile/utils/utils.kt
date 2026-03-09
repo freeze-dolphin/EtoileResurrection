@@ -58,7 +58,6 @@ data class DifficultyEntry(
     @Transient var _chartPath: String? = null,
 
     val ratingClass: Int,
-    val titleLocalizedOverride: LocalizedString? = null,
     val chartDesigner: String,
     val jacketDesigner: String,
     val rating: Int,

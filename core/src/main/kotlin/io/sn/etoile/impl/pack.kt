@@ -237,7 +237,7 @@ class ArcpkgPackRequest(
                 baseBpm = songEntry.bpmBase!!,
                 bpmText = songEntry.bpmText!!,
                 syncBaseBpm = false,
-                title = if (it.titleLocalizedOverride != null) it.titleLocalizedOverride.en else songEntry.titleLocalized!!.en,
+                title = if (it.titleLocalized != null) it.titleLocalized!!.en else songEntry.titleLocalized!!.en,
                 composer = songEntry.artist!!,
                 charter = if (prefix == "lowiro") charterLowiro else it.chartDesigner.let { ctr -> if (ctr.contains("\n")) "" else ctr },
                 alias = if (prefix == "lowiro") it.chartDesigner else null,
