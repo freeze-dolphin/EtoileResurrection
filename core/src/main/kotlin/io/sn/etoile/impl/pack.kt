@@ -237,7 +237,7 @@ class ArcpkgPackRequest(
                 baseBpm = songEntry.bpmBase!!,
                 bpmText = songEntry.bpmText!!,
                 syncBaseBpm = false,
-                title = songEntry.titleLocalized!!.en,
+                title = if (it.titleLocalizedOverride != null) it.titleLocalizedOverride.en else songEntry.titleLocalized!!.en,
                 composer = songEntry.artist!!,
                 charter = if (prefix == "lowiro") charterLowiro else it.chartDesigner.let { ctr -> if (ctr.contains("\n")) "" else ctr },
                 alias = if (prefix == "lowiro") it.chartDesigner else null,
@@ -256,13 +256,11 @@ class ArcpkgPackRequest(
                 ),
                 previewStart = it.audioPreview ?: 0,
                 previewEnd = it.audioPreviewEnd ?: 5000,
-                searchTags = listOf(
-                    songEntry.titleLocalized.en,
-                    songEntry.titleLocalized.ja,
-                    songEntry.titleLocalized.ko,
-                    songEntry.titleLocalized.zhHans,
-                    songEntry.titleLocalized.zhHant
-                ).distinct().joinToString("\n"),
+                searchTags = (songEntry.titleLocalized!!.storage.values.toList()
+                    .plus(songEntry.searchTitle?.storage?.values?.flatten() ?: listOf())
+                    .plus(songEntry.searchArtist?.storage?.values?.flatten() ?: listOf()))
+                    .distinct()
+                    .joinToString("\n"),
             )
         }
 

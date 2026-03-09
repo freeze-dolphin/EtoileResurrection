@@ -2,6 +2,7 @@ package io.sn.etoile.utils
 
 import com.charleskorn.kaml.*
 import com.tairitsu.compose.arcaea.LocalizedString
+import com.tairitsu.compose.arcaea.SearchTags
 import kotlinx.serialization.KSerializer
 import kotlinx.serialization.SerialName
 import kotlinx.serialization.Serializable
@@ -57,6 +58,7 @@ data class DifficultyEntry(
     @Transient var _chartPath: String? = null,
 
     val ratingClass: Int,
+    val titleLocalizedOverride: LocalizedString? = null,
     val chartDesigner: String,
     val jacketDesigner: String,
     val rating: Int,
@@ -78,6 +80,8 @@ data class DifficultyEntry(
 data class SonglistEntry(
     val id: String,
     @SerialName("title_localized") val titleLocalized: LocalizedString? = null,
+    @SerialName("search_title") val searchTitle: SearchTags? = null,
+    @SerialName("search_artist") val searchArtist: SearchTags? = null,
     val artist: String? = null,
     @SerialName("bpm") val bpmText: String? = null,
     @SerialName("bpm_base") val bpmBase: Float? = null,
