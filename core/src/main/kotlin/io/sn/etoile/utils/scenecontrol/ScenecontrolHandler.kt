@@ -92,7 +92,7 @@ class EnwidenCameraHandler(private val scene: Scene) : ScenecontrolHandler() {
         checkSetup()
 
         val timing = scenecontrol.time
-        val duration = scenecontrol.params[0].toInt()
+        val duration = scenecontrol.params[0].toFloat().roundToInt()
         val toggle = scenecontrol.params[1]
 
         enwidenCameraFactor.addKey(timing, enwidenCameraFactor.valueAt(timing))
@@ -154,7 +154,7 @@ class EnwidenLanesHandler(private val scene: Scene) : ScenecontrolHandler() {
         checkSetup()
 
         val timing = scenecontrol.time
-        val duration = scenecontrol.params[0].toInt()
+        val duration = scenecontrol.params[0].toFloat().roundToInt()
         val toggle = scenecontrol.params[1]
 
 
@@ -173,7 +173,7 @@ class HideGroupHandler(private val scene: Scene) : ScenecontrolHandler() {
 
     override fun execute(scenecontrol: Scenecontrol) {
         val timing = scenecontrol.time
-        val isHidden = scenecontrol.params[1].toInt()
+        val isHidden = scenecontrol.params[1].toFloat().roundToInt()
 
         val tgIdx = scene.scenecontrolService.timingGroups.indexOfFirst { it: TimingGroup ->
             scenecontrol in it.getScenecontrols()
@@ -265,7 +265,7 @@ class TrackDisplayHandler(private val scene: Scene) : ScenecontrolHandler() {
 
             ScenecontrolType.TRACK_DISPLAY -> {
                 duration = (scenecontrol.params[0].toFloat() * 1000).roundToInt()
-                alpha = scenecontrol.params[1].toInt()
+                alpha = scenecontrol.params[1].toFloat().roundToInt()
             }
 
             else -> throw RuntimeException("Unsupported scenecontrol type: ${scenecontrol.type} for TrackDisplayHandler")

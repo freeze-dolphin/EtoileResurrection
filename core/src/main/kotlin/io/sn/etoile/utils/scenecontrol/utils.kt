@@ -10,9 +10,7 @@ import kotlin.io.path.readText
  * Assets/Scripts/Gameplay/Chart/ChartService.cs#LoadChart()
  */
 fun loadChart(chartPath: Path): List<TimingGroup> = ArcaeaChartParser.parse(chartPath.readText(charset = Charsets.UTF_8)).let { chart ->
-    mutableListOf(chart.mainTiming).apply {
-        addAll(chart.subTiming.values)
-    }
+    listOf(chart.mainTiming) + chart.subTiming.values
 }
 
 fun extractScenecontrols(tgChart: List<TimingGroup>) = tgChart.map {
