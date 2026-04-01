@@ -23,16 +23,18 @@ class KeyChannel : ValueChannel() {
     fun addKey(timing: Long, value: Float, easing: EaseFunc? = null) {
         val e: EaseFunc = easing ?: (defaultEasing ?: linear)
 
-        val keyAtSameTiming = keys.filter { it.timing == timing }
-        var overrideIndex = keyAtSameTiming.maxOfOrNull { it.overrideIndex } ?: 0
-        if (keys.isNotEmpty() && keyAtSameTiming.isNotEmpty()) { // overlapping
-            overrideIndex += 1
+        synchronized(keys) {
+            val keyAtSameTiming = keys.filter { it.timing == timing }
+            var overrideIndex = keyAtSameTiming.maxOfOrNull { it.overrideIndex } ?: 0
+            if (keys.isNotEmpty() && keyAtSameTiming.isNotEmpty()) { // overlapping
+                overrideIndex += 1
+            }
+
+            val key = Key(timing, value, e, overrideIndex)
+
+            val insertIndex = keys.indexOfLast { it.timing < timing || (it.timing == timing && it.overrideIndex < overrideIndex) } + 1
+            keys.add(insertIndex, key)
         }
-
-        val key = Key(timing, value, e, overrideIndex)
-        keys.add(key)
-
-        keys.sort()
     }
 
     override fun toString(): String {
