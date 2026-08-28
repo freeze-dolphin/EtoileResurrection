@@ -1,12 +1,14 @@
-# EtoileResurrection
+# EtoileResurrection 
+[English](README.md) | [简体中文](README.zh-Hans.md)
+
+> [!IMPORTANT]  
+> This project has been archived and will no longer receive updates.  
+> If you are looking for a tool to convert Arcaea charts into [ArcCreate](https://github.com/Arcthesia/ArcCreate) .arcpkg files, please refer to [Etoile.Lite](https://github.com/freeze-dolphin/Etoile.Lite), which utilizes codes directly from [ArcCreate](https://github.com/Arcthesia/ArcCreate) for a better compatibility.  
+> However, you can still use this project's `export` and `combine` features.
 
 *Reborn of [Étoile](https://github.com/freeze-dolphin/EtoileLegacy)*
 
 ![GitHub Actions Workflow Status](https://img.shields.io/github/actions/workflow/status/freeze-dolphin/EtoileResurrection/build.yml)
-
----
-
-[English](README.md) | [简体中文](README.zh-Hans.md)
 
 ---
 
